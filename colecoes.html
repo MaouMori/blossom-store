@@ -60,60 +60,36 @@
       </div>
     </section>
 
-    <section class="collection-tabs container" aria-label="Tipos de coleções">
-      <button class="active" type="button"><span>♧</span><b>All Collections</b><small>Todas as coleções</small></button>
-      <button type="button"><span>♙</span><b>Masculino</b><small>Coleções masculinas</small></button>
-      <button type="button"><span>♁</span><b>Feminino</b><small>Coleções femininas</small></button>
-      <button type="button"><span>▱</span><b>Acessórios</b><small>Coleções de acessórios</small></button>
-      <button type="button"><span>◇</span><b>Exclusivas</b><small>Coleções exclusivas</small></button>
+    <section class="collection-tabs container" aria-label="Tipos de coleções" data-collection-tabs>
+      <button class="active" type="button" data-collection-category-tab="Todas"><span>*</span><b>Todas</b><small>Todas as coleções</small></button>
+      <button type="button" data-collection-category-tab="Masculino"><span>M</span><b>Masculino</b><small>Coleções masculinas</small></button>
+      <button type="button" data-collection-category-tab="Feminino"><span>F</span><b>Feminino</b><small>Coleções femininas</small></button>
+      <button type="button" data-collection-category-tab="Acessórios"><span>A</span><b>Acessórios</b><small>Coleções de acessórios</small></button>
+      <button type="button" data-collection-category-tab="Drops Exclusivos"><span>D</span><b>Exclusivas</b><small>Coleções exclusivas</small></button>
     </section>
 
     <section class="collection-filters container" aria-label="Filtros de coleções">
-      <strong>☷ Filtros</strong>
+      <strong>Filtros</strong>
       <label>Categoria
-        <select>
-          <option>Todas</option>
-          <option>Masculino</option>
-          <option>Feminino</option>
-          <option>Acessórios</option>
-        </select>
+        <select data-collection-category></select>
       </label>
       <label>Tipo de peça
-        <select>
-          <option>Todos</option>
-          <option>Camisetas</option>
-          <option>Moletons</option>
-          <option>Jaquetas</option>
-        </select>
+        <select data-collection-type></select>
       </label>
       <label>Cor
-        <select>
-          <option>Todas as cores</option>
-          <option>Preto</option>
-          <option>Rosa</option>
-          <option>Branco</option>
-        </select>
-      </label>
-      <label>Tamanho
-        <select>
-          <option>Todos</option>
-          <option>P</option>
-          <option>M</option>
-          <option>G</option>
-          <option>GG</option>
-        </select>
+        <select data-collection-color></select>
       </label>
       <span></span>
       <label>Ordenar por:
-        <select>
-          <option>Mais recentes</option>
-          <option>Mais peças</option>
-          <option>Nome A-Z</option>
+        <select data-collection-sort>
+          <option value="recent">Mais recentes</option>
+          <option value="pieces">Mais peças</option>
+          <option value="name">Nome A-Z</option>
         </select>
       </label>
       <div class="view-switch">
-        <button class="active" type="button">▦</button>
-        <button type="button">☰</button>
+        <button class="active" type="button">Grid</button>
+        <button type="button">Lista</button>
       </div>
     </section>
 
@@ -124,7 +100,7 @@
           <h2>Blossom Spring '25</h2>
           <b>Coleção Primavera 2025</b>
           <p>Peças leves e estilosas para dominar as ruas.</p>
-          <footer><span>12 peças</span><a href="loja.html">Ver coleção →</a></footer>
+          <footer><span>12 peças</span><a href="colecao.html?id=spring-25">Ver coleção</a></footer>
         </div>
       </article>
       <article>
@@ -133,7 +109,7 @@
           <h2>Blossom Essentials</h2>
           <b>Coleção Essentials</b>
           <p>Peças básicas com o padrão de qualidade Blossom.</p>
-          <footer><span>18 peças</span><a href="loja.html">Ver coleção →</a></footer>
+          <footer><span>18 peças</span><a href="colecao.html?id=essentials">Ver coleção</a></footer>
         </div>
       </article>
       <article>
@@ -142,7 +118,7 @@
           <h2>Blossom Nightfall</h2>
           <b>Coleção Nightfall</b>
           <p>Cores escuras. Estilo pesado. Presença marcante.</p>
-          <footer><span>10 peças</span><a href="loja.html">Ver coleção →</a></footer>
+          <footer><span>10 peças</span><a href="colecao.html?id=nightfall">Ver coleção</a></footer>
         </div>
       </article>
       <article>
@@ -151,7 +127,7 @@
           <h2>Blossom Luxury</h2>
           <b>Coleção Luxury</b>
           <p>Detalhes premium para quem vive o topo do roleplay.</p>
-          <footer><span>08 peças</span><a href="loja.html">Ver coleção →</a></footer>
+          <footer><span>08 peças</span><a href="colecao.html?id=luxury">Ver coleção</a></footer>
         </div>
       </article>
       <article>
@@ -160,7 +136,7 @@
           <h2>Blossom Sport</h2>
           <b>Coleção Sport</b>
           <p>Performance, conforto e estilo para qualquer missão.</p>
-          <footer><span>11 peças</span><a href="loja.html">Ver coleção →</a></footer>
+          <footer><span>11 peças</span><a href="colecao.html?id=sport">Ver coleção</a></footer>
         </div>
       </article>
       <article>
@@ -169,7 +145,7 @@
           <h2>Blossom Oversized</h2>
           <b>Coleção Oversized</b>
           <p>Modelagens amplas para um visual urbano e autêntico.</p>
-          <footer><span>14 peças</span><a href="loja.html">Ver coleção →</a></footer>
+          <footer><span>14 peças</span><a href="colecao.html?id=oversized">Ver coleção</a></footer>
         </div>
       </article>
       <article>
@@ -178,7 +154,7 @@
           <h2>Blossom Pink Label</h2>
           <b>Coleção Pink Label</b>
           <p>A identidade rosa da Blossom. Única, forte e feminina.</p>
-          <footer><span>09 peças</span><a href="loja.html">Ver coleção →</a></footer>
+          <footer><span>09 peças</span><a href="colecao.html?id=pink-label">Ver coleção</a></footer>
         </div>
       </article>
       <article>
@@ -187,7 +163,7 @@
           <h2>Blossom Collabs</h2>
           <b>Coleção Collabs</b>
           <p>Parcerias especiais que viram história.</p>
-          <footer><span>07 peças</span><a href="loja.html">Ver coleção →</a></footer>
+          <footer><span>07 peças</span><a href="colecao.html?id=collabs">Ver coleção</a></footer>
         </div>
       </article>
     </section>

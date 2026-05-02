@@ -283,7 +283,8 @@ if (loginForm) {
 }
 
 if (document.body.classList.contains("admin-body") && location.pathname.endsWith("admin.html")) {
-  if (localStorage.getItem("blossom-admin-session") !== "active") {
+  const isAdmin = adminSession?.role === "admin" || localStorage.getItem("blossom-admin-session") === "active";
+  if (!isAdmin) {
     window.location.href = "login.html";
   }
 }
@@ -386,6 +387,7 @@ function populateProductSelects(product = null) {
   field(form, "color").innerHTML = optionMarkup(adminTaxonomies.colors, product?.color);
   field(form, "visual").innerHTML = optionMarkup(adminTaxonomies.visuals, product?.visual || "hoodie-dark");
   field(form, "collection").innerHTML = `<option value="">Sem coleção</option>${adminCollections.map((collection) => `<option value="${collection.id}" ${product?.collection === collection.id ? "selected" : ""}>${collection.name}</option>`).join("")}`;
+  field(form, "visibility").value = product?.visibility || "store";
 }
 
 function populateCollectionSelects(collection = null) {
@@ -412,7 +414,7 @@ function renderAdmin() {
       <div>
         <h3>${item.name}</h3>
         <p>${item.category} • ${item.type} • ${item.color}</p>
-        <strong>${adminMoney.format(Number(item.price))}${item.isNew ? " • Novo" : ""}${itemImages(item).length ? ` • ${itemImages(item).length} fotos` : ""}</strong>
+        <strong>${adminMoney.format(Number(item.price))}${item.isNew ? " • Novo" : ""}${item.visibility === "collection-only" ? " • Somente coleção" : ""}${itemImages(item).length ? ` • ${itemImages(item).length} fotos` : ""}</strong>
       </div>
       <div>
         <button type="button" data-edit-product="${item.id}">Editar</button>
@@ -427,7 +429,7 @@ function renderAdmin() {
       <div>
         <h3>${item.name}</h3>
         <p>${item.label}</p>
-        <strong>${item.pieces} peças${item.badge ? ` • ${item.badge}` : ""}${itemImages(item).length ? ` • ${itemImages(item).length} fotos` : ""}</strong>
+        <strong>${adminProducts.filter((product) => product.collection === item.id).length} peças${item.badge ? ` • ${item.badge}` : ""}${itemImages(item).length ? ` • ${itemImages(item).length} fotos` : ""}</strong>
       </div>
       <div>
         <button type="button" data-edit-collection="${item.id}">Editar</button>
@@ -594,6 +596,13 @@ $("[data-product-form]")?.addEventListener("submit", async (event) => {
     return;
   }
 
+  if (data.get("visibility") === "collection-only" && !data.get("collection")) {
+    $("[data-product-image-note]").textContent = "Escolha uma coleção para produtos que aparecem somente na coleção.";
+    submitButton.disabled = false;
+    submitButton.textContent = originalText;
+    return;
+  }
+
   const product = {
     id,
     name: data.get("name"),
@@ -601,6 +610,7 @@ $("[data-product-form]")?.addEventListener("submit", async (event) => {
     type: data.get("type"),
     color: data.get("color"),
     collection: data.get("collection"),
+    visibility: data.get("visibility"),
     price: Number(data.get("price")),
     visual: data.get("visual"),
     image: images[0] || "",
@@ -652,7 +662,7 @@ $("[data-collection-form]")?.addEventListener("submit", async (event) => {
     name: data.get("name"),
     label: data.get("label"),
     description: data.get("description"),
-    pieces: Number(data.get("pieces")),
+    pieces: adminProducts.filter((product) => product.collection === id).length,
     visual: data.get("visual"),
     badge: data.get("badge"),
     image: images[0] || "",
@@ -712,3 +722,4 @@ $("[data-logout]")?.addEventListener("click", () => {
 renderAdmin();
 loadApiStore();
 loadUsers();
+

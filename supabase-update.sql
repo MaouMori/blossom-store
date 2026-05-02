@@ -1,6 +1,7 @@
 alter table public.products
 add column if not exists collection text,
-add column if not exists images jsonb not null default '[]'::jsonb;
+add column if not exists images jsonb not null default '[]'::jsonb,
+add column if not exists visibility text not null default 'store';
 
 alter table public.collections
 add column if not exists images jsonb not null default '[]'::jsonb,
