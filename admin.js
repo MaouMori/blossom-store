@@ -83,6 +83,16 @@ function field(form, name) {
   return form.elements.namedItem(name);
 }
 
+function errorText(error) {
+  if (!error) return "Erro desconhecido.";
+  try {
+    const parsed = JSON.parse(error.message);
+    return parsed.error || parsed.message || error.message;
+  } catch {
+    return error.message || "Erro desconhecido.";
+  }
+}
+
 function slugify(text) {
   return text.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "") || `item-${Date.now()}`;
 }
@@ -424,7 +434,8 @@ $("[data-product-form]")?.addEventListener("submit", async (event) => {
     renderAdmin();
     toast("Produto salvo.");
   } catch (error) {
-    $("[data-product-image-note]").textContent = "Nao foi possivel salvar no servidor. Verifique a API/Supabase.";
+    console.error(error);
+    $("[data-product-image-note]").textContent = `Erro ao salvar: ${errorText(error)}`;
   } finally {
     submitButton.disabled = false;
     submitButton.textContent = originalText;
@@ -470,7 +481,8 @@ $("[data-collection-form]")?.addEventListener("submit", async (event) => {
     form.closest("dialog").close();
     renderAdmin();
   } catch (error) {
-    $("[data-collection-image-note]").textContent = "Nao foi possivel salvar no servidor. Verifique a API/Supabase.";
+    console.error(error);
+    $("[data-collection-image-note]").textContent = `Erro ao salvar: ${errorText(error)}`;
   } finally {
     submitButton.disabled = false;
     submitButton.textContent = originalText;
