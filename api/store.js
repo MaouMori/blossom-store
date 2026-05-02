@@ -1,75 +1,48 @@
-// api/store.js — Vercel Serverless + Supabase
-const SUPABASE_URL = "https://zbvmznzdrqwervmcvxye.supabase.co";
-const SUPABASE_KEY = "sb_publishable_YCJRhgVFdoB94uEow3Ss0w_P8pZcspm";
-
-const headers = {
-  "Content-Type": "application/json",
-  "apikey": SUPABASE_KEY,
-  "Authorization": `Bearer ${SUPABASE_KEY}`,
-  "Prefer": "return=representation",
-};
-
-async function sbGet(table) {
-  const res = await fetch(`${SUPABASE_URL}/rest/v1/${table}?select=*`, { headers });
-  return res.json();
-}
-
-async function sbUpsertMany(table, rows) {
-  await fetch(`${SUPABASE_URL}/rest/v1/${table}`, {
-    method: "POST",
-    headers: { ...headers, "Prefer": "resolution=merge-duplicates" },
-    body: JSON.stringify(rows),
-  });
-}
-
-async function sbUpsertTaxonomies(taxonomies) {
-  const rows = Object.entries(taxonomies).map(([key, values]) => ({ key, values }));
-  await fetch(`${SUPABASE_URL}/rest/v1/taxonomies`, {
-    method: "POST",
-    headers: { ...headers, "Prefer": "resolution=merge-duplicates" },
-    body: JSON.stringify(rows),
-  });
-}
+const {
+  replaceTable,
+  supabase,
+  taxonomiesArrayToObject,
+  taxonomiesObjectToArray,
+} = require("./_supabase");
 
 module.exports = async function handler(req, res) {
-  res.setHeader("Access-Control-Allow-Origin", "*");
-  res.setHeader("Access-Control-Allow-Methods", "GET, PUT, OPTIONS");
-  res.setHeader("Access-Control-Allow-Headers", "Content-Type");
-
-  if (req.method === "OPTIONS") return res.status(200).end();
-
-  if (req.method === "GET") {
-    try {
-      const [products, collections, taxonomyRows] = await Promise.all([
-        sbGet("products"),
-        sbGet("collections"),
-        sbGet("taxonomies"),
+  try {
+    if (req.method === "GET") {
+      const [products, collections, taxonomyRows, orders] = await Promise.all([
+        supabase("products?select=*&order=created.asc"),
+        supabase("collections?select=*"),
+        supabase("taxonomies?select=*"),
+        supabase("orders?select=*&order=createdAt.desc"),
       ]);
 
-      const taxonomies = {};
-      if (Array.isArray(taxonomyRows)) {
-        taxonomyRows.forEach(({ key, values }) => { taxonomies[key] = values; });
-      }
-
-      return res.status(200).json({ products, collections, taxonomies, orders: [] });
-    } catch (err) {
-      return res.status(500).json({ error: err.message });
+      res.status(200).json({
+        products: products || [],
+        collections: collections || [],
+        taxonomies: taxonomiesArrayToObject(taxonomyRows),
+        orders: orders || [],
+      });
+      return;
     }
-  }
 
-  if (req.method === "PUT") {
-    try {
-      const { products, collections, taxonomies } = req.body || {};
+    if (req.method === "PUT") {
+      const body = req.body || {};
+      const products = Array.isArray(body.products) ? body.products : [];
+      const collections = Array.isArray(body.collections) ? body.collections : [];
+      const taxonomies = taxonomiesObjectToArray(body.taxonomies);
+
       await Promise.all([
-        products?.length ? sbUpsertMany("products", products) : Promise.resolve(),
-        collections?.length ? sbUpsertMany("collections", collections) : Promise.resolve(),
-        taxonomies ? sbUpsertTaxonomies(taxonomies) : Promise.resolve(),
+        replaceTable("products", products),
+        replaceTable("collections", collections),
+        replaceTable("taxonomies", taxonomies),
       ]);
-      return res.status(200).json({ ok: true });
-    } catch (err) {
-      return res.status(500).json({ error: err.message });
-    }
-  }
 
-  res.status(405).json({ error: "Método não permitido" });
+      res.status(200).json({ ok: true });
+      return;
+    }
+
+    res.setHeader("Allow", "GET, PUT");
+    res.status(405).json({ error: "Method not allowed" });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
 };

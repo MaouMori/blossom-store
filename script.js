@@ -471,6 +471,12 @@ function createOrder(event) {
   const orderId = `BLS-${Date.now().toString().slice(-6)}`;
   const payment = data.get("payment");
   const orderTotal = cartTotal();
+  const orderItems = cart.map((item) => ({
+    id: item.id,
+    name: item.name,
+    price: item.price,
+    quantity: item.quantity,
+  }));
 
   showToast(`Pedido ${orderId} criado em modo demonstracao.`);
   selectors.paymentPreview.innerHTML = `
@@ -487,7 +493,7 @@ function createOrder(event) {
     fetch("/api/orders", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ orderId, payment, customer: data.get("customer"), email: data.get("email"), total: orderTotal }),
+      body: JSON.stringify({ orderId, payment, customer: data.get("customer"), email: data.get("email"), total: orderTotal, items: orderItems }),
     }).catch(() => {});
   }
 }
