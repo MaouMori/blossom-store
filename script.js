@@ -168,9 +168,9 @@ async function loadApiStore() {
     const response = await fetch("/api/store");
     if (!response.ok) return;
     const store = await response.json();
-    products = Array.isArray(store.products) ? store.products : products;
-    collections = Array.isArray(store.collections) ? store.collections : collections;
-    taxonomies = store.taxonomies || taxonomies;
+    products = Array.isArray(store.products) && store.products.length ? store.products : products;
+    collections = Array.isArray(store.collections) && store.collections.length ? store.collections : collections;
+    taxonomies = store.taxonomies && Object.keys(store.taxonomies).length ? store.taxonomies : taxonomies;
     if (hasShop) {
       renderFilters();
       renderCatalog();

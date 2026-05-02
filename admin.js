@@ -159,9 +159,9 @@ async function loadApiStore() {
     const response = await fetch("/api/store");
     if (!response.ok) return;
     const store = await response.json();
-    adminProducts = Array.isArray(store.products) ? store.products : adminProducts;
-    adminCollections = Array.isArray(store.collections) ? store.collections : adminCollections;
-    adminTaxonomies = store.taxonomies || adminTaxonomies;
+    adminProducts = Array.isArray(store.products) && store.products.length ? store.products : adminProducts;
+    adminCollections = Array.isArray(store.collections) && store.collections.length ? store.collections : adminCollections;
+    adminTaxonomies = store.taxonomies && Object.keys(store.taxonomies).length ? store.taxonomies : adminTaxonomies;
     adminOrders = Array.isArray(store.orders) ? store.orders : [];
     renderAdmin();
   } catch {
