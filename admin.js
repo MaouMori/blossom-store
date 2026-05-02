@@ -270,9 +270,9 @@ if (document.body.classList.contains("admin-body") && location.pathname.endsWith
   }
 }
 
-let adminProducts = getData("blossom-products", productSeed);
-let adminCollections = getData("blossom-collections", collectionSeed);
-let adminTaxonomies = getObjectData("blossom-taxonomies", taxonomySeed);
+let adminProducts = apiEnabled ? [] : getData("blossom-products", productSeed);
+let adminCollections = apiEnabled ? [] : getData("blossom-collections", collectionSeed);
+let adminTaxonomies = apiEnabled ? { categories: [], types: [], colors: [], visuals: [] } : getObjectData("blossom-taxonomies", taxonomySeed);
 let adminOrders = [];
 let adminUsers = [];
 
@@ -282,9 +282,9 @@ async function loadApiStore() {
     const response = await fetch("/api/store");
     if (!response.ok) return;
     const store = await response.json();
-    adminProducts = Array.isArray(store.products) && store.products.length ? store.products : adminProducts;
-    adminCollections = Array.isArray(store.collections) && store.collections.length ? store.collections : adminCollections;
-    adminTaxonomies = store.taxonomies && Object.keys(store.taxonomies).length ? store.taxonomies : adminTaxonomies;
+    adminProducts = Array.isArray(store.products) ? store.products : [];
+    adminCollections = Array.isArray(store.collections) ? store.collections : [];
+    adminTaxonomies = store.taxonomies && Object.keys(store.taxonomies).length ? store.taxonomies : { categories: [], types: [], colors: [], visuals: [] };
     adminOrders = Array.isArray(store.orders) ? store.orders : [];
     renderAdmin();
   } catch {
