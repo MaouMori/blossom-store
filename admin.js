@@ -79,6 +79,10 @@ const $ = (selector) => document.querySelector(selector);
 const $$ = (selector) => document.querySelectorAll(selector);
 const apiEnabled = location.protocol.startsWith("http");
 
+function field(form, name) {
+  return form.elements.namedItem(name);
+}
+
 function slugify(text) {
   return text.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "") || `item-${Date.now()}`;
 }
@@ -185,7 +189,7 @@ async function loadApiStore() {
 
 async function saveApiStore() {
   if (!apiEnabled) return;
-  await fetch("/api/store", {
+  const response = await fetch("/api/store", {
     method: "PUT",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
@@ -194,22 +198,27 @@ async function saveApiStore() {
       taxonomies: adminTaxonomies,
       orders: adminOrders,
     }),
-  }).catch(() => {});
+  });
+
+  if (!response.ok) {
+    const detail = await response.text();
+    throw new Error(detail || "Nao foi possivel salvar no servidor.");
+  }
 }
 
 function saveProducts() {
   setData("blossom-products", adminProducts);
-  saveApiStore();
+  return saveApiStore();
 }
 
 function saveCollections() {
   setData("blossom-collections", adminCollections);
-  saveApiStore();
+  return saveApiStore();
 }
 
 function saveTaxonomies() {
   setData("blossom-taxonomies", adminTaxonomies);
-  saveApiStore();
+  return saveApiStore();
 }
 
 function optionMarkup(values, selected = "") {
@@ -219,16 +228,16 @@ function optionMarkup(values, selected = "") {
 function populateProductSelects(product = null) {
   const form = $("[data-product-form]");
   if (!form) return;
-  form.category.innerHTML = optionMarkup(adminTaxonomies.categories, product?.category);
-  form.type.innerHTML = optionMarkup(adminTaxonomies.types, product?.type);
-  form.color.innerHTML = optionMarkup(adminTaxonomies.colors, product?.color);
-  form.visual.innerHTML = optionMarkup(adminTaxonomies.visuals, product?.visual || "hoodie-dark");
+  field(form, "category").innerHTML = optionMarkup(adminTaxonomies.categories, product?.category);
+  field(form, "type").innerHTML = optionMarkup(adminTaxonomies.types, product?.type);
+  field(form, "color").innerHTML = optionMarkup(adminTaxonomies.colors, product?.color);
+  field(form, "visual").innerHTML = optionMarkup(adminTaxonomies.visuals, product?.visual || "hoodie-dark");
 }
 
 function populateCollectionSelects(collection = null) {
   const form = $("[data-collection-form]");
   if (!form) return;
-  form.visual.innerHTML = optionMarkup(adminTaxonomies.visuals, collection?.visual || "spring");
+  field(form, "visual").innerHTML = optionMarkup(adminTaxonomies.visuals, collection?.visual || "spring");
 }
 
 function renderAdmin() {
@@ -292,10 +301,10 @@ function openProductForm(product = null) {
   form.reset();
   populateProductSelects(product);
   $("[data-product-form-title]").textContent = product ? "Editar produto" : "Novo produto";
-  form.id.value = product?.id || "";
-  form.name.value = product?.name || "";
-  form.price.value = product?.price || "";
-  form.isNew.checked = Boolean(product?.isNew);
+  field(form, "id").value = product?.id || "";
+  field(form, "name").value = product?.name || "";
+  field(form, "price").value = product?.price || "";
+  field(form, "isNew").checked = Boolean(product?.isNew);
   form.dataset.currentImage = product?.image || "";
   $("[data-product-image-note]").textContent = product?.image ? "Imagem atual salva. Envie outra para substituir." : "Nenhuma imagem anexada.";
   dialog.showModal();
@@ -307,12 +316,12 @@ function openCollectionForm(collection = null) {
   form.reset();
   populateCollectionSelects(collection);
   $("[data-collection-form-title]").textContent = collection ? "Editar coleção" : "Nova coleção";
-  form.id.value = collection?.id || "";
-  form.name.value = collection?.name || "";
-  form.label.value = collection?.label || "";
-  form.description.value = collection?.description || "";
-  form.pieces.value = collection?.pieces || "";
-  form.badge.value = collection?.badge || "";
+  field(form, "id").value = collection?.id || "";
+  field(form, "name").value = collection?.name || "";
+  field(form, "label").value = collection?.label || "";
+  field(form, "description").value = collection?.description || "";
+  field(form, "pieces").value = collection?.pieces || "";
+  field(form, "badge").value = collection?.badge || "";
   form.dataset.currentImage = collection?.image || "";
   $("[data-collection-image-note]").textContent = collection?.image ? "Imagem atual salva. Envie outra para substituir." : "Nenhuma imagem anexada.";
   dialog.showModal();
@@ -348,14 +357,14 @@ document.addEventListener("click", (event) => {
 
   if (deleteProduct) {
     adminProducts = adminProducts.filter((item) => item.id !== deleteProduct.dataset.deleteProduct);
-    saveProducts();
+    saveProducts().catch((error) => console.warn(error));
     renderAdmin();
     toast("Produto removido.");
   }
 
   if (deleteCollection) {
     adminCollections = adminCollections.filter((item) => item.id !== deleteCollection.dataset.deleteCollection);
-    saveCollections();
+    saveCollections().catch((error) => console.warn(error));
     renderAdmin();
     toast("Coleção removida.");
   }
@@ -365,7 +374,7 @@ document.addEventListener("click", (event) => {
     const key = removeTaxonomy.dataset.removeTaxonomy;
     const value = removeTaxonomy.dataset.value;
     adminTaxonomies[key] = adminTaxonomies[key].filter((item) => item !== value);
-    saveTaxonomies();
+    saveTaxonomies().catch((error) => console.warn(error));
     renderAdmin();
     toast("Opção removida.");
   }
@@ -376,25 +385,32 @@ document.addEventListener("click", (event) => {
 $("[data-product-form]")?.addEventListener("submit", async (event) => {
   event.preventDefault();
   const form = event.currentTarget;
-  const id = form.id.value || slugify(form.name.value);
+  const data = new FormData(form);
+  const submitButton = form.querySelector("[type='submit']");
+  const originalText = submitButton.textContent;
+  submitButton.disabled = true;
+  submitButton.textContent = "Salvando...";
+  const id = data.get("id") || slugify(data.get("name"));
   let image = form.dataset.currentImage || "";
   try {
-    image = await fileToDataUrl(form.image.files[0]) || image;
+    image = await fileToDataUrl(field(form, "image").files[0]) || image;
   } catch (error) {
     $("[data-product-image-note]").textContent = error.message;
+    submitButton.disabled = false;
+    submitButton.textContent = originalText;
     return;
   }
 
   const product = {
     id,
-    name: form.name.value,
-    category: form.category.value,
-    type: form.type.value,
-    color: form.color.value,
-    price: Number(form.price.value),
-    visual: form.visual.value,
+    name: data.get("name"),
+    category: data.get("category"),
+    type: data.get("type"),
+    color: data.get("color"),
+    price: Number(data.get("price")),
+    visual: data.get("visual"),
     image,
-    isNew: form.isNew.checked,
+    isNew: data.has("isNew"),
     created: adminProducts.find((item) => item.id === id)?.created ?? Date.now(),
   };
 
@@ -402,32 +418,46 @@ $("[data-product-form]")?.addEventListener("submit", async (event) => {
     ? adminProducts.map((item) => item.id === id ? product : item)
     : [product, ...adminProducts];
 
-  saveProducts();
-  form.closest("dialog").close();
-  renderAdmin();
-  toast("Produto salvo.");
+  try {
+    await saveProducts();
+    form.closest("dialog").close();
+    renderAdmin();
+    toast("Produto salvo.");
+  } catch (error) {
+    $("[data-product-image-note]").textContent = "Nao foi possivel salvar no servidor. Verifique a API/Supabase.";
+  } finally {
+    submitButton.disabled = false;
+    submitButton.textContent = originalText;
+  }
 });
 
 $("[data-collection-form]")?.addEventListener("submit", async (event) => {
   event.preventDefault();
   const form = event.currentTarget;
-  const id = form.id.value || slugify(form.name.value);
+  const data = new FormData(form);
+  const submitButton = form.querySelector("[type='submit']");
+  const originalText = submitButton.textContent;
+  submitButton.disabled = true;
+  submitButton.textContent = "Salvando...";
+  const id = data.get("id") || slugify(data.get("name"));
   let image = form.dataset.currentImage || "";
   try {
-    image = await fileToDataUrl(form.image.files[0]) || image;
+    image = await fileToDataUrl(field(form, "image").files[0]) || image;
   } catch (error) {
     $("[data-collection-image-note]").textContent = error.message;
+    submitButton.disabled = false;
+    submitButton.textContent = originalText;
     return;
   }
 
   const collection = {
     id,
-    name: form.name.value,
-    label: form.label.value,
-    description: form.description.value,
-    pieces: Number(form.pieces.value),
-    visual: form.visual.value,
-    badge: form.badge.value,
+    name: data.get("name"),
+    label: data.get("label"),
+    description: data.get("description"),
+    pieces: Number(data.get("pieces")),
+    visual: data.get("visual"),
+    badge: data.get("badge"),
     image,
   };
 
@@ -435,19 +465,25 @@ $("[data-collection-form]")?.addEventListener("submit", async (event) => {
     ? adminCollections.map((item) => item.id === id ? collection : item)
     : [collection, ...adminCollections];
 
-  saveCollections();
-  form.closest("dialog").close();
-  renderAdmin();
-  toast("Coleção salva.");
+  try {
+    await saveCollections();
+    form.closest("dialog").close();
+    renderAdmin();
+  } catch (error) {
+    $("[data-collection-image-note]").textContent = "Nao foi possivel salvar no servidor. Verifique a API/Supabase.";
+  } finally {
+    submitButton.disabled = false;
+    submitButton.textContent = originalText;
+  }
 });
 
 $("[data-reset-data]")?.addEventListener("click", () => {
   adminProducts = productSeed;
   adminCollections = collectionSeed;
   adminTaxonomies = taxonomySeed;
-  saveProducts();
-  saveCollections();
-  saveTaxonomies();
+  saveProducts().catch((error) => console.warn(error));
+  saveCollections().catch((error) => console.warn(error));
+  saveTaxonomies().catch((error) => console.warn(error));
   renderAdmin();
   toast("Dados padrão restaurados.");
 });
@@ -461,7 +497,7 @@ $$("[data-taxonomy-form]").forEach((form) => {
     if (!value) return;
     adminTaxonomies[key] = [...new Set([...adminTaxonomies[key], value])];
     input.value = "";
-    saveTaxonomies();
+    saveTaxonomies().catch((error) => console.warn(error));
     renderAdmin();
     toast("Opção adicionada.");
   });
