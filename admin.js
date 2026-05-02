@@ -112,13 +112,27 @@ function fileToDataUrl(file) {
       return;
     }
 
-    if (file.size > 900 * 1024) {
-      reject(new Error("Use uma imagem menor que 900KB para salvar no navegador."));
+    if (file.size > 5 * 1024 * 1024) {
+      reject(new Error("Use uma imagem menor que 5MB."));
       return;
     }
 
     const reader = new FileReader();
-    reader.onload = () => resolve(reader.result);
+    reader.onload = () => {
+      const image = new Image();
+      image.onload = () => {
+        const maxSize = 1100;
+        const ratio = Math.min(1, maxSize / Math.max(image.width, image.height));
+        const canvas = document.createElement("canvas");
+        canvas.width = Math.max(1, Math.round(image.width * ratio));
+        canvas.height = Math.max(1, Math.round(image.height * ratio));
+        const context = canvas.getContext("2d");
+        context.drawImage(image, 0, 0, canvas.width, canvas.height);
+        resolve(canvas.toDataURL("image/jpeg", 0.82));
+      };
+      image.onerror = () => reject(new Error("Não foi possível processar a imagem."));
+      image.src = reader.result;
+    };
     reader.onerror = () => reject(new Error("Não foi possível ler a imagem."));
     reader.readAsDataURL(file);
   });
@@ -308,6 +322,20 @@ $("[data-new-product]")?.addEventListener("click", () => openProductForm());
 $("[data-new-collection]")?.addEventListener("click", () => openCollectionForm());
 $("[data-admin-product-search]")?.addEventListener("input", renderAdmin);
 
+$("[data-product-form] input[name='image']")?.addEventListener("change", (event) => {
+  const file = event.target.files[0];
+  $("[data-product-image-note]").textContent = file
+    ? `${file.name} selecionada. A imagem será otimizada ao salvar.`
+    : "Nenhuma imagem anexada.";
+});
+
+$("[data-collection-form] input[name='image']")?.addEventListener("change", (event) => {
+  const file = event.target.files[0];
+  $("[data-collection-image-note]").textContent = file
+    ? `${file.name} selecionada. A imagem será otimizada ao salvar.`
+    : "Nenhuma imagem anexada.";
+});
+
 document.addEventListener("click", (event) => {
   const editProduct = event.target.closest("[data-edit-product]");
   const deleteProduct = event.target.closest("[data-delete-product]");
@@ -353,7 +381,7 @@ $("[data-product-form]")?.addEventListener("submit", async (event) => {
   try {
     image = await fileToDataUrl(form.image.files[0]) || image;
   } catch (error) {
-    toast(error.message);
+    $("[data-product-image-note]").textContent = error.message;
     return;
   }
 
@@ -388,7 +416,7 @@ $("[data-collection-form]")?.addEventListener("submit", async (event) => {
   try {
     image = await fileToDataUrl(form.image.files[0]) || image;
   } catch (error) {
-    toast(error.message);
+    $("[data-collection-image-note]").textContent = error.message;
     return;
   }
 
