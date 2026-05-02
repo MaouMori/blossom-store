@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Coleção - Blossom Store</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="index.html">
+      <span class="brand-mark">✿</span>
+      <span><b>BLOSSOM</b><small>STORE</small></span>
+    </a>
+    <nav class="main-nav">
+      <a href="index.html">Home</a>
+      <a href="colecoes.html" class="active">Coleções</a>
+      <a href="loja.html">Loja</a>
+      <a href="sobre.html">Sobre nós</a>
+      <a href="contato.html">Contato</a>
+    </nav>
+    <div class="account">
+      <button class="account-toggle" type="button" data-account-toggle aria-expanded="false">
+        <span class="user-icon">♙</span>
+        <span><b data-account-name>visitante</b><small data-header-cart-total>R$0,00</small></span>
+        <span class="chevron">⌄</span>
+      </button>
+      <div class="account-menu" data-account-menu hidden>
+        <a href="#" data-account-config>⚙ Configurações</a>
+        <a href="login.html">✿ Painel Admin</a>
+        <button type="button" data-account-logout>↩ Entrar</button>
+      </div>
+      <a class="admin-shortcut" href="login.html" aria-label="Painel admin">⚙</a>
+      <button class="cart" type="button" aria-label="Abrir carrinho" data-cart-open>▱<small data-cart-count>0</small></button>
+    </div>
+  </header>
+
+  <main>
+    <section class="collection-detail-hero">
+      <div class="container collection-detail-shell">
+        <div data-collection-detail>
+          <span class="eyebrow">Coleção</span>
+          <h1>Carregando coleção</h1>
+          <p>Buscando dados da Supabase.</p>
+        </div>
+        <div class="collection-gallery" data-collection-gallery></div>
+      </div>
+    </section>
+
+    <section class="section-block container">
+      <div class="section-title-row compact">
+        <div>
+          <span class="eyebrow">Peças da coleção</span>
+          <h2>Roupas vinculadas</h2>
+        </div>
+        <a class="text-link" href="colecoes.html">Ver todas as coleções →</a>
+      </div>
+      <div class="shop-grid" data-collection-products></div>
+    </section>
+
+    <section class="services container" aria-label="Informações de compra">
+      <article><span>▱</span><div><b>Entrega digital</b><small>Receba na hora</small></div></article>
+      <article><span>◇</span><div><b>Compatível com FiveM</b><small>100% otimizado</small></div></article>
+      <article><span>☻</span><div><b>Suporte humanizado</b><small>Estamos aqui por você</small></div></article>
+      <article><span>▣</span><div><b>Pagamento seguro</b><small>Segurança garantida</small></div></article>
+    </section>
+  </main>
+
+  <div class="overlay" data-overlay hidden></div>
+
+  <aside class="cart-drawer" data-cart-drawer aria-hidden="true" aria-label="Carrinho de compras">
+    <div class="drawer-head">
+      <div><span class="eyebrow">Carrinho</span><h2>Suas peças</h2></div>
+      <button class="icon-button" type="button" aria-label="Fechar carrinho" data-cart-close>×</button>
+    </div>
+    <div class="cart-items" data-cart-items><p class="empty-cart">Seu carrinho está vazio.</p></div>
+    <div class="cart-summary">
+      <div><span>Subtotal</span><strong data-subtotal>R$0,00</strong></div>
+      <div><span>Entrega digital</span><strong>Grátis</strong></div>
+      <div class="summary-total"><span>Total</span><strong data-total>R$0,00</strong></div>
+      <button class="checkout-button" type="button" data-checkout-open disabled>Finalizar compra</button>
+    </div>
+  </aside>
+
+  <section class="checkout-modal" data-checkout-modal hidden aria-label="Finalizar compra">
+    <div class="checkout-panel">
+      <button class="icon-button checkout-close" type="button" aria-label="Fechar checkout" data-checkout-close>×</button>
+      <div class="checkout-grid">
+        <form class="checkout-form" data-checkout-form>
+          <span class="eyebrow">Pagamento</span>
+          <h2>Finalizar compra</h2>
+          <label>Nome completo<input type="text" name="customer" required></label>
+          <label>E-mail<input type="email" name="email" required></label>
+          <fieldset class="payment-methods">
+            <legend>Forma de pagamento</legend>
+            <label><input type="radio" name="payment" value="pix" checked><span>PIX</span></label>
+            <label><input type="radio" name="payment" value="card"><span>Cartão</span></label>
+            <label><input type="radio" name="payment" value="boleto"><span>Boleto</span></label>
+          </fieldset>
+          <div class="payment-preview" data-payment-preview>
+            <div class="qr-placeholder">PIX</div>
+            <p>Ao confirmar, o sistema cria um pedido em modo demonstração.</p>
+          </div>
+          <button class="checkout-button" type="submit">Confirmar pedido</button>
+        </form>
+        <aside class="order-review">
+          <span class="eyebrow">Resumo</span>
+          <h3>Itens do pedido</h3>
+          <div data-checkout-items></div>
+          <div class="summary-total"><span>Total</span><strong data-checkout-total>R$0,00</strong></div>
+          <p class="order-note">Entrega digital automática após confirmação do pagamento real.</p>
+        </aside>
+      </div>
+    </div>
+  </section>
+
+  <script src="script.js"></script>
+</body>
+</html>

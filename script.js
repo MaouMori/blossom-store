@@ -1,4 +1,4 @@
-const money = new Intl.NumberFormat("pt-BR", {
+﻿const money = new Intl.NumberFormat("pt-BR", {
   style: "currency",
   currency: "BRL",
 });
@@ -8,49 +8,49 @@ const defaultProductRows = [
   ["tee-white", "Blossom Tee White", "Masculino", "Camisetas", "Branco", 129.9, "tee-white", true],
   ["jersey", "Blossom Jersey", "Masculino", "Camisetas", "Preto", 169.9, "jersey", true],
   ["zip-pink", "Blossom Zip Pink", "Feminino", "Jaquetas", "Rosa", 249.9, "zip", true],
-  ["cargo-black", "Blossom Cargo Black", "Masculino", "Calças", "Preto", 189.9, "cargo", false],
-  ["cap-pink", "Blossom Cap Pink", "Acessórios", "Bonés", "Rosa", 89.9, "cap-pink", false],
+  ["cargo-black", "Blossom Cargo Black", "Masculino", "CalÃ§as", "Preto", 189.9, "cargo", false],
+  ["cap-pink", "Blossom Cap Pink", "AcessÃ³rios", "BonÃ©s", "Rosa", 89.9, "cap-pink", false],
   ["puffer-jacket", "Blossom Puffer Jacket", "Drops Exclusivos", "Jaquetas", "Preto", 249.9, "puffer", true],
   ["crop-white", "Blossom Crop Top White", "Feminino", "Camisetas", "Branco", 99.9, "crop", true],
   ["oversized-black", "Blossom Oversized Black", "Masculino", "Camisetas", "Preto", 139.9, "tee-dark", true],
   ["hoodie-white", "Blossom Hoodie White", "Masculino", "Moletons", "Branco", 199.9, "hoodie-white", false],
   ["shorts-black", "Blossom Shorts Black", "Masculino", "Shorts", "Preto", 119.9, "shorts", false],
-  ["cap-black", "Blossom Cap Black", "Acessórios", "Bonés", "Preto", 89.9, "cap-black", false],
-  ["pants-white", "Blossom Pants White", "Feminino", "Calças", "Branco", 189.9, "pants-white", false],
+  ["cap-black", "Blossom Cap Black", "AcessÃ³rios", "BonÃ©s", "Preto", 89.9, "cap-black", false],
+  ["pants-white", "Blossom Pants White", "Feminino", "CalÃ§as", "Branco", 189.9, "pants-white", false],
   ["tee-pink-logo", "Blossom Tee Pink Logo", "Drops Exclusivos", "Camisetas", "Preto", 129.9, "tee-pink", false],
   ["varsity", "Blossom Varsity Jacket", "Drops Exclusivos", "Jaquetas", "Preto", 399.9, "varsity", true],
-  ["side-bag", "Blossom Side Bag", "Acessórios", "Outros", "Preto", 139.9, "bag", false],
+  ["side-bag", "Blossom Side Bag", "AcessÃ³rios", "Outros", "Preto", 139.9, "bag", false],
   ["dress-pink", "Blossom Mini Dress Pink", "Feminino", "Outros", "Rosa", 159.9, "dress", false],
-  ["cargo-grey", "Blossom Cargo Grey", "Masculino", "Calças", "Cinza", 189.9, "cargo-grey", false],
-  ["beanie-black", "Blossom Beanie Black", "Acessórios", "Bonés", "Preto", 79.9, "beanie", false],
+  ["cargo-grey", "Blossom Cargo Grey", "Masculino", "CalÃ§as", "Cinza", 189.9, "cargo-grey", false],
+  ["beanie-black", "Blossom Beanie Black", "AcessÃ³rios", "BonÃ©s", "Preto", 79.9, "beanie", false],
   ["set-pink", "Blossom Set Pink", "Conjuntos", "Outros", "Rosa", 299.9, "set-pink", true],
-  ["jogger-blue", "Blossom Jogger Blue", "Masculino", "Calças", "Azul", 179.9, "jogger", false],
+  ["jogger-blue", "Blossom Jogger Blue", "Masculino", "CalÃ§as", "Azul", 179.9, "jogger", false],
   ["tank-white", "Blossom Tank White", "Feminino", "Camisetas", "Branco", 89.9, "tank", false],
   ["hoodie-grey", "Blossom Hoodie Grey", "Masculino", "Moletons", "Cinza", 199.9, "hoodie-grey", false],
-  ["cap-beige", "Blossom Cap Beige", "Acessórios", "Bonés", "Bege", 89.9, "cap-beige", false],
+  ["cap-beige", "Blossom Cap Beige", "AcessÃ³rios", "BonÃ©s", "Bege", 89.9, "cap-beige", false],
   ["windbreaker", "Blossom Windbreaker", "Drops Exclusivos", "Jaquetas", "Preto", 279.9, "wind", true],
   ["skirt-black", "Blossom Skirt Black", "Feminino", "Outros", "Preto", 119.9, "skirt", false],
   ["tee-blue", "Blossom Tee Blue", "Masculino", "Camisetas", "Azul", 129.9, "tee-blue", false],
-  ["bag-pink", "Blossom Bag Pink", "Acessórios", "Outros", "Rosa", 139.9, "bag-pink", false],
+  ["bag-pink", "Blossom Bag Pink", "AcessÃ³rios", "Outros", "Rosa", 139.9, "bag-pink", false],
   ["shorts-grey", "Blossom Shorts Grey", "Masculino", "Shorts", "Cinza", 119.9, "shorts-grey", false],
   ["cropped-pink", "Blossom Cropped Pink", "Feminino", "Camisetas", "Rosa", 99.9, "crop-pink", true],
   ["track-set", "Blossom Track Set", "Conjuntos", "Outros", "Preto", 329.9, "track", false],
-  ["mask-black", "Blossom Mask Black", "Acessórios", "Outros", "Preto", 59.9, "mask", false],
+  ["mask-black", "Blossom Mask Black", "AcessÃ³rios", "Outros", "Preto", 59.9, "mask", false],
   ["polo-white", "Blossom Polo White", "Masculino", "Camisetas", "Branco", 149.9, "polo-white", false],
   ["polo-black", "Blossom Polo Black", "Masculino", "Camisetas", "Preto", 149.9, "polo-black", false],
   ["jacket-beige", "Blossom Jacket Beige", "Feminino", "Jaquetas", "Bege", 249.9, "jacket-beige", false],
-  ["cargo-pink", "Blossom Cargo Pink", "Feminino", "Calças", "Rosa", 189.9, "cargo-pink", false],
+  ["cargo-pink", "Blossom Cargo Pink", "Feminino", "CalÃ§as", "Rosa", 189.9, "cargo-pink", false],
   ["hoodie-blue", "Blossom Hoodie Blue", "Drops Exclusivos", "Moletons", "Azul", 219.9, "hoodie-blue", true],
-  ["bucket-black", "Blossom Bucket Black", "Acessórios", "Bonés", "Preto", 99.9, "bucket", false],
+  ["bucket-black", "Blossom Bucket Black", "AcessÃ³rios", "BonÃ©s", "Preto", 99.9, "bucket", false],
   ["sweater-white", "Blossom Sweater White", "Feminino", "Moletons", "Branco", 199.9, "sweater", false],
   ["shorts-pink", "Blossom Shorts Pink", "Feminino", "Shorts", "Rosa", 119.9, "shorts-pink", false],
-  ["duffle-bag", "Blossom Duffle Bag", "Acessórios", "Outros", "Preto", 199.9, "duffle", false],
+  ["duffle-bag", "Blossom Duffle Bag", "AcessÃ³rios", "Outros", "Preto", 199.9, "duffle", false],
   ["limited-tee", "Blossom Limited Tee", "Drops Exclusivos", "Camisetas", "Preto", 159.9, "limited", true],
   ["varsity-white", "Blossom Varsity White", "Drops Exclusivos", "Jaquetas", "Branco", 399.9, "varsity-white", false],
   ["set-beige", "Blossom Set Beige", "Conjuntos", "Outros", "Bege", 299.9, "set-beige", false],
-  ["gloves-black", "Blossom Gloves Black", "Acessórios", "Outros", "Preto", 69.9, "gloves", false],
+  ["gloves-black", "Blossom Gloves Black", "AcessÃ³rios", "Outros", "Preto", 69.9, "gloves", false],
   ["zip-grey", "Blossom Zip Grey", "Masculino", "Jaquetas", "Cinza", 249.9, "zip-grey", false],
-  ["pants-beige", "Blossom Pants Beige", "Feminino", "Calças", "Bege", 189.9, "pants-beige", false],
+  ["pants-beige", "Blossom Pants Beige", "Feminino", "CalÃ§as", "Bege", 189.9, "pants-beige", false],
   ["premium-drop", "Blossom Premium Drop", "Drops Exclusivos", "Conjuntos", "Preto", 499.9, "premium", true],
 ];
 
@@ -67,19 +67,19 @@ const defaultProducts = defaultProductRows.map(([id, name, category, type, color
 }));
 
 const defaultCollections = [
-  { id: "spring-25", name: "Blossom Spring '25", label: "Coleção Primavera 2025", description: "Peças leves e estilosas para dominar as ruas.", pieces: 12, visual: "spring", badge: "Nova" },
-  { id: "essentials", name: "Blossom Essentials", label: "Coleção Essentials", description: "Peças básicas com o padrão de qualidade Blossom.", pieces: 18, visual: "essentials", badge: "" },
-  { id: "nightfall", name: "Blossom Nightfall", label: "Coleção Nightfall", description: "Cores escuras. Estilo pesado. Presença marcante.", pieces: 10, visual: "nightfall", badge: "" },
-  { id: "luxury", name: "Blossom Luxury", label: "Coleção Luxury", description: "Detalhes premium para quem vive o topo do roleplay.", pieces: 8, visual: "luxury", badge: "" },
-  { id: "sport", name: "Blossom Sport", label: "Coleção Sport", description: "Performance, conforto e estilo para qualquer missão.", pieces: 11, visual: "sport", badge: "" },
-  { id: "oversized", name: "Blossom Oversized", label: "Coleção Oversized", description: "Modelagens amplas para um visual urbano e autêntico.", pieces: 14, visual: "oversized", badge: "" },
-  { id: "pink-label", name: "Blossom Pink Label", label: "Coleção Pink Label", description: "A identidade rosa da Blossom. Única, forte e feminina.", pieces: 9, visual: "pink-label", badge: "" },
-  { id: "collabs", name: "Blossom Collabs", label: "Coleção Collabs", description: "Parcerias especiais que viram história.", pieces: 7, visual: "collabs", badge: "" },
+  { id: "spring-25", name: "Blossom Spring '25", label: "ColeÃ§Ã£o Primavera 2025", description: "PeÃ§as leves e estilosas para dominar as ruas.", pieces: 12, visual: "spring", badge: "Nova" },
+  { id: "essentials", name: "Blossom Essentials", label: "ColeÃ§Ã£o Essentials", description: "PeÃ§as bÃ¡sicas com o padrÃ£o de qualidade Blossom.", pieces: 18, visual: "essentials", badge: "" },
+  { id: "nightfall", name: "Blossom Nightfall", label: "ColeÃ§Ã£o Nightfall", description: "Cores escuras. Estilo pesado. PresenÃ§a marcante.", pieces: 10, visual: "nightfall", badge: "" },
+  { id: "luxury", name: "Blossom Luxury", label: "ColeÃ§Ã£o Luxury", description: "Detalhes premium para quem vive o topo do roleplay.", pieces: 8, visual: "luxury", badge: "" },
+  { id: "sport", name: "Blossom Sport", label: "ColeÃ§Ã£o Sport", description: "Performance, conforto e estilo para qualquer missÃ£o.", pieces: 11, visual: "sport", badge: "" },
+  { id: "oversized", name: "Blossom Oversized", label: "ColeÃ§Ã£o Oversized", description: "Modelagens amplas para um visual urbano e autÃªntico.", pieces: 14, visual: "oversized", badge: "" },
+  { id: "pink-label", name: "Blossom Pink Label", label: "ColeÃ§Ã£o Pink Label", description: "A identidade rosa da Blossom. Ãšnica, forte e feminina.", pieces: 9, visual: "pink-label", badge: "" },
+  { id: "collabs", name: "Blossom Collabs", label: "ColeÃ§Ã£o Collabs", description: "Parcerias especiais que viram histÃ³ria.", pieces: 7, visual: "collabs", badge: "" },
 ];
 
 const defaultTaxonomies = {
-  categories: ["Masculino", "Feminino", "Acessórios", "Drops Exclusivos", "Conjuntos"],
-  types: ["Camisetas", "Moletons", "Jaquetas", "Calças", "Shorts", "Bonés", "Outros", "Conjuntos"],
+  categories: ["Masculino", "Feminino", "AcessÃ³rios", "Drops Exclusivos", "Conjuntos"],
+  types: ["Camisetas", "Moletons", "Jaquetas", "CalÃ§as", "Shorts", "BonÃ©s", "Outros", "Conjuntos"],
   colors: ["Preto", "Branco", "Rosa", "Cinza", "Bege", "Azul"],
   visuals: ["hoodie-dark", "tee-white", "jersey", "zip", "cargo", "cap-pink", "spring", "essentials"],
 };
@@ -101,6 +101,15 @@ function recentValue(item) {
 
 function recentItems(items, limit) {
   return [...items].sort((a, b) => recentValue(b) - recentValue(a)).slice(0, limit);
+}
+
+function itemImages(item) {
+  if (Array.isArray(item?.images) && item.images.length) return item.images;
+  return item?.image ? [item.image] : [];
+}
+
+function primaryImage(item) {
+  return itemImages(item)[0] || "";
 }
 
 let products = apiEnabled ? [] : readStore("blossom-products", []);
@@ -150,6 +159,9 @@ const selectors = {
   priceLabel: document.querySelector("[data-price-label]"),
   clearFilters: document.querySelector("[data-clear-filters]"),
   collectionsGrid: document.querySelector("[data-collections-grid]"),
+  collectionDetail: document.querySelector("[data-collection-detail]"),
+  collectionProducts: document.querySelector("[data-collection-products]"),
+  collectionGallery: document.querySelector("[data-collection-gallery]"),
   homeProducts: document.querySelector("[data-home-products]"),
   homeCollections: document.querySelector("[data-home-collections]"),
   contactForm: document.querySelector("[data-contact-form]"),
@@ -160,7 +172,7 @@ const selectors = {
 };
 
 const state = {
-  category: "Todas as peças",
+  category: "Todas as peÃ§as",
   types: new Set(),
   colors: new Set(),
   search: "",
@@ -188,16 +200,19 @@ async function loadApiStore() {
     }
     renderHomeSections();
     renderCollections();
+    renderCollectionDetail();
   } catch {
     products = [];
     collections = [];
     renderHomeSections();
     renderCollections();
+    renderCollectionDetail();
   }
 }
 
 const hasShop = Boolean(selectors.shopGrid);
 const hasCollections = Boolean(selectors.collectionsGrid);
+const hasCollectionDetail = Boolean(selectors.collectionDetail);
 const hasHomeProducts = Boolean(selectors.homeProducts);
 const hasHomeCollections = Boolean(selectors.homeCollections);
 const hasContact = Boolean(selectors.contactForm);
@@ -210,7 +225,7 @@ function countBy(key) {
 }
 
 function renderFilters() {
-  const categories = { "Todas as peças": products.length, ...countBy("category") };
+  const categories = { "Todas as peÃ§as": products.length, ...countBy("category") };
   selectors.categoryList.innerHTML = Object.entries(categories).map(([category, count]) => `
     <button class="${state.category === category ? "active" : ""}" type="button" data-category="${category}">
       <span>${category}</span><b>${count}</b>
@@ -246,7 +261,7 @@ function renderFilters() {
 
 function getFilteredProducts() {
   let filtered = products.filter((product) => {
-    const matchesCategory = state.category === "Todas as peças" || product.category === state.category;
+    const matchesCategory = state.category === "Todas as peÃ§as" || product.category === state.category;
     const matchesType = state.types.size === 0 || state.types.has(product.type);
     const matchesColor = state.colors.size === 0 || state.colors.has(product.color);
     const matchesPrice = product.price <= state.maxPrice;
@@ -266,33 +281,35 @@ function getFilteredProducts() {
 
 function productCard(product, compact = false) {
   const visual = product.visual || "hoodie-dark";
-  const imageStyle = product.image ? `style="background-image: linear-gradient(0deg, rgba(5,8,10,.36), rgba(5,8,10,.1)), url('${product.image}')"` : "";
-  const label = String(product.type || product.category || "Peça").replace("Moletons", "Moleton").replace("Camisetas", "Camiseta").replace("Calças", "Calça");
+  const image = primaryImage(product);
+  const imageStyle = image ? `style="background-image: linear-gradient(0deg, rgba(5,8,10,.36), rgba(5,8,10,.1)), url('${image}')"` : "";
+  const label = String(product.type || product.category || "PeÃ§a").replace("Moletons", "Moleton").replace("Camisetas", "Camiseta").replace("CalÃ§as", "CalÃ§a");
   return `
     <article class="product-card ${compact ? "" : "shop-product"}" data-product-id="${product.id}">
-      <div class="template-visual product-media ${visual} ${product.image ? "has-upload" : ""}" ${imageStyle}>
+      <div class="template-visual product-media ${visual} ${image ? "has-upload" : ""}" ${imageStyle}>
         ${product.isNew ? "<span>Novo</span>" : ""}
       </div>
       <div class="product-copy">
         <h3>${product.name}</h3>
         <p>${label}</p>
         <strong>${money.format(Number(product.price || 0))}</strong>
-        <button class="add-button" type="button" aria-label="Adicionar ${product.name}" data-add-to-cart="${product.id}">${compact ? "Adicionar" : "▱"}</button>
+        <button class="add-button" type="button" aria-label="Adicionar ${product.name}" data-add-to-cart="${product.id}">${compact ? "Adicionar" : "â–±"}</button>
       </div>
     </article>
   `;
 }
 
 function collectionCard(collection) {
-  const imageStyle = collection.image ? `style="background-image: linear-gradient(0deg, rgba(5,8,10,.36), rgba(5,8,10,.1)), url('${collection.image}')"` : "";
+  const image = primaryImage(collection);
+  const imageStyle = image ? `style="background-image: linear-gradient(0deg, rgba(5,8,10,.36), rgba(5,8,10,.1)), url('${image}')"` : "";
   return `
     <article class="collection-card">
-      <div class="template-visual collection-media ${collection.visual || "essentials"} ${collection.image ? "has-upload" : ""}" ${imageStyle}>
+      <div class="template-visual collection-media ${collection.visual || "essentials"} ${image ? "has-upload" : ""}" ${imageStyle}>
         ${collection.badge ? `<span>${collection.badge}</span>` : ""}
       </div>
       <div class="collection-copy">
         <h3>${collection.name}</h3>
-        <a href="loja.html">Ver peças →</a>
+        <a href="colecao.html?id=${collection.id}">Ver peÃ§as â†’</a>
       </div>
     </article>
   `;
@@ -312,21 +329,9 @@ function renderCatalog() {
   selectors.priceLabel.textContent = money.format(state.maxPrice);
 
   if (!pageItems.length) {
-    selectors.shopGrid.innerHTML = '<p class="empty-products">Nenhuma peça encontrada com esses filtros.</p>';
+    selectors.shopGrid.innerHTML = '<p class="empty-products">Nenhuma peÃ§a encontrada com esses filtros.</p>';
   } else {
-    selectors.shopGrid.innerHTML = pageItems.map((product) => `
-      <article class="product-card shop-product" data-product-id="${product.id}">
-        <div class="template-visual product-media ${product.visual} ${product.image ? "has-upload" : ""}" ${product.image ? `style="background-image: linear-gradient(0deg, rgba(5,8,10,.36), rgba(5,8,10,.1)), url('${product.image}')"` : ""}>
-          ${product.isNew ? "<span>Novo</span>" : ""}
-        </div>
-        <div class="product-copy">
-          <h3>${product.name}</h3>
-          <p>${product.type.replace("Moletons", "Moleton").replace("Camisetas", "Camiseta").replace("Calças", "Calça")}</p>
-          <strong>${money.format(product.price)}</strong>
-          <button class="add-button" type="button" aria-label="Adicionar ${product.name}" data-add-to-cart="${product.id}">▱</button>
-        </div>
-      </article>
-    `).join("");
+    selectors.shopGrid.innerHTML = pageItems.map((product) => productCard(product)).join("");
   }
 
   renderPagination(totalPages);
@@ -335,23 +340,23 @@ function renderCatalog() {
 function renderPagination(totalPages) {
   const pages = Array.from({ length: totalPages }, (_, index) => index + 1);
   selectors.pagination.innerHTML = `
-    <button type="button" data-page-prev ${state.page === 1 ? "disabled" : ""}>‹</button>
+    <button type="button" data-page-prev ${state.page === 1 ? "disabled" : ""}>â€¹</button>
     ${pages.map((page) => `
       <button class="${page === state.page ? "active" : ""}" type="button" data-page="${page}">${page}</button>
     `).join("")}
-    <button type="button" data-page-next ${state.page === totalPages ? "disabled" : ""}>›</button>
+    <button type="button" data-page-next ${state.page === totalPages ? "disabled" : ""}>â€º</button>
   `;
 }
 
 function renderHomeSections() {
   if (hasHomeProducts) {
     selectors.homeProducts.innerHTML = recentItems(products, 6).map((product) => productCard(product, true)).join("")
-      || '<p class="empty-products">Nenhuma peça cadastrada ainda.</p>';
+      || '<p class="empty-products">Nenhuma peÃ§a cadastrada ainda.</p>';
   }
 
   if (hasHomeCollections) {
     selectors.homeCollections.innerHTML = recentItems(collections, 4).map(collectionCard).join("")
-      || '<p class="empty-products">Nenhuma coleção cadastrada ainda.</p>';
+      || '<p class="empty-products">Nenhuma coleÃ§Ã£o cadastrada ainda.</p>';
   }
 }
 
@@ -360,17 +365,43 @@ function renderCollections() {
 
   selectors.collectionsGrid.innerHTML = collections.map((collection) => `
     <article>
-      <div class="template-visual collection-preview ${collection.visual || "essentials"} ${collection.image ? "has-upload" : ""}" ${collection.image ? `style="background-image: linear-gradient(0deg, rgba(5,8,10,.36), rgba(5,8,10,.1)), url('${collection.image}')"` : ""}>
+      <div class="template-visual collection-preview ${collection.visual || "essentials"} ${primaryImage(collection) ? "has-upload" : ""}" ${primaryImage(collection) ? `style="background-image: linear-gradient(0deg, rgba(5,8,10,.36), rgba(5,8,10,.1)), url('${primaryImage(collection)}')"` : ""}>
         ${collection.badge ? `<span>${collection.badge}</span>` : ""}
       </div>
       <div>
         <h2>${collection.name}</h2>
         <b>${collection.label}</b>
         <p>${collection.description}</p>
-        <footer><span>${String(collection.pieces).padStart(2, "0")} peças</span><a href="loja.html">Ver coleção →</a></footer>
+        <footer><span>${String(collection.pieces).padStart(2, "0")} peças</span><a href="colecao.html?id=${collection.id}">Ver coleção →</a></footer>
       </div>
     </article>
   `).join("");
+}
+
+function renderCollectionDetail() {
+  if (!hasCollectionDetail) return;
+  const params = new URLSearchParams(window.location.search);
+  const id = params.get("id");
+  const collection = collections.find((item) => item.id === id) || collections[0];
+  if (!collection) {
+    selectors.collectionDetail.innerHTML = '<p class="empty-products">Nenhuma coleção encontrada.</p>';
+    selectors.collectionProducts.innerHTML = "";
+    selectors.collectionGallery.innerHTML = "";
+    return;
+  }
+
+  const related = products.filter((product) => product.collection === collection.id);
+  const images = itemImages(collection);
+  selectors.collectionDetail.innerHTML = `
+    <span class="eyebrow">Coleção</span>
+    <h1>${collection.name}</h1>
+    <p>${collection.description || collection.label || ""}</p>
+    <a class="button primary" href="loja.html">Ver loja completa</a>
+  `;
+  selectors.collectionGallery.innerHTML = images.map((image) => `<div class="collection-photo" style="background-image:url('${image}')"></div>`).join("")
+    || `<div class="template-visual collection-photo ${collection.visual || "essentials"}"></div>`;
+  selectors.collectionProducts.innerHTML = related.map((product) => productCard(product)).join("")
+    || '<p class="empty-products">Nenhuma peça vinculada a esta coleção ainda.</p>';
 }
 
 function loadCart() {
@@ -445,7 +476,7 @@ function renderCart() {
   selectors.cartCount.textContent = quantity;
   selectors.headerCartTotal.textContent = money.format(total);
   selectors.accountName.textContent = account.logged ? account.name : "visitante";
-  selectors.accountLogout.textContent = account.logged ? "↪ Logout" : "↩ Entrar";
+  selectors.accountLogout.textContent = account.logged ? "â†ª Logout" : "â†© Entrar";
   selectors.subtotal.textContent = money.format(total);
   selectors.total.textContent = money.format(total);
   selectors.checkoutTotal.textContent = money.format(total);
@@ -543,7 +574,7 @@ function createOrder(event) {
 
   showToast(`Pedido ${orderId} criado em modo demonstracao.`);
   selectors.paymentPreview.innerHTML = `
-    <div class="success-box">✓</div>
+    <div class="success-box">âœ“</div>
     <p><b>Pedido ${orderId}</b> criado com pagamento via ${payment.toUpperCase()}. Integre um gateway para cobranca real.</p>
   `;
 
@@ -607,7 +638,7 @@ if (hasShop) {
   });
 
   selectors.clearFilters.addEventListener("click", () => {
-    state.category = "Todas as peças";
+    state.category = "Todas as peÃ§as";
     state.types.clear();
     state.colors.clear();
     state.search = "";
@@ -724,5 +755,6 @@ if (hasShop) {
 }
 renderHomeSections();
 renderCollections();
+renderCollectionDetail();
 renderCart();
 loadApiStore();

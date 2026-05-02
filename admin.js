@@ -84,6 +84,15 @@ function field(form, name) {
   return form.elements.namedItem(name);
 }
 
+function itemImages(item) {
+  if (Array.isArray(item?.images) && item.images.length) return item.images;
+  return item?.image ? [item.image] : [];
+}
+
+function primaryImage(item) {
+  return itemImages(item)[0] || "";
+}
+
 function errorText(error) {
   if (!error) return "Erro desconhecido.";
   try {
@@ -191,6 +200,15 @@ function fileToDataUrl(file) {
     reader.onerror = () => reject(new Error("Não foi possível ler a imagem."));
     reader.readAsDataURL(file);
   });
+}
+
+async function filesToDataUrls(files) {
+  const selected = Array.from(files || []);
+  const images = [];
+  for (const file of selected) {
+    images.push(await fileToDataUrl(file));
+  }
+  return images.filter(Boolean);
 }
 
 function toast(message) {
@@ -367,6 +385,7 @@ function populateProductSelects(product = null) {
   field(form, "type").innerHTML = optionMarkup(adminTaxonomies.types, product?.type);
   field(form, "color").innerHTML = optionMarkup(adminTaxonomies.colors, product?.color);
   field(form, "visual").innerHTML = optionMarkup(adminTaxonomies.visuals, product?.visual || "hoodie-dark");
+  field(form, "collection").innerHTML = `<option value="">Sem coleção</option>${adminCollections.map((collection) => `<option value="${collection.id}" ${product?.collection === collection.id ? "selected" : ""}>${collection.name}</option>`).join("")}`;
 }
 
 function populateCollectionSelects(collection = null) {
@@ -389,11 +408,11 @@ function renderAdmin() {
 
   productList.innerHTML = visibleProducts.map((item) => `
     <article class="admin-row">
-      <div class="admin-thumb ${item.visual}" ${item.image ? `style="background-image:url('${item.image}')"` : ""}></div>
+      <div class="admin-thumb ${item.visual}" ${primaryImage(item) ? `style="background-image:url('${primaryImage(item)}')"` : ""}></div>
       <div>
         <h3>${item.name}</h3>
         <p>${item.category} • ${item.type} • ${item.color}</p>
-        <strong>${adminMoney.format(Number(item.price))}${item.isNew ? " • Novo" : ""}</strong>
+        <strong>${adminMoney.format(Number(item.price))}${item.isNew ? " • Novo" : ""}${itemImages(item).length ? ` • ${itemImages(item).length} fotos` : ""}</strong>
       </div>
       <div>
         <button type="button" data-edit-product="${item.id}">Editar</button>
@@ -404,11 +423,11 @@ function renderAdmin() {
 
   collectionList.innerHTML = adminCollections.map((item) => `
     <article class="admin-row">
-      <div class="admin-thumb ${item.visual}" ${item.image ? `style="background-image:url('${item.image}')"` : ""}></div>
+      <div class="admin-thumb ${item.visual}" ${primaryImage(item) ? `style="background-image:url('${primaryImage(item)}')"` : ""}></div>
       <div>
         <h3>${item.name}</h3>
         <p>${item.label}</p>
-        <strong>${item.pieces} peças${item.badge ? ` • ${item.badge}` : ""}</strong>
+        <strong>${item.pieces} peças${item.badge ? ` • ${item.badge}` : ""}${itemImages(item).length ? ` • ${itemImages(item).length} fotos` : ""}</strong>
       </div>
       <div>
         <button type="button" data-edit-collection="${item.id}">Editar</button>
@@ -461,8 +480,9 @@ function openProductForm(product = null) {
   field(form, "name").value = product?.name || "";
   field(form, "price").value = product?.price || "";
   field(form, "isNew").checked = Boolean(product?.isNew);
-  form.dataset.currentImage = product?.image || "";
-  $("[data-product-image-note]").textContent = product?.image ? "Imagem atual salva. Envie outra para substituir." : "Nenhuma imagem anexada.";
+  form.dataset.currentImages = JSON.stringify(itemImages(product));
+  const count = itemImages(product).length;
+  $("[data-product-image-note]").textContent = count ? `${count} imagem(ns) atuais. Envie outras para substituir.` : "Nenhuma imagem anexada.";
   dialog.showModal();
 }
 
@@ -478,8 +498,9 @@ function openCollectionForm(collection = null) {
   field(form, "description").value = collection?.description || "";
   field(form, "pieces").value = collection?.pieces || "";
   field(form, "badge").value = collection?.badge || "";
-  form.dataset.currentImage = collection?.image || "";
-  $("[data-collection-image-note]").textContent = collection?.image ? "Imagem atual salva. Envie outra para substituir." : "Nenhuma imagem anexada.";
+  form.dataset.currentImages = JSON.stringify(itemImages(collection));
+  const count = itemImages(collection).length;
+  $("[data-collection-image-note]").textContent = count ? `${count} imagem(ns) atuais. Envie outras para substituir.` : "Nenhuma imagem anexada.";
   dialog.showModal();
 }
 
@@ -488,17 +509,17 @@ $("[data-new-collection]")?.addEventListener("click", () => openCollectionForm()
 $("[data-admin-product-search]")?.addEventListener("input", renderAdmin);
 $("[data-refresh-users]")?.addEventListener("click", loadUsers);
 
-$("[data-product-form] input[name='image']")?.addEventListener("change", (event) => {
-  const file = event.target.files[0];
-  $("[data-product-image-note]").textContent = file
-    ? `${file.name} selecionada. A imagem será otimizada ao salvar.`
+$("[data-product-form] input[name='images']")?.addEventListener("change", (event) => {
+  const count = event.target.files.length;
+  $("[data-product-image-note]").textContent = count
+    ? `${count} imagem(ns) selecionada(s). Elas serão otimizadas ao salvar.`
     : "Nenhuma imagem anexada.";
 });
 
-$("[data-collection-form] input[name='image']")?.addEventListener("change", (event) => {
-  const file = event.target.files[0];
-  $("[data-collection-image-note]").textContent = file
-    ? `${file.name} selecionada. A imagem será otimizada ao salvar.`
+$("[data-collection-form] input[name='images']")?.addEventListener("change", (event) => {
+  const count = event.target.files.length;
+  $("[data-collection-image-note]").textContent = count
+    ? `${count} imagem(ns) selecionada(s). Elas serão otimizadas ao salvar.`
     : "Nenhuma imagem anexada.";
 });
 
@@ -562,9 +583,10 @@ $("[data-product-form]")?.addEventListener("submit", async (event) => {
   submitButton.disabled = true;
   submitButton.textContent = "Salvando...";
   const id = data.get("id") || slugify(data.get("name"));
-  let image = form.dataset.currentImage || "";
+  let images = JSON.parse(form.dataset.currentImages || "[]");
   try {
-    image = await fileToDataUrl(field(form, "image").files[0]) || image;
+    const uploadedImages = await filesToDataUrls(field(form, "images").files);
+    images = uploadedImages.length ? uploadedImages : images;
   } catch (error) {
     $("[data-product-image-note]").textContent = error.message;
     submitButton.disabled = false;
@@ -578,9 +600,11 @@ $("[data-product-form]")?.addEventListener("submit", async (event) => {
     category: data.get("category"),
     type: data.get("type"),
     color: data.get("color"),
+    collection: data.get("collection"),
     price: Number(data.get("price")),
     visual: data.get("visual"),
-    image,
+    image: images[0] || "",
+    images,
     isNew: data.has("isNew"),
     created: adminProducts.find((item) => item.id === id)?.created ?? Date.now(),
   };
@@ -612,9 +636,10 @@ $("[data-collection-form]")?.addEventListener("submit", async (event) => {
   submitButton.disabled = true;
   submitButton.textContent = "Salvando...";
   const id = data.get("id") || slugify(data.get("name"));
-  let image = form.dataset.currentImage || "";
+  let images = JSON.parse(form.dataset.currentImages || "[]");
   try {
-    image = await fileToDataUrl(field(form, "image").files[0]) || image;
+    const uploadedImages = await filesToDataUrls(field(form, "images").files);
+    images = uploadedImages.length ? uploadedImages : images;
   } catch (error) {
     $("[data-collection-image-note]").textContent = error.message;
     submitButton.disabled = false;
@@ -630,7 +655,9 @@ $("[data-collection-form]")?.addEventListener("submit", async (event) => {
     pieces: Number(data.get("pieces")),
     visual: data.get("visual"),
     badge: data.get("badge"),
-    image,
+    image: images[0] || "",
+    images,
+    created: adminCollections.find((item) => item.id === id)?.created ?? Date.now(),
   };
 
   adminCollections = adminCollections.some((item) => item.id === id)

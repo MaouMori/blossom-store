@@ -1623,6 +1623,11 @@ select option:checked {
   gap: 16px;
 }
 
+.login-card form[hidden],
+[hidden] {
+  display: none !important;
+}
+
 .auth-tabs {
   display: grid;
   gap: 8px;
@@ -2170,7 +2175,7 @@ select option:checked {
 }
 
 .template-visual::after {
-  content: "IMAGE SLOT";
+  content: "ESPAÇO PARA IMAGEM";
   position: absolute;
   right: 12px;
   bottom: 10px;
@@ -2708,7 +2713,7 @@ select option:checked {
 }
 
 .collection-media::after {
-  content: "COLLECTION SLOT";
+  content: "IMAGEM DA COLEÇÃO";
 }
 
 .collection-media.male::before,
@@ -2793,7 +2798,7 @@ select option:checked {
 }
 
 .product-media::after {
-  content: "PRODUCT SLOT";
+  content: "IMAGEM DO PRODUTO";
 }
 
 .product-media span {
@@ -2985,14 +2990,90 @@ select option:checked {
 
 .services article {
   display: grid;
-  grid-template-columns: 38px 1fr;
+  grid-template-columns: 46px 1fr;
   align-items: center;
+  gap: 14px;
+  min-height: 72px;
+  text-align: left;
+}
+
+.collection-detail-hero {
+  min-height: 430px;
+  padding-top: 110px;
+  background:
+    linear-gradient(90deg, rgba(2, 4, 7, 0.96), rgba(2, 4, 7, 0.62), rgba(2, 4, 7, 0.96)),
+    radial-gradient(circle at 72% 28%, rgba(255, 156, 188, 0.16), transparent 26rem);
+  border-bottom: 1px solid var(--line-soft);
+}
+
+.collection-detail-shell {
+  display: grid;
+  grid-template-columns: minmax(0, 0.78fr) minmax(360px, 1fr);
+  gap: 34px;
+  align-items: center;
+}
+
+.collection-detail-shell h1 {
+  margin: 10px 0 14px;
+  color: white;
+  font-size: clamp(44px, 6vw, 76px);
+  line-height: 0.95;
+  text-transform: uppercase;
+}
+
+.collection-detail-shell p {
+  max-width: 560px;
+  color: #c7cdd4;
+  line-height: 1.7;
+}
+
+.collection-gallery {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 12px;
+}
+
+.collection-photo {
+  min-height: 190px;
+  border: 1px solid var(--line-soft);
+  border-radius: 8px;
+  background-color: rgba(255, 255, 255, 0.04);
+  background-position: center;
+  background-size: cover;
+}
+
+.collection-photo:first-child {
+  grid-row: span 2;
+  min-height: 392px;
 }
 
 .services small {
   display: block;
-  margin-top: 4px;
+  margin-top: 5px;
+  line-height: 1.35;
+  text-align: left;
+}
+
+.services b {
+  display: block;
+  line-height: 1.2;
+  text-align: left;
+  grid-column: 2;
+}
+
+.services span {
+  width: 46px;
+  height: 46px;
+  display: grid;
+  place-items: center;
+  border: 1px solid rgba(255, 156, 188, 0.3);
+  border-radius: 8px;
+  background: rgba(255, 156, 188, 0.08);
+  grid-row: 1 / span 2;
+}
+
+.services small {
+  grid-column: 2;
 }
 
 .site-footer {
@@ -3573,8 +3654,18 @@ select option:checked {
   .collection-tabs,
   .collection-filters,
   .collections-grid,
-  .collection-benefits {
+  .collection-benefits,
+  .collection-detail-shell {
     grid-template-columns: 1fr;
+  }
+
+  .collection-gallery {
+    grid-template-columns: 1fr;
+  }
+
+  .collection-photo:first-child {
+    grid-row: auto;
+    min-height: 240px;
   }
 
   .collection-tabs {
