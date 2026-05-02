@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin - Blossom Store</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body class="admin-body">
+  <header class="admin-header">
+    <a class="brand" href="index.html">
+      <span class="brand-mark">✿</span>
+      <span>
+        <b>BLOSSOM</b>
+        <small>ADMIN</small>
+      </span>
+    </a>
+    <nav>
+      <a href="index.html">Site</a>
+      <a href="loja.html">Loja</a>
+      <a href="colecoes.html">Coleções</a>
+      <button type="button" data-logout>Sair</button>
+    </nav>
+  </header>
+
+  <main class="admin-shell">
+    <section class="admin-hero">
+      <span class="eyebrow">Painel Blossom</span>
+      <h1>Gerencie a loja inteira</h1>
+      <p>Cadastre, edite e remova produtos e coleções. Tudo fica salvo neste navegador e aparece automaticamente nas páginas públicas.</p>
+      <div class="admin-actions">
+        <button class="button primary" type="button" data-new-product>Novo produto</button>
+        <button class="button secondary" type="button" data-new-collection>Nova coleção</button>
+        <button class="button ghost" type="button" data-reset-data>Restaurar padrão</button>
+      </div>
+    </section>
+
+    <section class="admin-stats">
+      <article><span>▱</span><b data-product-total>0</b><small>Produtos</small></article>
+      <article><span>✿</span><b data-collection-total>0</b><small>Coleções</small></article>
+      <article><span>◇</span><b data-feature-total>0</b><small>Novidades</small></article>
+      <article><span>▣</span><b>Local</b><small>Armazenamento</small></article>
+    </section>
+
+    <section class="admin-grid">
+      <article class="admin-panel">
+        <div class="admin-panel-head">
+          <div>
+            <span class="eyebrow">Produtos</span>
+            <h2>Itens da loja</h2>
+          </div>
+          <input type="search" placeholder="Buscar produto..." data-admin-product-search>
+        </div>
+        <div class="admin-list" data-product-list></div>
+      </article>
+
+      <article class="admin-panel">
+        <div class="admin-panel-head">
+          <div>
+            <span class="eyebrow">Coleções</span>
+            <h2>Vitrines</h2>
+          </div>
+        </div>
+        <div class="admin-list" data-collection-list></div>
+      </article>
+    </section>
+
+    <section class="admin-panel taxonomy-panel">
+      <div class="admin-panel-head">
+        <div>
+          <span class="eyebrow">Opções da loja</span>
+          <h2>Categorias, tipos, cores e visuais</h2>
+        </div>
+      </div>
+      <div class="taxonomy-grid">
+        <article>
+          <h3>Categorias</h3>
+          <form data-taxonomy-form="categories"><input placeholder="Nova categoria"><button type="submit">Adicionar</button></form>
+          <div data-taxonomy-list="categories"></div>
+        </article>
+        <article>
+          <h3>Tipos</h3>
+          <form data-taxonomy-form="types"><input placeholder="Novo tipo"><button type="submit">Adicionar</button></form>
+          <div data-taxonomy-list="types"></div>
+        </article>
+        <article>
+          <h3>Cores</h3>
+          <form data-taxonomy-form="colors"><input placeholder="Nova cor"><button type="submit">Adicionar</button></form>
+          <div data-taxonomy-list="colors"></div>
+        </article>
+        <article>
+          <h3>Visuais</h3>
+          <form data-taxonomy-form="visuals"><input placeholder="Novo visual"><button type="submit">Adicionar</button></form>
+          <div data-taxonomy-list="visuals"></div>
+        </article>
+      </div>
+    </section>
+  </main>
+
+  <dialog class="admin-dialog" data-product-dialog>
+    <form method="dialog" data-product-form>
+      <button class="icon-button dialog-close" type="button" data-close-dialog>×</button>
+      <h2 data-product-form-title>Produto</h2>
+      <input type="hidden" name="id">
+      <label>Nome<input name="name" required></label>
+      <label>Categoria
+        <select name="category" required>
+          <option>Masculino</option><option>Feminino</option><option>Acessórios</option>
+          <option>Drops Exclusivos</option><option>Conjuntos</option>
+        </select>
+      </label>
+      <label>Tipo
+        <select name="type" required>
+          <option>Camisetas</option><option>Moletons</option><option>Jaquetas</option>
+          <option>Calças</option><option>Shorts</option><option>Bonés</option>
+          <option>Outros</option><option>Conjuntos</option>
+        </select>
+      </label>
+      <label>Cor
+        <select name="color" required>
+          <option>Preto</option><option>Branco</option><option>Rosa</option>
+          <option>Cinza</option><option>Bege</option><option>Azul</option>
+        </select>
+      </label>
+      <label>Preço<input name="price" type="number" min="0" step="0.01" required></label>
+      <label>Visual
+        <select name="visual"></select>
+      </label>
+      <label>Imagem do produto
+        <input name="image" type="file" accept="image/png,image/jpeg,image/gif,image/webp">
+      </label>
+      <p class="admin-image-note" data-product-image-note>Nenhuma imagem anexada.</p>
+      <label class="admin-check"><input name="isNew" type="checkbox"> Marcar como novo</label>
+      <button class="checkout-button" type="submit">Salvar produto</button>
+    </form>
+  </dialog>
+
+  <dialog class="admin-dialog" data-collection-dialog>
+    <form method="dialog" data-collection-form>
+      <button class="icon-button dialog-close" type="button" data-close-dialog>×</button>
+      <h2 data-collection-form-title>Coleção</h2>
+      <input type="hidden" name="id">
+      <label>Nome<input name="name" required></label>
+      <label>Subtítulo<input name="label" required></label>
+      <label>Descrição<textarea name="description" required></textarea></label>
+      <label>Quantidade de peças<input name="pieces" type="number" min="0" required></label>
+      <label>Visual
+        <select name="visual"></select>
+      </label>
+      <label>Selo<input name="badge" placeholder="Nova, Drop..."></label>
+      <label>Imagem da coleção
+        <input name="image" type="file" accept="image/png,image/jpeg,image/gif,image/webp">
+      </label>
+      <p class="admin-image-note" data-collection-image-note>Nenhuma imagem anexada.</p>
+      <button class="checkout-button" type="submit">Salvar coleção</button>
+    </form>
+  </dialog>
+
+  <script src="admin.js"></script>
+</body>
+</html>

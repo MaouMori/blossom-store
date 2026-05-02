@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Blossom Store</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="index.html">
+      <span class="brand-mark">✿</span>
+      <span>
+        <b>BLOSSOM</b>
+        <small>STORE</small>
+      </span>
+    </a>
+
+    <nav class="main-nav" aria-label="Navegação principal">
+      <a href="index.html">Home</a>
+      <a href="colecoes.html">Coleções</a>
+      <a href="loja.html">Loja</a>
+      <a class="active" href="sobre.html">Sobre nós</a>
+      <a href="contato.html">Contato</a>
+    </nav>
+
+    <div class="account">
+      <button class="account-toggle" type="button" data-account-toggle aria-expanded="false">
+        <span class="user-icon">♙</span>
+        <span>
+          <b data-account-name>vinicius_silv-33afab</b>
+          <small data-header-cart-total>R$0,00</small>
+        </span>
+        <span class="chevron">⌄</span>
+      </button>
+      <div class="account-menu" data-account-menu hidden>
+        <a href="#" data-account-config>⚙ Configurações</a>
+        <a href="login.html">✿ Painel Admin</a>
+        <button type="button" data-account-logout>↪ Logout</button>
+      </div>
+      <a class="admin-shortcut" href="login.html" aria-label="Painel admin">⚙</a>
+      <button class="cart" type="button" aria-label="Abrir carrinho" data-cart-open>▱<small data-cart-count>0</small></button>
+    </div>
+  </header>
+
+  <main>
+    <section class="about-hero">
+      <div class="template-visual about-hero-media" aria-hidden="true">
+        <div class="figure figure-shop"></div>
+        <div class="garage-flower">✿</div>
+      </div>
+      <div class="container about-hero-content">
+        <span class="eyebrow">Sobre nós</span>
+        <h1>Mais que roupas,<br>é <strong>identidade.</strong></h1>
+        <p>A Blossom Store nasceu dentro do universo do FiveM com um propósito: criar roupas que representam quem você é nas ruas do roleplay. Cada peça é feita com atenção aos detalhes, unindo estilo, qualidade e exclusividade.</p>
+        <div class="about-points">
+          <article><span>◇</span><b>Qualidade premium</b><small>Tecidos e detalhes selecionados</small></article>
+          <article><span>✿</span><b>Estilo exclusivo</b><small>Peças únicas feitas para se destacar</small></article>
+          <article><span>⬟</span><b>Comunidade</b><small>Feito por players, para players</small></article>
+        </div>
+      </div>
+    </section>
+
+    <section class="story-panel container">
+      <div class="template-visual story-image"></div>
+      <div class="story-copy">
+        <article>
+          <h2>Nossa missão</h2>
+          <p>Entregamos roupas exclusivas para a comunidade de roleplay, valorizando criatividade, autenticidade e estilo. Queremos que cada player se sinta único e representado.</p>
+        </article>
+        <article>
+          <h2>Nossa visão</h2>
+          <p>Ser a marca de roupas mais reconhecida e desejada no universo do FiveM, inspirando tendências e construindo uma comunidade forte e unida.</p>
+        </article>
+        <article>
+          <h2>Nossos valores</h2>
+          <div class="value-list">
+            <span>◉ Autenticidade</span>
+            <span>✣ Criatividade</span>
+            <span>♡ Respeito</span>
+            <span>✿ Inovação</span>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <section class="stats-strip container" aria-label="Números da Blossom">
+      <article><span>♙</span><b>+10K</b><small>Players vestidos</small></article>
+      <article><span>♧</span><b>+150</b><small>Peças exclusivas</small></article>
+      <article><span>☆</span><b>+5K</b><small>Clientes satisfeitos</small></article>
+      <article><span>▣</span><b>Desde<br>2023</b><small>No roleplay</small></article>
+    </section>
+
+    <section class="team-section container">
+      <div class="team-head">
+        <div>
+          <span class="eyebrow">Por trás da marca</span>
+          <h2>Nosso time</h2>
+        </div>
+        <p>Somos uma equipe apaixonada pelo que fazemos. Trabalhamos todos os dias para entregar as melhores peças e experiências para a comunidade.</p>
+      </div>
+
+      <div class="team-grid">
+        <article>
+          <div class="template-visual team-image founder"></div>
+          <div>
+            <span>Fundador</span>
+            <h3>Blossom</h3>
+            <p>Idealizador da marca. Apaixonado por design, moda e pelo mundo do RP.</p>
+            <a href="#">◎</a>
+          </div>
+        </article>
+        <article>
+          <div class="template-visual team-image designer"></div>
+          <div>
+            <span>Designer</span>
+            <h3>Nox</h3>
+            <p>Responsável pelos designs e pela identidade visual das coleções.</p>
+            <a href="#">◎</a>
+          </div>
+        </article>
+        <article>
+          <div class="template-visual team-image manager"></div>
+          <div>
+            <span>Gestão</span>
+            <h3>Luna</h3>
+            <p>Cuida da comunidade, suporte e relacionamento com os clientes.</p>
+            <a href="#">◎</a>
+          </div>
+        </article>
+        <article>
+          <div class="template-visual team-image marketing"></div>
+          <div>
+            <span>Marketing</span>
+            <h3>Maya</h3>
+            <p>Estratégia de conteúdo, redes sociais e crescimento da marca.</p>
+            <a href="#">◎</a>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <section class="about-cta container">
+      <span>✿</span>
+      <div>
+        <h2>Faça parte da <strong>nossa história</strong></h2>
+        <p>Vista sua identidade. Vista Blossom.</p>
+      </div>
+      <a class="button primary" href="loja.html">Ver coleções</a>
+    </section>
+
+    <section class="services container" aria-label="Informações de compra">
+      <article><span>▱</span><b>Entrega digital</b><small>Receba na hora</small></article>
+      <article><span>◇</span><b>Compatível com FiveM</b><small>100% otimizado</small></article>
+      <article><span>☻</span><b>Suporte humanizado</b><small>Estamos aqui por você</small></article>
+      <article><span>⬟</span><b>Pagamento seguro</b><small>Segurança garantida</small></article>
+    </section>
+  </main>
+
+  <div class="overlay" data-overlay hidden></div>
+
+  <aside class="cart-drawer" data-cart-drawer aria-hidden="true" aria-label="Carrinho de compras">
+    <div class="drawer-head">
+      <div>
+        <span class="eyebrow">Seu pedido</span>
+        <h2>Carrinho</h2>
+      </div>
+      <button class="icon-button" type="button" aria-label="Fechar carrinho" data-cart-close>×</button>
+    </div>
+
+    <div class="cart-items" data-cart-items>
+      <p class="empty-cart">Seu carrinho está vazio.</p>
+    </div>
+
+    <div class="cart-summary">
+      <div><span>Subtotal</span><strong data-subtotal>R$0,00</strong></div>
+      <div><span>Entrega digital</span><strong>Grátis</strong></div>
+      <div class="summary-total"><span>Total</span><strong data-total>R$0,00</strong></div>
+      <button class="checkout-button" type="button" data-checkout-open disabled>Finalizar compra</button>
+    </div>
+  </aside>
+
+  <section class="checkout-modal" data-checkout-modal hidden aria-label="Finalizar compra">
+    <div class="checkout-panel">
+      <button class="icon-button checkout-close" type="button" aria-label="Fechar checkout" data-checkout-close>×</button>
+      <div class="checkout-grid">
+        <form class="checkout-form" data-checkout-form>
+          <span class="eyebrow">Pagamento</span>
+          <h2>Finalizar compra</h2>
+
+          <label>
+            Nome no pedido
+            <input type="text" name="customer" placeholder="Seu nome" required>
+          </label>
+
+          <label>
+            E-mail para entrega
+            <input type="email" name="email" placeholder="seu@email.com" required>
+          </label>
+
+          <fieldset>
+            <legend>Forma de pagamento</legend>
+            <label class="payment-option">
+              <input type="radio" name="payment" value="pix" checked>
+              <span><b>PIX</b><small>Gera código e QR de demonstração.</small></span>
+            </label>
+            <label class="payment-option">
+              <input type="radio" name="payment" value="card">
+              <span><b>Cartão</b><small>Tela pronta para integrar gateway.</small></span>
+            </label>
+            <label class="payment-option">
+              <input type="radio" name="payment" value="boleto">
+              <span><b>Boleto</b><small>Gera referência de pedido.</small></span>
+            </label>
+          </fieldset>
+
+          <div class="payment-preview" data-payment-preview>
+            <div class="qr-placeholder">PIX</div>
+            <p>Ao confirmar, o sistema cria um pedido em modo demonstração. Para pagamento real, basta conectar Mercado Pago, Stripe ou Asaas.</p>
+          </div>
+
+          <button class="checkout-button" type="submit">Criar pedido</button>
+        </form>
+
+        <aside class="order-review">
+          <span class="eyebrow">Resumo</span>
+          <h3>Itens do pedido</h3>
+          <div data-checkout-items></div>
+          <div class="summary-total"><span>Total</span><strong data-checkout-total>R$0,00</strong></div>
+          <p class="order-note">Entrega digital automática após confirmação do pagamento real.</p>
+        </aside>
+      </div>
+    </div>
+  </section>
+
+  <footer class="site-footer">
+    <div class="footer-inner container">
+      <a class="footer-brand" href="index.html">
+        <span class="brand-mark">✿</span>
+        <span><b>BLOSSOM</b><small>STORE</small></span>
+      </a>
+      <p>© 2025 Blossom Store. Todos os direitos reservados.</p>
+      <nav aria-label="Links legais">
+        <a href="#">Política de privacidade</a>
+        <a href="#">Termos de uso</a>
+        <a href="#">Trocas e devoluções</a>
+      </nav>
+      <div class="footer-socials">
+        <a href="#">IG</a>
+        <a href="#">DC</a>
+        <a href="#">TK</a>
+      </div>
+    </div>
+  </footer>
+  <script src="script.js"></script>
+</body>
+</html>

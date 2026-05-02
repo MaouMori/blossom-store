@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Blossom Store</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="index.html">
+      <span class="brand-mark">✿</span>
+      <span>
+        <b>BLOSSOM</b>
+        <small>STORE</small>
+      </span>
+    </a>
+
+    <nav class="main-nav" aria-label="Navegação principal">
+      <a href="index.html">Home</a>
+      <a class="active" href="colecoes.html">Coleções</a>
+      <a href="loja.html">Loja</a>
+      <a href="sobre.html">Sobre nós</a>
+      <a href="contato.html">Contato</a>
+    </nav>
+
+    <div class="account">
+      <button class="account-toggle" type="button" data-account-toggle aria-expanded="false">
+        <span class="user-icon">♙</span>
+        <span>
+          <b data-account-name>vinicius_silv-33afab</b>
+          <small data-header-cart-total>R$0,00</small>
+        </span>
+        <span class="chevron">⌄</span>
+      </button>
+      <div class="account-menu" data-account-menu hidden>
+        <a href="#" data-account-config>⚙ Configurações</a>
+        <a href="login.html">✿ Painel Admin</a>
+        <button type="button" data-account-logout>↪ Logout</button>
+      </div>
+      <a class="admin-shortcut" href="login.html" aria-label="Painel admin">⚙</a>
+      <button class="cart" type="button" aria-label="Abrir carrinho" data-cart-open>▱<small data-cart-count>0</small></button>
+    </div>
+  </header>
+
+  <main>
+    <section class="collections-hero">
+      <div class="template-visual collections-hero-media" aria-hidden="true">
+        <div class="figure figure-shop"></div>
+        <div class="garage-flower">✿</div>
+        <div class="car-shape"></div>
+      </div>
+      <div class="container collections-hero-content">
+        <span class="eyebrow">Coleções</span>
+        <h1>Expresse quem<br><strong>você é.</strong></h1>
+        <p>Cada coleção da Blossom Store é feita para representar estilos, momentos e identidades diferentes. Encontre a coleção que combina com o seu roleplay.</p>
+      </div>
+    </section>
+
+    <section class="collection-tabs container" aria-label="Tipos de coleções">
+      <button class="active" type="button"><span>♧</span><b>All Collections</b><small>Todas as coleções</small></button>
+      <button type="button"><span>♙</span><b>Masculino</b><small>Coleções masculinas</small></button>
+      <button type="button"><span>♁</span><b>Feminino</b><small>Coleções femininas</small></button>
+      <button type="button"><span>▱</span><b>Acessórios</b><small>Coleções de acessórios</small></button>
+      <button type="button"><span>◇</span><b>Exclusivas</b><small>Coleções exclusivas</small></button>
+    </section>
+
+    <section class="collection-filters container" aria-label="Filtros de coleções">
+      <strong>☷ Filtros</strong>
+      <label>Categoria
+        <select>
+          <option>Todas</option>
+          <option>Masculino</option>
+          <option>Feminino</option>
+          <option>Acessórios</option>
+        </select>
+      </label>
+      <label>Tipo de peça
+        <select>
+          <option>Todos</option>
+          <option>Camisetas</option>
+          <option>Moletons</option>
+          <option>Jaquetas</option>
+        </select>
+      </label>
+      <label>Cor
+        <select>
+          <option>Todas as cores</option>
+          <option>Preto</option>
+          <option>Rosa</option>
+          <option>Branco</option>
+        </select>
+      </label>
+      <label>Tamanho
+        <select>
+          <option>Todos</option>
+          <option>P</option>
+          <option>M</option>
+          <option>G</option>
+          <option>GG</option>
+        </select>
+      </label>
+      <span></span>
+      <label>Ordenar por:
+        <select>
+          <option>Mais recentes</option>
+          <option>Mais peças</option>
+          <option>Nome A-Z</option>
+        </select>
+      </label>
+      <div class="view-switch">
+        <button class="active" type="button">▦</button>
+        <button type="button">☰</button>
+      </div>
+    </section>
+
+    <section class="collections-grid container" data-collections-grid>
+      <article>
+        <div class="template-visual collection-preview spring"><span>Nova</span></div>
+        <div>
+          <h2>Blossom Spring '25</h2>
+          <b>Coleção Primavera 2025</b>
+          <p>Peças leves e estilosas para dominar as ruas.</p>
+          <footer><span>12 peças</span><a href="loja.html">Ver coleção →</a></footer>
+        </div>
+      </article>
+      <article>
+        <div class="template-visual collection-preview essentials"></div>
+        <div>
+          <h2>Blossom Essentials</h2>
+          <b>Coleção Essentials</b>
+          <p>Peças básicas com o padrão de qualidade Blossom.</p>
+          <footer><span>18 peças</span><a href="loja.html">Ver coleção →</a></footer>
+        </div>
+      </article>
+      <article>
+        <div class="template-visual collection-preview nightfall"></div>
+        <div>
+          <h2>Blossom Nightfall</h2>
+          <b>Coleção Nightfall</b>
+          <p>Cores escuras. Estilo pesado. Presença marcante.</p>
+          <footer><span>10 peças</span><a href="loja.html">Ver coleção →</a></footer>
+        </div>
+      </article>
+      <article>
+        <div class="template-visual collection-preview luxury"></div>
+        <div>
+          <h2>Blossom Luxury</h2>
+          <b>Coleção Luxury</b>
+          <p>Detalhes premium para quem vive o topo do roleplay.</p>
+          <footer><span>08 peças</span><a href="loja.html">Ver coleção →</a></footer>
+        </div>
+      </article>
+      <article>
+        <div class="template-visual collection-preview sport"></div>
+        <div>
+          <h2>Blossom Sport</h2>
+          <b>Coleção Sport</b>
+          <p>Performance, conforto e estilo para qualquer missão.</p>
+          <footer><span>11 peças</span><a href="loja.html">Ver coleção →</a></footer>
+        </div>
+      </article>
+      <article>
+        <div class="template-visual collection-preview oversized"></div>
+        <div>
+          <h2>Blossom Oversized</h2>
+          <b>Coleção Oversized</b>
+          <p>Modelagens amplas para um visual urbano e autêntico.</p>
+          <footer><span>14 peças</span><a href="loja.html">Ver coleção →</a></footer>
+        </div>
+      </article>
+      <article>
+        <div class="template-visual collection-preview pink-label"></div>
+        <div>
+          <h2>Blossom Pink Label</h2>
+          <b>Coleção Pink Label</b>
+          <p>A identidade rosa da Blossom. Única, forte e feminina.</p>
+          <footer><span>09 peças</span><a href="loja.html">Ver coleção →</a></footer>
+        </div>
+      </article>
+      <article>
+        <div class="template-visual collection-preview collabs"></div>
+        <div>
+          <h2>Blossom Collabs</h2>
+          <b>Coleção Collabs</b>
+          <p>Parcerias especiais que viram história.</p>
+          <footer><span>07 peças</span><a href="loja.html">Ver coleção →</a></footer>
+        </div>
+      </article>
+    </section>
+
+    <section class="collection-benefits container">
+      <article><span>◇</span><b>Peças exclusivas</b><small>Roupas únicas que você só encontra aqui.</small></article>
+      <article><span>✿</span><b>Qualidade premium</b><small>Tecidos selecionados com acabamento impecável.</small></article>
+      <article><span>▱</span><b>Entrega rápida</b><small>Receba suas peças com segurança e agilidade.</small></article>
+      <article><span>☻</span><b>Suporte humanizado</b><small>Atendimento feito por quem entende do roleplay.</small></article>
+    </section>
+
+    <section class="services container" aria-label="Informações de compra">
+      <article><span>▱</span><b>Entrega digital</b><small>Receba na hora</small></article>
+      <article><span>◇</span><b>Compatível com FiveM</b><small>100% otimizado</small></article>
+      <article><span>☻</span><b>Suporte humanizado</b><small>Estamos aqui por você</small></article>
+      <article><span>⬟</span><b>Pagamento seguro</b><small>Segurança garantida</small></article>
+    </section>
+  </main>
+
+  <div class="overlay" data-overlay hidden></div>
+
+  <aside class="cart-drawer" data-cart-drawer aria-hidden="true" aria-label="Carrinho de compras">
+    <div class="drawer-head">
+      <div>
+        <span class="eyebrow">Seu pedido</span>
+        <h2>Carrinho</h2>
+      </div>
+      <button class="icon-button" type="button" aria-label="Fechar carrinho" data-cart-close>×</button>
+    </div>
+
+    <div class="cart-items" data-cart-items>
+      <p class="empty-cart">Seu carrinho está vazio.</p>
+    </div>
+
+    <div class="cart-summary">
+      <div><span>Subtotal</span><strong data-subtotal>R$0,00</strong></div>
+      <div><span>Entrega digital</span><strong>Grátis</strong></div>
+      <div class="summary-total"><span>Total</span><strong data-total>R$0,00</strong></div>
+      <button class="checkout-button" type="button" data-checkout-open disabled>Finalizar compra</button>
+    </div>
+  </aside>
+
+  <section class="checkout-modal" data-checkout-modal hidden aria-label="Finalizar compra">
+    <div class="checkout-panel">
+      <button class="icon-button checkout-close" type="button" aria-label="Fechar checkout" data-checkout-close>×</button>
+      <div class="checkout-grid">
+        <form class="checkout-form" data-checkout-form>
+          <span class="eyebrow">Pagamento</span>
+          <h2>Finalizar compra</h2>
+
+          <label>
+            Nome no pedido
+            <input type="text" name="customer" placeholder="Seu nome" required>
+          </label>
+
+          <label>
+            E-mail para entrega
+            <input type="email" name="email" placeholder="seu@email.com" required>
+          </label>
+
+          <fieldset>
+            <legend>Forma de pagamento</legend>
+            <label class="payment-option">
+              <input type="radio" name="payment" value="pix" checked>
+              <span><b>PIX</b><small>Gera código e QR de demonstração.</small></span>
+            </label>
+            <label class="payment-option">
+              <input type="radio" name="payment" value="card">
+              <span><b>Cartão</b><small>Tela pronta para integrar gateway.</small></span>
+            </label>
+            <label class="payment-option">
+              <input type="radio" name="payment" value="boleto">
+              <span><b>Boleto</b><small>Gera referência de pedido.</small></span>
+            </label>
+          </fieldset>
+
+          <div class="payment-preview" data-payment-preview>
+            <div class="qr-placeholder">PIX</div>
+            <p>Ao confirmar, o sistema cria um pedido em modo demonstração. Para pagamento real, basta conectar Mercado Pago, Stripe ou Asaas.</p>
+          </div>
+
+          <button class="checkout-button" type="submit">Criar pedido</button>
+        </form>
+
+        <aside class="order-review">
+          <span class="eyebrow">Resumo</span>
+          <h3>Itens do pedido</h3>
+          <div data-checkout-items></div>
+          <div class="summary-total"><span>Total</span><strong data-checkout-total>R$0,00</strong></div>
+          <p class="order-note">Entrega digital automática após confirmação do pagamento real.</p>
+        </aside>
+      </div>
+    </div>
+  </section>
+
+  <footer class="site-footer">
+    <div class="footer-inner container">
+      <a class="footer-brand" href="index.html">
+        <span class="brand-mark">✿</span>
+        <span><b>BLOSSOM</b><small>STORE</small></span>
+      </a>
+      <p>© 2025 Blossom Store. Todos os direitos reservados.</p>
+      <nav aria-label="Links legais">
+        <a href="#">Política de privacidade</a>
+        <a href="#">Termos de uso</a>
+        <a href="#">Trocas e devoluções</a>
+      </nav>
+      <div class="footer-socials">
+        <a href="#">IG</a>
+        <a href="#">DC</a>
+        <a href="#">TK</a>
+      </div>
+    </div>
+  </footer>
+  <script src="script.js"></script>
+</body>
+</html>

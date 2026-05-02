@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Blossom Store</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="index.html">
+      <span class="brand-mark">✿</span>
+      <span>
+        <b>BLOSSOM</b>
+        <small>STORE</small>
+      </span>
+    </a>
+
+    <nav class="main-nav" aria-label="Navegação principal">
+      <a class="active" href="index.html">Home</a>
+      <a href="colecoes.html">Coleções</a>
+      <a href="loja.html">Loja</a>
+      <a href="sobre.html">Sobre nós</a>
+      <a href="contato.html">Contato</a>
+    </nav>
+
+    <div class="account">
+      <button class="account-toggle" type="button" data-account-toggle aria-expanded="false">
+        <span class="user-icon">♙</span>
+        <span>
+          <b data-account-name>vinicius_silv-33afab</b>
+          <small data-header-cart-total>R$0,00</small>
+        </span>
+        <span class="chevron">⌄</span>
+      </button>
+      <div class="account-menu" data-account-menu hidden>
+        <a href="#" data-account-config>⚙ Configurações</a>
+        <a href="login.html">✿ Painel Admin</a>
+        <button type="button" data-account-logout>↪ Logout</button>
+      </div>
+      <a class="admin-shortcut" href="login.html" aria-label="Painel admin">⚙</a>
+      <button class="cart" type="button" aria-label="Abrir carrinho" data-cart-open>▱<small data-cart-count>0</small></button>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero">
+      <div class="template-visual hero-media" aria-hidden="true">
+        <div class="figure figure-main"></div>
+        <div class="garage-flower">✿</div>
+        <div class="car-shape"></div>
+      </div>
+      <div class="container hero-content">
+        <span class="eyebrow">Blossom Store</span>
+        <h1>Vista sua <strong>identidade.</strong></h1>
+        <p>Roupas exclusivas para quem vive o roleplay com atitude.</p>
+        <div class="hero-actions">
+          <a class="button primary" href="loja.html">Ver coleções <span>→</span></a>
+          <a class="button secondary" href="#lookbook">Explorar looks</a>
+        </div>
+      </div>
+    </section>
+
+    <section class="benefits container" aria-label="Diferenciais da loja">
+      <article>
+        <span class="benefit-icon">♧</span>
+        <div>
+          <h2>Peças exclusivas</h2>
+          <p>Modelagens únicas e limitadas.</p>
+        </div>
+      </article>
+      <article>
+        <span class="benefit-icon">◇</span>
+        <div>
+          <h2>Qualidade premium</h2>
+          <p>Tecidos selecionados com cuidado.</p>
+        </div>
+      </article>
+      <article>
+        <span class="benefit-icon">▣</span>
+        <div>
+          <h2>Estilo para RP</h2>
+          <p>Criado para se destacar nas ruas.</p>
+        </div>
+      </article>
+      <article>
+        <span class="benefit-icon">☆</span>
+        <div>
+          <h2>Atualizações constantes</h2>
+          <p>Novos drops e coleções sempre.</p>
+        </div>
+      </article>
+    </section>
+
+    <section class="section-block container" id="colecoes">
+      <div class="section-title-row">
+        <div>
+          <span class="eyebrow">Coleções em destaque</span>
+          <h2>Nossas coleções</h2>
+        </div>
+        <a class="button ghost" href="loja.html">Ver catálogo completo</a>
+      </div>
+
+      <div class="collection-grid">
+        <article class="collection-card">
+          <div class="template-visual collection-media male"></div>
+          <div class="collection-copy">
+            <h3>Masculino</h3>
+            <a href="loja.html">Ver peças →</a>
+          </div>
+        </article>
+        <article class="collection-card">
+          <div class="template-visual collection-media female"></div>
+          <div class="collection-copy">
+            <h3>Feminino</h3>
+            <a href="loja.html">Ver peças →</a>
+          </div>
+        </article>
+        <article class="collection-card">
+          <div class="template-visual collection-media drops"></div>
+          <div class="collection-copy">
+            <h3>Drops exclusivos</h3>
+            <a href="loja.html">Ver peças →</a>
+          </div>
+        </article>
+        <article class="collection-card">
+          <div class="template-visual collection-media caps"></div>
+          <div class="collection-copy">
+            <h3>Acessórios</h3>
+            <a href="loja.html">Ver peças →</a>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <section class="section-block container">
+      <div class="section-title-row compact">
+        <div>
+          <span class="eyebrow">Produtos em destaque</span>
+          <h2>Peças em alta</h2>
+        </div>
+        <a class="text-link" href="loja.html">Ver todas as peças →</a>
+      </div>
+
+      <div class="product-grid">
+        <article class="product-card" data-product-id="hoodie-black">
+          <div class="template-visual product-media hoodie-dark"><span>Novo</span></div>
+          <div class="product-copy">
+            <h3>Blossom Hoodie Black</h3>
+            <p>Moleton</p>
+            <strong>R$199,90</strong>
+            <button class="add-button" type="button" data-add-to-cart="hoodie-black">Adicionar</button>
+          </div>
+        </article>
+        <article class="product-card" data-product-id="tee-white">
+          <div class="template-visual product-media tee-white"><span>Novo</span></div>
+          <div class="product-copy">
+            <h3>Blossom Tee White</h3>
+            <p>Camiseta</p>
+            <strong>R$129,90</strong>
+            <button class="add-button" type="button" data-add-to-cart="tee-white">Adicionar</button>
+          </div>
+        </article>
+        <article class="product-card" data-product-id="jersey">
+          <div class="template-visual product-media jersey"><span>Novo</span></div>
+          <div class="product-copy">
+            <h3>Blossom Jersey</h3>
+            <p>Camisa</p>
+            <strong>R$169,90</strong>
+            <button class="add-button" type="button" data-add-to-cart="jersey">Adicionar</button>
+          </div>
+        </article>
+        <article class="product-card" data-product-id="zip-pink">
+          <div class="template-visual product-media zip"><span>Novo</span></div>
+          <div class="product-copy">
+            <h3>Blossom Zip Pink</h3>
+            <p>Jaqueta</p>
+            <strong>R$249,90</strong>
+            <button class="add-button" type="button" data-add-to-cart="zip-pink">Adicionar</button>
+          </div>
+        </article>
+        <article class="product-card" data-product-id="cargo-black">
+          <div class="template-visual product-media cargo"></div>
+          <div class="product-copy">
+            <h3>Blossom Cargo Black</h3>
+            <p>Calça</p>
+            <strong>R$189,90</strong>
+            <button class="add-button" type="button" data-add-to-cart="cargo-black">Adicionar</button>
+          </div>
+        </article>
+        <article class="product-card" data-product-id="cap-pink">
+          <div class="template-visual product-media cap-pink"></div>
+          <div class="product-copy">
+            <h3>Blossom Cap Pink</h3>
+            <p>Acessório</p>
+            <strong>R$89,90</strong>
+            <button class="add-button" type="button" data-add-to-cart="cap-pink">Adicionar</button>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <section class="about-strip container" id="sobre">
+      <div class="about-brand-mark">✿</div>
+      <div class="about-copy">
+        <span class="eyebrow">Sobre a Blossom</span>
+        <h2>Mais que roupas, é identidade.</h2>
+        <p>A Blossom Store nasceu dentro do universo do FiveM com um propósito: criar roupas que representam quem você é nas ruas do roleplay.</p>
+        <p>Cada peça é feita com atenção aos detalhes, unindo estilo, qualidade e exclusividade.</p>
+        <a class="button secondary" href="#sobre">Conheça nossa história</a>
+      </div>
+      <div class="look-strip" id="lookbook" aria-label="Prévia de looks">
+        <div class="template-visual look-item"></div>
+        <div class="template-visual look-item"></div>
+        <div class="template-visual look-item"></div>
+        <div class="template-visual look-item"></div>
+      </div>
+    </section>
+
+    <section class="services container" id="contato" aria-label="Informações de compra">
+      <article><span>▱</span><b>Entrega digital</b><small>Receba na hora</small></article>
+      <article><span>◇</span><b>Compatível com FiveM</b><small>100% otimizado</small></article>
+      <article><span>☻</span><b>Suporte humanizado</b><small>Estamos aqui por você</small></article>
+      <article><span>⬟</span><b>Pagamento seguro</b><small>Segurança garantida</small></article>
+    </section>
+  </main>
+
+  <div class="overlay" data-overlay hidden></div>
+
+  <aside class="cart-drawer" data-cart-drawer aria-hidden="true" aria-label="Carrinho de compras">
+    <div class="drawer-head">
+      <div>
+        <span class="eyebrow">Seu pedido</span>
+        <h2>Carrinho</h2>
+      </div>
+      <button class="icon-button" type="button" aria-label="Fechar carrinho" data-cart-close>×</button>
+    </div>
+
+    <div class="cart-items" data-cart-items>
+      <p class="empty-cart">Seu carrinho está vazio.</p>
+    </div>
+
+    <div class="cart-summary">
+      <div><span>Subtotal</span><strong data-subtotal>R$0,00</strong></div>
+      <div><span>Entrega digital</span><strong>Grátis</strong></div>
+      <div class="summary-total"><span>Total</span><strong data-total>R$0,00</strong></div>
+      <button class="checkout-button" type="button" data-checkout-open disabled>Finalizar compra</button>
+    </div>
+  </aside>
+
+  <section class="checkout-modal" data-checkout-modal hidden aria-label="Finalizar compra">
+    <div class="checkout-panel">
+      <button class="icon-button checkout-close" type="button" aria-label="Fechar checkout" data-checkout-close>×</button>
+      <div class="checkout-grid">
+        <form class="checkout-form" data-checkout-form>
+          <span class="eyebrow">Pagamento</span>
+          <h2>Finalizar compra</h2>
+
+          <label>
+            Nome no pedido
+            <input type="text" name="customer" placeholder="Seu nome" required>
+          </label>
+
+          <label>
+            E-mail para entrega
+            <input type="email" name="email" placeholder="seu@email.com" required>
+          </label>
+
+          <fieldset>
+            <legend>Forma de pagamento</legend>
+            <label class="payment-option">
+              <input type="radio" name="payment" value="pix" checked>
+              <span><b>PIX</b><small>Gera código e QR de demonstração.</small></span>
+            </label>
+            <label class="payment-option">
+              <input type="radio" name="payment" value="card">
+              <span><b>Cartão</b><small>Tela pronta para integrar gateway.</small></span>
+            </label>
+            <label class="payment-option">
+              <input type="radio" name="payment" value="boleto">
+              <span><b>Boleto</b><small>Gera referência de pedido.</small></span>
+            </label>
+          </fieldset>
+
+          <div class="payment-preview" data-payment-preview>
+            <div class="qr-placeholder">PIX</div>
+            <p>Ao confirmar, o sistema cria um pedido em modo demonstração. Para pagamento real, basta conectar Mercado Pago, Stripe ou Asaas.</p>
+          </div>
+
+          <button class="checkout-button" type="submit">Criar pedido</button>
+        </form>
+
+        <aside class="order-review">
+          <span class="eyebrow">Resumo</span>
+          <h3>Itens do pedido</h3>
+          <div data-checkout-items></div>
+          <div class="summary-total"><span>Total</span><strong data-checkout-total>R$0,00</strong></div>
+          <p class="order-note">Entrega digital automática após confirmação do pagamento real.</p>
+        </aside>
+      </div>
+    </div>
+  </section>
+
+  <footer class="site-footer">
+    <div class="footer-inner container">
+      <a class="footer-brand" href="index.html">
+        <span class="brand-mark">✿</span>
+        <span><b>BLOSSOM</b><small>STORE</small></span>
+      </a>
+      <p>© 2025 Blossom Store. Todos os direitos reservados.</p>
+      <nav aria-label="Links legais">
+        <a href="#">Política de privacidade</a>
+        <a href="#">Termos de uso</a>
+        <a href="#">Trocas e devoluções</a>
+      </nav>
+      <div class="footer-socials">
+        <a href="#">IG</a>
+        <a href="#">DC</a>
+        <a href="#">TK</a>
+      </div>
+    </div>
+  </footer>
+  <script src="script.js"></script>
+</body>
+</html>

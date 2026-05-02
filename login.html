@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login Admin - Blossom Store</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body class="admin-body">
+  <main class="login-page">
+    <section class="login-card">
+      <a class="brand" href="index.html">
+        <span class="brand-mark">✿</span>
+        <span>
+          <b>BLOSSOM</b>
+          <small>STORE</small>
+        </span>
+      </a>
+      <div>
+        <span class="eyebrow">Painel administrativo</span>
+        <h1>Entrar no admin</h1>
+        <p>Use o acesso local para gerenciar produtos e coleções do site.</p>
+      </div>
+      <form data-login-form>
+        <label>
+          Usuário
+          <input type="text" name="user" value="admin" required>
+        </label>
+        <label>
+          Senha
+          <input type="password" name="password" value="admin123" required>
+        </label>
+        <button class="contact-submit" type="submit">
+          <span>Entrar</span>
+          <small>Usuário: admin | Senha: admin123</small>
+        </button>
+      </form>
+      <a class="text-link" href="index.html">Voltar para o site</a>
+    </section>
+  </main>
+  <script src="admin.js"></script>
+</body>
+</html>
