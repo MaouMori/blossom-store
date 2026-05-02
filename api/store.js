@@ -33,7 +33,7 @@ module.exports = async function handler(req, res) {
       await Promise.all([
         replaceTable("products", products),
         replaceTable("collections", collections),
-        replaceTable("taxonomies", taxonomies),
+        replaceTable("taxonomies", taxonomies, "key"),
       ]);
 
       res.status(200).json({ ok: true });

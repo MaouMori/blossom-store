@@ -23,8 +23,8 @@ async function supabase(path, options = {}) {
   return text ? JSON.parse(text) : null;
 }
 
-async function replaceTable(table, rows) {
-  await supabase(`${table}?id=neq.__never__`, {
+async function replaceTable(table, rows, keyColumn = "id") {
+  await supabase(`${table}?${keyColumn}=neq.__never__`, {
     method: "DELETE",
     headers: { Prefer: "return=minimal" },
   });
