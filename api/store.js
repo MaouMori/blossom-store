@@ -9,7 +9,7 @@ module.exports = async function handler(req, res) {
   try {
     if (req.method === "GET") {
       const [products, collections, taxonomyRows, orders] = await Promise.all([
-        supabase("products?select=*&order=created.asc"),
+        supabase("products?select=*&order=created.desc"),
         supabase("collections?select=*"),
         supabase("taxonomies?select=*"),
         supabase("orders?select=*&order=createdAt.desc"),

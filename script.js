@@ -93,9 +93,20 @@ function readStore(key, fallback) {
   }
 }
 
-let products = readStore("blossom-products", defaultProducts);
-let collections = readStore("blossom-collections", defaultCollections);
+const apiEnabled = location.protocol.startsWith("http");
+
+function recentValue(item) {
+  return Number(item.createdAt || item.created || 0);
+}
+
+function recentItems(items, limit) {
+  return [...items].sort((a, b) => recentValue(b) - recentValue(a)).slice(0, limit);
+}
+
+let products = apiEnabled ? [] : readStore("blossom-products", []);
+let collections = apiEnabled ? [] : readStore("blossom-collections", []);
 let taxonomies = (() => {
+  if (apiEnabled) return { categories: [], types: [], colors: [], visuals: [] };
   try {
     const saved = JSON.parse(localStorage.getItem("blossom-taxonomies"));
     return saved && typeof saved === "object" ? { ...defaultTaxonomies, ...saved } : defaultTaxonomies;
@@ -139,6 +150,8 @@ const selectors = {
   priceLabel: document.querySelector("[data-price-label]"),
   clearFilters: document.querySelector("[data-clear-filters]"),
   collectionsGrid: document.querySelector("[data-collections-grid]"),
+  homeProducts: document.querySelector("[data-home-products]"),
+  homeCollections: document.querySelector("[data-home-collections]"),
   contactForm: document.querySelector("[data-contact-form]"),
   contactMessage: document.querySelector("[data-message]"),
   contactMessageCount: document.querySelector("[data-message-count]"),
@@ -160,29 +173,33 @@ const state = {
 let cart = loadCart();
 let account = loadAccount();
 
-const apiEnabled = location.protocol.startsWith("http");
-
 async function loadApiStore() {
   if (!apiEnabled) return;
   try {
     const response = await fetch("/api/store");
     if (!response.ok) return;
     const store = await response.json();
-    products = Array.isArray(store.products) && store.products.length ? store.products : products;
-    collections = Array.isArray(store.collections) && store.collections.length ? store.collections : collections;
-    taxonomies = store.taxonomies && Object.keys(store.taxonomies).length ? store.taxonomies : taxonomies;
+    products = Array.isArray(store.products) ? store.products : [];
+    collections = Array.isArray(store.collections) ? store.collections : [];
+    taxonomies = store.taxonomies && Object.keys(store.taxonomies).length ? store.taxonomies : { categories: [], types: [], colors: [], visuals: [] };
     if (hasShop) {
       renderFilters();
       renderCatalog();
     }
+    renderHomeSections();
     renderCollections();
   } catch {
-    // Local file fallback keeps the site usable without a server.
+    products = [];
+    collections = [];
+    renderHomeSections();
+    renderCollections();
   }
 }
 
 const hasShop = Boolean(selectors.shopGrid);
 const hasCollections = Boolean(selectors.collectionsGrid);
+const hasHomeProducts = Boolean(selectors.homeProducts);
+const hasHomeCollections = Boolean(selectors.homeCollections);
 const hasContact = Boolean(selectors.contactForm);
 
 function countBy(key) {
@@ -241,10 +258,44 @@ function getFilteredProducts() {
     if (state.sort === "price-asc") return a.price - b.price;
     if (state.sort === "price-desc") return b.price - a.price;
     if (state.sort === "name") return a.name.localeCompare(b.name);
-    return a.created - b.created;
+    return recentValue(b) - recentValue(a);
   });
 
   return filtered;
+}
+
+function productCard(product, compact = false) {
+  const visual = product.visual || "hoodie-dark";
+  const imageStyle = product.image ? `style="background-image: linear-gradient(0deg, rgba(5,8,10,.36), rgba(5,8,10,.1)), url('${product.image}')"` : "";
+  const label = String(product.type || product.category || "Peça").replace("Moletons", "Moleton").replace("Camisetas", "Camiseta").replace("Calças", "Calça");
+  return `
+    <article class="product-card ${compact ? "" : "shop-product"}" data-product-id="${product.id}">
+      <div class="template-visual product-media ${visual} ${product.image ? "has-upload" : ""}" ${imageStyle}>
+        ${product.isNew ? "<span>Novo</span>" : ""}
+      </div>
+      <div class="product-copy">
+        <h3>${product.name}</h3>
+        <p>${label}</p>
+        <strong>${money.format(Number(product.price || 0))}</strong>
+        <button class="add-button" type="button" aria-label="Adicionar ${product.name}" data-add-to-cart="${product.id}">${compact ? "Adicionar" : "▱"}</button>
+      </div>
+    </article>
+  `;
+}
+
+function collectionCard(collection) {
+  const imageStyle = collection.image ? `style="background-image: linear-gradient(0deg, rgba(5,8,10,.36), rgba(5,8,10,.1)), url('${collection.image}')"` : "";
+  return `
+    <article class="collection-card">
+      <div class="template-visual collection-media ${collection.visual || "essentials"} ${collection.image ? "has-upload" : ""}" ${imageStyle}>
+        ${collection.badge ? `<span>${collection.badge}</span>` : ""}
+      </div>
+      <div class="collection-copy">
+        <h3>${collection.name}</h3>
+        <a href="loja.html">Ver peças →</a>
+      </div>
+    </article>
+  `;
 }
 
 function renderCatalog() {
@@ -292,6 +343,18 @@ function renderPagination(totalPages) {
   `;
 }
 
+function renderHomeSections() {
+  if (hasHomeProducts) {
+    selectors.homeProducts.innerHTML = recentItems(products, 6).map((product) => productCard(product, true)).join("")
+      || '<p class="empty-products">Nenhuma peça cadastrada ainda.</p>';
+  }
+
+  if (hasHomeCollections) {
+    selectors.homeCollections.innerHTML = recentItems(collections, 4).map(collectionCard).join("")
+      || '<p class="empty-products">Nenhuma coleção cadastrada ainda.</p>';
+  }
+}
+
 function renderCollections() {
   if (!hasCollections) return;
 
@@ -324,9 +387,9 @@ function saveCart() {
 
 function loadAccount() {
   try {
-    return JSON.parse(localStorage.getItem("blossom-user-account")) || { logged: true, name: "vinicius_silv-33afab" };
+    return JSON.parse(localStorage.getItem("blossom-user-account")) || { logged: false, name: "visitante" };
   } catch {
-    return { logged: true, name: "vinicius_silv-33afab" };
+    return { logged: false, name: "visitante" };
   }
 }
 
@@ -382,7 +445,7 @@ function renderCart() {
   selectors.cartCount.textContent = quantity;
   selectors.headerCartTotal.textContent = money.format(total);
   selectors.accountName.textContent = account.logged ? account.name : "visitante";
-  selectors.accountLogout.textContent = account.logged ? "↪ Logout" : "↩ Entrar novamente";
+  selectors.accountLogout.textContent = account.logged ? "↪ Logout" : "↩ Entrar";
   selectors.subtotal.textContent = money.format(total);
   selectors.total.textContent = money.format(total);
   selectors.checkoutTotal.textContent = money.format(total);
@@ -604,18 +667,20 @@ selectors.accountToggle.addEventListener("click", (event) => {
   toggleAccountMenu();
 });
 selectors.accountLogout.addEventListener("click", () => {
-  account = account.logged
-    ? { logged: false, name: "visitante" }
-    : { logged: true, name: "vinicius_silv-33afab" };
-  saveAccount();
-  toggleAccountMenu(false);
-  renderCart();
-  showToast(account.logged ? "Login restaurado." : "Logout realizado.");
+  if (account.logged) {
+    account = { logged: false, name: "visitante" };
+    localStorage.removeItem("blossom-user-account");
+    localStorage.removeItem("blossom-admin-session");
+    toggleAccountMenu(false);
+    renderCart();
+    return;
+  }
+  window.location.href = "login.html";
 });
 selectors.accountConfig.addEventListener("click", (event) => {
   event.preventDefault();
   toggleAccountMenu(false);
-  showToast("Configurações da conta em modo demonstração.");
+  window.location.href = "login.html";
 });
 selectors.checkoutOpen.addEventListener("click", openCheckout);
 selectors.checkoutClose.addEventListener("click", closeCheckout);
@@ -657,6 +722,7 @@ if (hasShop) {
   renderFilters();
   renderCatalog();
 }
+renderHomeSections();
 renderCollections();
 renderCart();
 loadApiStore();

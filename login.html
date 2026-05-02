@@ -3,15 +3,15 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Login Admin - Blossom Store</title>
+  <title>Login - Blossom Store</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles.css">
 </head>
 <body class="admin-body">
-  <main class="login-page">
-    <section class="login-card">
+  <main class="login-page auth-page">
+    <section class="login-card auth-card">
       <a class="brand" href="index.html">
         <span class="brand-mark">✿</span>
         <span>
@@ -19,25 +19,74 @@
           <small>STORE</small>
         </span>
       </a>
+
       <div>
-        <span class="eyebrow">Painel administrativo</span>
-        <h1>Entrar no admin</h1>
-        <p>Use o acesso local para gerenciar produtos e coleções do site.</p>
+        <span class="eyebrow">Conta Blossom</span>
+        <h1>Acesse sua conta</h1>
+        <p>Entre, crie uma conta ou redefina sua senha para continuar no site.</p>
       </div>
-      <form data-login-form>
+
+      <div class="auth-tabs" role="tablist">
+        <button class="active" type="button" data-auth-tab="login">Entrar</button>
+        <button type="button" data-auth-tab="register">Criar conta</button>
+        <button type="button" data-auth-tab="forgot">Esqueci a senha</button>
+      </div>
+
+      <form data-auth-form="login">
         <label>
           Usuário
-          <input type="text" name="user" value="admin" required>
+          <input type="text" name="username" autocomplete="username" required>
         </label>
-        <label>
+        <label class="password-field">
           Senha
-          <input type="password" name="password" value="admin123" required>
+          <span>
+            <input type="password" name="password" autocomplete="current-password" required>
+            <button type="button" data-toggle-password>Ver</button>
+          </span>
         </label>
         <button class="contact-submit" type="submit">
           <span>Entrar</span>
-          <small>Usuário: admin | Senha: admin123</small>
+          <small>A conta admin abre o painel automaticamente</small>
         </button>
       </form>
+
+      <form data-auth-form="register" hidden>
+        <label>
+          Usuário
+          <input type="text" name="username" autocomplete="username" required>
+        </label>
+        <label class="password-field">
+          Senha
+          <span>
+            <input type="password" name="password" autocomplete="new-password" required>
+            <button type="button" data-toggle-password>Ver</button>
+          </span>
+        </label>
+        <button class="contact-submit" type="submit">
+          <span>Criar conta</span>
+          <small>Contas novas entram como cliente</small>
+        </button>
+      </form>
+
+      <form data-auth-form="forgot" hidden>
+        <label>
+          Usuário
+          <input type="text" name="username" autocomplete="username" required>
+        </label>
+        <label class="password-field">
+          Nova senha
+          <span>
+            <input type="password" name="password" autocomplete="new-password" required>
+            <button type="button" data-toggle-password>Ver</button>
+          </span>
+        </label>
+        <button class="contact-submit" type="submit">
+          <span>Redefinir senha</span>
+          <small>Use o usuário cadastrado para trocar a senha</small>
+        </button>
+      </form>
+
+      <p class="auth-message" data-auth-message></p>
       <a class="text-link" href="index.html">Voltar para o site</a>
     </section>
   </main>

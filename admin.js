@@ -78,6 +78,7 @@ const taxonomySeed = {
 const $ = (selector) => document.querySelector(selector);
 const $$ = (selector) => document.querySelectorAll(selector);
 const apiEnabled = location.protocol.startsWith("http");
+let adminSession = readSession();
 
 function field(form, name) {
   return form.elements.namedItem(name);
@@ -91,6 +92,46 @@ function errorText(error) {
   } catch {
     return error.message || "Erro desconhecido.";
   }
+}
+
+function readSession() {
+  try {
+    return JSON.parse(localStorage.getItem("blossom-user-account")) || null;
+  } catch {
+    return null;
+  }
+}
+
+function writeSession(user) {
+  adminSession = user;
+  localStorage.setItem("blossom-user-account", JSON.stringify({
+    logged: true,
+    id: user.id,
+    name: user.username,
+    username: user.username,
+    role: user.role || "cliente",
+  }));
+  if ((user.role || "cliente") === "admin") {
+    localStorage.setItem("blossom-admin-session", "active");
+  }
+}
+
+function authMessage(text, type = "info") {
+  const target = $("[data-auth-message]");
+  if (!target) return;
+  target.textContent = text;
+  target.dataset.type = type;
+}
+
+async function apiPost(path, payload) {
+  const response = await fetch(path, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(payload),
+  });
+  const body = await response.json().catch(() => ({}));
+  if (!response.ok) throw new Error(body.error || "Erro na API.");
+  return body;
 }
 
 function slugify(text) {
@@ -156,6 +197,59 @@ function toast(message) {
   return message;
 }
 
+$$("[data-auth-tab]").forEach((button) => {
+  button.addEventListener("click", () => {
+    $$("[data-auth-tab]").forEach((tab) => tab.classList.toggle("active", tab === button));
+    $$("[data-auth-form]").forEach((form) => {
+      form.hidden = form.dataset.authForm !== button.dataset.authTab;
+    });
+    authMessage("");
+  });
+});
+
+$$("[data-toggle-password]").forEach((button) => {
+  button.addEventListener("click", () => {
+    const input = button.closest(".password-field").querySelector("input");
+    const visible = input.type === "text";
+    input.type = visible ? "password" : "text";
+    button.textContent = visible ? "Ver" : "Ocultar";
+  });
+});
+
+$$("[data-auth-form]").forEach((form) => {
+  form.addEventListener("submit", async (event) => {
+    event.preventDefault();
+    const data = new FormData(form);
+    const action = form.dataset.authForm === "forgot" ? "reset" : form.dataset.authForm;
+    const submitButton = form.querySelector("[type='submit']");
+    const label = submitButton.querySelector("span");
+    const originalText = label.textContent;
+    submitButton.disabled = true;
+    label.textContent = "Aguarde...";
+
+    try {
+      const result = await apiPost("/api/auth", {
+        action,
+        username: data.get("username"),
+        password: data.get("password"),
+      });
+      writeSession(result.user);
+      authMessage(action === "register" ? "Conta criada com sucesso." : "Login realizado.", "success");
+      window.location.href = result.user.role === "admin" ? "admin.html" : "index.html";
+    } catch (error) {
+      if (data.get("username") === ADMIN_USER && data.get("password") === ADMIN_PASS) {
+        writeSession({ username: ADMIN_USER, role: "admin" });
+        window.location.href = "admin.html";
+        return;
+      }
+      authMessage(error.message, "error");
+    } finally {
+      submitButton.disabled = false;
+      label.textContent = originalText;
+    }
+  });
+});
+
 const loginForm = $("[data-login-form]");
 if (loginForm) {
   loginForm.addEventListener("submit", (event) => {
@@ -180,6 +274,7 @@ let adminProducts = getData("blossom-products", productSeed);
 let adminCollections = getData("blossom-collections", collectionSeed);
 let adminTaxonomies = getObjectData("blossom-taxonomies", taxonomySeed);
 let adminOrders = [];
+let adminUsers = [];
 
 async function loadApiStore() {
   if (!apiEnabled || !$("[data-product-list]")) return;
@@ -214,6 +309,36 @@ async function saveApiStore() {
     const detail = await response.text();
     throw new Error(detail || "Nao foi possivel salvar no servidor.");
   }
+}
+
+async function loadUsers() {
+  const list = $("[data-users-list]");
+  if (!apiEnabled || !list) return;
+  try {
+    const response = await fetch("/api/users", {
+      headers: { "x-blossom-role": adminSession?.role || "admin" },
+    });
+    const body = await response.json().catch(() => ({}));
+    if (!response.ok) throw new Error(body.error || "Não foi possível carregar usuários.");
+    adminUsers = Array.isArray(body.users) ? body.users : [];
+    renderUsers();
+  } catch (error) {
+    $("[data-users-note]").textContent = error.message;
+  }
+}
+
+async function updateUserRole(username, role) {
+  const response = await fetch("/api/users", {
+    method: "PATCH",
+    headers: {
+      "Content-Type": "application/json",
+      "x-blossom-role": adminSession?.role || "admin",
+    },
+    body: JSON.stringify({ username, role }),
+  });
+  const body = await response.json().catch(() => ({}));
+  if (!response.ok) throw new Error(body.error || "Não foi possível alterar o cargo.");
+  return body.user;
 }
 
 function saveProducts() {
@@ -305,6 +430,27 @@ function renderTaxonomies() {
   });
 }
 
+function renderUsers() {
+  const list = $("[data-users-list]");
+  if (!list) return;
+  list.innerHTML = adminUsers.map((user) => `
+    <article class="admin-row user-row">
+      <div class="admin-avatar">${user.username.slice(0, 1).toUpperCase()}</div>
+      <div>
+        <h3>${user.username}</h3>
+        <p>${user.createdAt ? new Date(user.createdAt).toLocaleDateString("pt-BR") : "Conta registrada"}</p>
+        <strong>${user.role || "cliente"}</strong>
+      </div>
+      <div>
+        <select data-user-role="${user.username}" ${user.username === adminSession?.username ? "disabled" : ""}>
+          <option value="cliente" ${user.role !== "admin" ? "selected" : ""}>Cliente</option>
+          <option value="admin" ${user.role === "admin" ? "selected" : ""}>Admin</option>
+        </select>
+      </div>
+    </article>
+  `).join("") || '<p class="empty-cart">Nenhuma conta cadastrada.</p>';
+}
+
 function openProductForm(product = null) {
   const dialog = $("[data-product-dialog]");
   const form = $("[data-product-form]");
@@ -340,6 +486,7 @@ function openCollectionForm(collection = null) {
 $("[data-new-product]")?.addEventListener("click", () => openProductForm());
 $("[data-new-collection]")?.addEventListener("click", () => openCollectionForm());
 $("[data-admin-product-search]")?.addEventListener("input", renderAdmin);
+$("[data-refresh-users]")?.addEventListener("click", loadUsers);
 
 $("[data-product-form] input[name='image']")?.addEventListener("change", (event) => {
   const file = event.target.files[0];
@@ -390,6 +537,20 @@ document.addEventListener("click", (event) => {
   }
 
   if (closeDialog) closeDialog.closest("dialog").close();
+});
+
+document.addEventListener("change", async (event) => {
+  const roleSelect = event.target.closest("[data-user-role]");
+  if (!roleSelect) return;
+  const previous = adminUsers.find((user) => user.username === roleSelect.dataset.userRole)?.role || "cliente";
+  try {
+    await updateUserRole(roleSelect.dataset.userRole, roleSelect.value);
+    $("[data-users-note]").textContent = "Cargo atualizado.";
+    await loadUsers();
+  } catch (error) {
+    roleSelect.value = previous;
+    $("[data-users-note]").textContent = error.message;
+  }
 });
 
 $("[data-product-form]")?.addEventListener("submit", async (event) => {
@@ -517,8 +678,10 @@ $$("[data-taxonomy-form]").forEach((form) => {
 
 $("[data-logout]")?.addEventListener("click", () => {
   localStorage.removeItem("blossom-admin-session");
+  localStorage.removeItem("blossom-user-account");
   window.location.href = "login.html";
 });
 
 renderAdmin();
 loadApiStore();
+loadUsers();

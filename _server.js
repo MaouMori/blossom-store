@@ -5,6 +5,7 @@ const path = require("path");
 const root = __dirname;
 const dataDir = path.join(root, "data");
 const storePath = path.join(dataDir, "store.json");
+const usersPath = path.join(dataDir, "users.json");
 const port = process.env.PORT || 3000;
 
 const mime = {
@@ -100,6 +101,30 @@ function readStore() {
   return JSON.parse(fs.readFileSync(storePath, "utf8"));
 }
 
+function readUsers() {
+  if (!fs.existsSync(dataDir)) fs.mkdirSync(dataDir, { recursive: true });
+  if (!fs.existsSync(usersPath)) {
+    fs.writeFileSync(usersPath, JSON.stringify([
+      { id: "local-admin", username: "admin", password: "admin123", role: "admin", createdAt: new Date().toISOString() },
+    ], null, 2));
+  }
+  return JSON.parse(fs.readFileSync(usersPath, "utf8"));
+}
+
+function writeUsers(users) {
+  if (!fs.existsSync(dataDir)) fs.mkdirSync(dataDir, { recursive: true });
+  fs.writeFileSync(usersPath, JSON.stringify(users, null, 2));
+}
+
+function publicUser(user) {
+  return {
+    id: user.id,
+    username: user.username,
+    role: user.role || "cliente",
+    createdAt: user.createdAt || null,
+  };
+}
+
 function writeStore(store) {
   if (!fs.existsSync(dataDir)) fs.mkdirSync(dataDir, { recursive: true });
   fs.writeFileSync(storePath, JSON.stringify(store, null, 2));
@@ -166,6 +191,53 @@ const server = http.createServer(async (req, res) => {
       });
       sendJson(res, 200, { ok: true });
       return;
+    }
+
+    if (url.pathname === "/api/auth" && req.method === "POST") {
+      const body = await readBody(req);
+      const users = readUsers();
+      const username = String(body.username || "").trim();
+      const password = String(body.password || "");
+      const action = body.action || "login";
+      const user = users.find((item) => item.username === username);
+
+      if (action === "login") {
+        if (!user || user.password !== password) return sendJson(res, 401, { error: "Usuário ou senha inválidos." });
+        return sendJson(res, 200, { ok: true, user: publicUser(user) });
+      }
+
+      if (action === "register") {
+        if (user) return sendJson(res, 409, { error: "Esse usuário já existe." });
+        const nextUser = { id: `local-${Date.now()}`, username, password, role: "cliente", createdAt: new Date().toISOString() };
+        users.unshift(nextUser);
+        writeUsers(users);
+        return sendJson(res, 201, { ok: true, user: publicUser(nextUser) });
+      }
+
+      if (action === "reset") {
+        if (!user) return sendJson(res, 404, { error: "Usuário não encontrado." });
+        user.password = password;
+        writeUsers(users);
+        return sendJson(res, 200, { ok: true, user: publicUser(user) });
+      }
+
+      return sendJson(res, 400, { error: "Ação inválida." });
+    }
+
+    if (url.pathname === "/api/users" && req.method === "GET") {
+      if (req.headers["x-blossom-role"] !== "admin") return sendJson(res, 403, { error: "Apenas contas admin podem gerenciar usuários." });
+      return sendJson(res, 200, { users: readUsers().map(publicUser) });
+    }
+
+    if (url.pathname === "/api/users" && req.method === "PATCH") {
+      if (req.headers["x-blossom-role"] !== "admin") return sendJson(res, 403, { error: "Apenas contas admin podem gerenciar usuários." });
+      const body = await readBody(req);
+      const users = readUsers();
+      const user = users.find((item) => item.username === body.username);
+      if (!user) return sendJson(res, 404, { error: "Usuário não encontrado." });
+      user.role = body.role || "cliente";
+      writeUsers(users);
+      return sendJson(res, 200, { ok: true, user: publicUser(user) });
     }
 
     if (url.pathname === "/api/orders" && req.method === "POST") {

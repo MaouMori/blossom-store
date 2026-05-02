@@ -1623,6 +1623,59 @@ select option:checked {
   gap: 16px;
 }
 
+.auth-tabs {
+  display: grid;
+  gap: 8px;
+  grid-template-columns: repeat(3, 1fr);
+}
+
+.auth-tabs button,
+.password-field button {
+  border: 1px solid var(--line-soft);
+  background: rgba(255, 255, 255, 0.04);
+  color: var(--text);
+  cursor: pointer;
+}
+
+.auth-tabs button {
+  min-height: 42px;
+  border-radius: 8px;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.auth-tabs button.active,
+.auth-tabs button:hover,
+.password-field button:hover {
+  background: var(--pink);
+  border-color: var(--pink);
+  color: #17090f;
+}
+
+.password-field span {
+  display: grid;
+  grid-template-columns: 1fr 78px;
+  gap: 8px;
+}
+
+.password-field button {
+  border-radius: 6px;
+  font-weight: 800;
+}
+
+.auth-message {
+  min-height: 20px;
+  color: var(--muted);
+}
+
+.auth-message[data-type="success"] {
+  color: #99f0c2;
+}
+
+.auth-message[data-type="error"] {
+  color: var(--pink);
+}
+
 .login-card label,
 .admin-dialog label {
   color: white;
@@ -1854,6 +1907,28 @@ select option:checked {
 .admin-row strong {
   color: var(--pink-soft);
   font-size: 13px;
+}
+
+.admin-avatar {
+  width: 54px;
+  height: 54px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid rgba(255, 143, 180, 0.35);
+  border-radius: 8px;
+  background: rgba(255, 143, 180, 0.16);
+  color: var(--pink);
+  font-weight: 900;
+}
+
+.user-row select {
+  min-height: 38px;
+  padding: 0 10px;
+  border: 1px solid var(--line-soft);
+  border-radius: 6px;
+  background: #12181d;
+  color: var(--text);
 }
 
 .admin-row div:last-child {
