@@ -2,7 +2,10 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+  <meta name="theme-color" content="#1a0b12">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <title>Blossom Store</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -20,6 +23,18 @@
     </a>
 
     <nav class="main-nav" aria-label="Navegação principal">
+      <a href="index.html">Home</a>
+      <a href="colecoes.html">Coleções</a>
+      <a class="active" href="loja.html">Loja</a>
+      <a href="sobre.html">Sobre nós</a>
+      <a href="contato.html">Contato</a>
+    </nav>
+
+    <button class="mobile-menu-toggle" type="button" aria-label="Abrir menu" data-mobile-menu-toggle>☰</button>
+
+    <div class="mobile-nav-overlay" data-mobile-nav-overlay></div>
+    <nav class="mobile-nav" aria-label="Navegação mobile" data-mobile-nav>
+      <button class="mobile-nav-close" type="button" aria-label="Fechar menu" data-mobile-nav-close>✕</button>
       <a href="index.html">Home</a>
       <a href="colecoes.html">Coleções</a>
       <a class="active" href="loja.html">Loja</a>
@@ -86,10 +101,10 @@
 
         <div class="filter-group">
           <h3>Faixa de preço</h3>
-          <input class="range" type="range" min="89.9" max="499.9" step="10" value="499.9" data-price-range>
+          <input class="range" type="range" min="0" max="1000" step="10" value="1000" data-price-range>
           <div class="price-row">
-            <span>R$89,90</span>
-            <span data-price-label>R$499,90</span>
+            <span>R$0,00</span>
+            <span data-price-label>R$1000,00</span>
           </div>
           <button class="clear-filters" type="button" data-clear-filters>Limpar filtros ↻</button>
         </div>

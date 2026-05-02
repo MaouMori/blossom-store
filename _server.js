@@ -1,12 +1,17 @@
 const http = require("http");
 const fs = require("fs");
 const path = require("path");
+const crypto = require("crypto");
 
 const root = __dirname;
 const dataDir = path.join(root, "data");
 const storePath = path.join(dataDir, "store.json");
 const usersPath = path.join(dataDir, "users.json");
 const port = process.env.PORT || 3000;
+
+function hashPassword(password) {
+  return crypto.createHash("sha256").update(password).digest("hex");
+}
 
 const mime = {
   ".html": "text/html; charset=utf-8",
@@ -105,7 +110,7 @@ function readUsers() {
   if (!fs.existsSync(dataDir)) fs.mkdirSync(dataDir, { recursive: true });
   if (!fs.existsSync(usersPath)) {
     fs.writeFileSync(usersPath, JSON.stringify([
-      { id: "local-admin", username: "admin", password: "admin123", role: "admin", createdAt: new Date().toISOString() },
+      { id: "local-admin", username: "admin", password: hashPassword("admin123"), role: "admin", createdAt: new Date().toISOString() },
     ], null, 2));
   }
   return JSON.parse(fs.readFileSync(usersPath, "utf8"));
@@ -202,13 +207,13 @@ const server = http.createServer(async (req, res) => {
       const user = users.find((item) => item.username === username);
 
       if (action === "login") {
-        if (!user || user.password !== password) return sendJson(res, 401, { error: "Usuário ou senha inválidos." });
+        if (!user || user.password !== hashPassword(password)) return sendJson(res, 401, { error: "Usuário ou senha inválidos." });
         return sendJson(res, 200, { ok: true, user: publicUser(user) });
       }
 
       if (action === "register") {
         if (user) return sendJson(res, 409, { error: "Esse usuário já existe." });
-        const nextUser = { id: `local-${Date.now()}`, username, password, role: "cliente", createdAt: new Date().toISOString() };
+        const nextUser = { id: `local-${Date.now()}`, username, password: hashPassword(password), role: "cliente", createdAt: new Date().toISOString() };
         users.unshift(nextUser);
         writeUsers(users);
         return sendJson(res, 201, { ok: true, user: publicUser(nextUser) });
@@ -216,7 +221,7 @@ const server = http.createServer(async (req, res) => {
 
       if (action === "reset") {
         if (!user) return sendJson(res, 404, { error: "Usuário não encontrado." });
-        user.password = password;
+        user.password = hashPassword(password);
         writeUsers(users);
         return sendJson(res, 200, { ok: true, user: publicUser(user) });
       }

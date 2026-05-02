@@ -3,6 +3,36 @@ const money = new Intl.NumberFormat("pt-BR", {
   currency: "BRL",
 });
 
+function initMobileMenu() {
+  const toggle = document.querySelector("[data-mobile-menu-toggle]");
+  const overlay = document.querySelector("[data-mobile-nav-overlay]");
+  const nav = document.querySelector("[data-mobile-nav]");
+  const close = document.querySelector("[data-mobile-nav-close]");
+  if (!toggle || !overlay || !nav) return;
+
+  function open() {
+    overlay.classList.add("active");
+    nav.classList.add("active");
+    document.body.style.overflow = "hidden";
+  }
+
+  function closeMenu() {
+    overlay.classList.remove("active");
+    nav.classList.remove("active");
+    document.body.style.overflow = "";
+  }
+
+  toggle.addEventListener("click", open);
+  overlay.addEventListener("click", closeMenu);
+  if (close) close.addEventListener("click", closeMenu);
+
+  nav.querySelectorAll("a").forEach((link) => {
+    link.addEventListener("click", closeMenu);
+  });
+}
+
+document.addEventListener("DOMContentLoaded", initMobileMenu);
+
 const defaultProductRows = [
   ["hoodie-black", "Blossom Hoodie Black", "Masculino", "Moletons", "Preto", 199.9, "hoodie-dark", true],
   ["tee-white", "Blossom Tee White", "Masculino", "Camisetas", "Branco", 129.9, "tee-white", true],
@@ -105,7 +135,8 @@ function recentItems(items, limit) {
 
 function itemImages(item) {
   if (Array.isArray(item?.images) && item.images.length) return item.images;
-  return item?.image ? [item.image] : [];
+  if (item?.image) return [item.image];
+  return [];
 }
 
 function primaryImage(item) {
@@ -182,7 +213,7 @@ const state = {
   colors: new Set(),
   search: "",
   sort: "recent",
-  maxPrice: 499.9,
+  maxPrice: 9999,
   page: 1,
   perPage: 16,
   collectionCategory: "Todas",
@@ -543,7 +574,7 @@ function renderCart() {
 
   selectors.cartItems.innerHTML = cart.map((item) => `
     <article class="cart-item">
-      <div class="cart-thumb"></div>
+      <div class="cart-thumb" style="background-image: url('${itemImages(item)[0] || ''}'); background-size: cover; background-position: center;"></div>
       <div>
         <h3>${item.name}</h3>
         <p>${item.type || item.category}</p>
@@ -646,7 +677,17 @@ function createOrder(event) {
 }
 
 function showToast(message) {
-  return message;
+  const existing = document.querySelector(".toast");
+  if (existing) existing.remove();
+  const el = document.createElement("div");
+  el.className = "toast";
+  el.textContent = message;
+  document.body.appendChild(el);
+  setTimeout(() => {
+    el.style.opacity = "0";
+    el.style.transform = "translateY(12px)";
+    setTimeout(() => el.remove(), 300);
+  }, 3000);
 }
 
 if (hasShop) {
@@ -696,11 +737,11 @@ if (hasShop) {
     state.colors.clear();
     state.search = "";
     state.sort = "recent";
-    state.maxPrice = 499.9;
+    state.maxPrice = 9999;
     state.page = 1;
     selectors.search.value = "";
     selectors.sort.value = "recent";
-    selectors.priceRange.value = "499.9";
+    selectors.priceRange.value = "9999";
     renderFilters();
     renderCatalog();
   });
@@ -786,7 +827,6 @@ selectors.accountLogout.addEventListener("click", () => {
   if (account.logged) {
     account = { logged: false, name: "visitante" };
     localStorage.removeItem("blossom-user-account");
-    localStorage.removeItem("blossom-admin-session");
     toggleAccountMenu(false);
     renderCart();
     return;

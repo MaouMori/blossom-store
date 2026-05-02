@@ -1,5 +1,9 @@
 const { supabase } = require("./_supabase");
-const { randomUUID } = require("crypto");
+const { randomUUID, createHash } = require("crypto");
+
+function hashPassword(password) {
+  return createHash("sha256").update(password).digest("hex");
+}
 
 function publicUser(user) {
   return {
@@ -21,7 +25,7 @@ async function createUser(username, password) {
     body: JSON.stringify({
       id: randomUUID(),
       username,
-      password,
+      password: hashPassword(password),
       createdAt: new Date().toISOString(),
     }),
   });
@@ -48,7 +52,7 @@ module.exports = async function handler(req, res) {
 
     if (action === "login") {
       const user = await findUser(username);
-      if (!user || user.password !== password) {
+      if (!user || user.password !== hashPassword(password)) {
         res.status(401).json({ error: "Usuário ou senha inválidos." });
         return;
       }
@@ -83,7 +87,7 @@ module.exports = async function handler(req, res) {
       }
       const rows = await supabase(`admin_users?username=eq.${encodeURIComponent(username)}`, {
         method: "PATCH",
-        body: JSON.stringify({ password }),
+        body: JSON.stringify({ password: hashPassword(password) }),
       });
       res.status(200).json({ ok: true, user: publicUser(Array.isArray(rows) ? rows[0] : existing) });
       return;

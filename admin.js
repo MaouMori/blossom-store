@@ -121,7 +121,7 @@ function writeSession(user) {
     role: user.role || "cliente",
   }));
   if ((user.role || "cliente") === "admin") {
-    localStorage.setItem("blossom-admin-session", "active");
+    writeSession(user);
   }
 }
 
@@ -212,7 +212,17 @@ async function filesToDataUrls(files) {
 }
 
 function toast(message) {
-  return message;
+  const existing = document.querySelector(".toast");
+  if (existing) existing.remove();
+  const el = document.createElement("div");
+  el.className = "toast";
+  el.textContent = message;
+  document.body.appendChild(el);
+  setTimeout(() => {
+    el.style.opacity = "0";
+    el.style.transform = "translateY(12px)";
+    setTimeout(() => el.remove(), 300);
+  }, 3000);
 }
 
 $$("[data-auth-tab]").forEach((button) => {
@@ -274,7 +284,7 @@ if (loginForm) {
     event.preventDefault();
     const data = new FormData(loginForm);
     if (data.get("user") === ADMIN_USER && data.get("password") === ADMIN_PASS) {
-      localStorage.setItem("blossom-admin-session", "active");
+      writeSession({ username: ADMIN_USER, role: "admin" });
       window.location.href = "admin.html";
       return;
     }
@@ -283,7 +293,7 @@ if (loginForm) {
 }
 
 if (document.body.classList.contains("admin-body") && location.pathname.endsWith("admin.html")) {
-  const isAdmin = adminSession?.role === "admin" || localStorage.getItem("blossom-admin-session") === "active";
+  const isAdmin = adminSession?.role === "admin";
   if (!isAdmin) {
     window.location.href = "login.html";
   }
@@ -714,7 +724,6 @@ $$("[data-taxonomy-form]").forEach((form) => {
 });
 
 $("[data-logout]")?.addEventListener("click", () => {
-  localStorage.removeItem("blossom-admin-session");
   localStorage.removeItem("blossom-user-account");
   window.location.href = "login.html";
 });
