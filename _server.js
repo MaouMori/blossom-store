@@ -13,6 +13,10 @@ function hashPassword(password) {
   return crypto.createHash("sha256").update(password).digest("hex");
 }
 
+function passwordMatches(savedPassword, password) {
+  return savedPassword === hashPassword(password) || savedPassword === password;
+}
+
 const mime = {
   ".html": "text/html; charset=utf-8",
   ".css": "text/css; charset=utf-8",
@@ -125,6 +129,7 @@ function publicUser(user) {
   return {
     id: user.id,
     username: user.username,
+    email: user.email || "",
     role: user.role || "cliente",
     createdAt: user.createdAt || null,
   };
@@ -207,13 +212,17 @@ const server = http.createServer(async (req, res) => {
       const user = users.find((item) => item.username === username);
 
       if (action === "login") {
-        if (!user || user.password !== hashPassword(password)) return sendJson(res, 401, { error: "Usuário ou senha inválidos." });
+        if (!user || !passwordMatches(user.password, password)) return sendJson(res, 401, { error: "Usuário ou senha inválidos." });
+        if (user.password === password) {
+          user.password = hashPassword(password);
+          writeUsers(users);
+        }
         return sendJson(res, 200, { ok: true, user: publicUser(user) });
       }
 
       if (action === "register") {
         if (user) return sendJson(res, 409, { error: "Esse usuário já existe." });
-        const nextUser = { id: `local-${Date.now()}`, username, password: hashPassword(password), role: "cliente", createdAt: new Date().toISOString() };
+        const nextUser = { id: `local-${Date.now()}`, username, email: "", password: hashPassword(password), role: "cliente", createdAt: new Date().toISOString() };
         users.unshift(nextUser);
         writeUsers(users);
         return sendJson(res, 201, { ok: true, user: publicUser(nextUser) });
@@ -241,6 +250,31 @@ const server = http.createServer(async (req, res) => {
       const user = users.find((item) => item.username === body.username);
       if (!user) return sendJson(res, 404, { error: "Usuário não encontrado." });
       user.role = body.role || "cliente";
+      writeUsers(users);
+      return sendJson(res, 200, { ok: true, user: publicUser(user) });
+    }
+
+    if (url.pathname === "/api/account" && req.method === "PATCH") {
+      const body = await readBody(req);
+      const users = readUsers();
+      const userId = String(req.headers["x-blossom-user-id"] || "").trim();
+      const user = users.find((item) => item.id === userId);
+      if (!user) return sendJson(res, 404, { error: "Conta não encontrada." });
+
+      const username = String(body.username || "").trim();
+      const email = String(body.email || "").trim();
+      const password = String(body.password || "");
+      if (!username) return sendJson(res, 400, { error: "Informe o nome da conta." });
+      if (users.some((item) => item.username === username && item.id !== user.id)) {
+        return sendJson(res, 409, { error: "Esse nome de conta já está em uso." });
+      }
+
+      user.username = username;
+      user.email = email;
+      if (password) {
+        if (password.length < 4) return sendJson(res, 400, { error: "Use uma senha com pelo menos 4 caracteres." });
+        user.password = hashPassword(password);
+      }
       writeUsers(users);
       return sendJson(res, 200, { ok: true, user: publicUser(user) });
     }

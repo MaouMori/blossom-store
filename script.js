@@ -169,6 +169,7 @@ function readStore(key, fallback) {
 }
 
 const apiEnabled = location.protocol.startsWith("http");
+const legacyDemoAccountName = ["vinicius", "silv-33afab"].join("_");
 
 function recentValue(item) {
   return Number(item.createdAt || item.created || 0);
@@ -213,6 +214,7 @@ const selectors = {
   accountMenu: document.querySelector("[data-account-menu]"),
   accountLogout: document.querySelector("[data-account-logout]"),
   accountConfig: document.querySelector("[data-account-config]"),
+  accountAdminLinks: document.querySelectorAll('.account-menu a[href="login.html"], .admin-shortcut'),
   subtotal: document.querySelector("[data-subtotal]"),
   total: document.querySelector("[data-total]"),
   checkoutOpen: document.querySelector("[data-checkout-open]"),
@@ -512,7 +514,6 @@ function renderCollections() {
 
   refreshLazyImages();
 }
-}
 
 function renderCollectionDetail() {
   if (!hasCollectionDetail) return;
@@ -554,14 +555,116 @@ function saveCart() {
 
 function loadAccount() {
   try {
-    return JSON.parse(localStorage.getItem("blossom-user-account")) || { logged: false, name: "visitante" };
+    const saved = JSON.parse(localStorage.getItem("blossom-user-account"));
+    if (!saved || !saved.logged || saved.name === legacyDemoAccountName) {
+      return { logged: false, name: "visitante", username: "", email: "", role: "cliente" };
+    }
+    return {
+      logged: true,
+      id: saved.id || "",
+      name: saved.name || saved.username || "visitante",
+      username: saved.username || saved.name || "",
+      email: saved.email || "",
+      role: saved.role || "cliente",
+    };
   } catch {
-    return { logged: false, name: "visitante" };
+    return { logged: false, name: "visitante", username: "", email: "", role: "cliente" };
   }
 }
 
 function saveAccount() {
   localStorage.setItem("blossom-user-account", JSON.stringify(account));
+  if (account.role === "admin") {
+    localStorage.setItem("blossom-admin-session", "active");
+  } else {
+    localStorage.removeItem("blossom-admin-session");
+  }
+}
+
+function createAccountSettingsDialog() {
+  let dialog = document.querySelector("[data-account-settings]");
+  if (dialog) return dialog;
+
+  dialog = document.createElement("dialog");
+  dialog.className = "admin-dialog account-settings-dialog";
+  dialog.dataset.accountSettings = "";
+  dialog.innerHTML = `
+    <form method="dialog" data-account-settings-form>
+      <button class="icon-button dialog-close" type="button" data-account-settings-close>×</button>
+      <h2>Configurações</h2>
+      <label>Nome da conta<input name="username" autocomplete="username" required></label>
+      <label>E-mail<input name="email" type="email" autocomplete="email" placeholder="email@exemplo.com"></label>
+      <label>Nova senha<input name="password" type="password" autocomplete="new-password" placeholder="Deixe vazio para manter"></label>
+      <p class="auth-message" data-account-settings-message></p>
+      <button class="checkout-button" type="submit">Salvar alterações</button>
+    </form>
+  `;
+  document.body.appendChild(dialog);
+
+  dialog.querySelector("[data-account-settings-close]").addEventListener("click", () => dialog.close());
+  dialog.querySelector("[data-account-settings-form]").addEventListener("submit", saveAccountSettings);
+  return dialog;
+}
+
+function openAccountSettings() {
+  if (!account.logged) {
+    window.location.href = "login.html";
+    return;
+  }
+
+  const dialog = createAccountSettingsDialog();
+  const form = dialog.querySelector("[data-account-settings-form]");
+  form.username.value = account.username || account.name || "";
+  form.email.value = account.email || "";
+  form.password.value = "";
+  dialog.querySelector("[data-account-settings-message]").textContent = "";
+  dialog.showModal();
+}
+
+async function saveAccountSettings(event) {
+  event.preventDefault();
+  const form = event.currentTarget;
+  const message = form.querySelector("[data-account-settings-message]");
+  const submitButton = form.querySelector("[type='submit']");
+  const data = new FormData(form);
+  submitButton.disabled = true;
+  message.dataset.type = "info";
+  message.textContent = "Salvando...";
+
+  try {
+    const response = await fetch("/api/account", {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+        "x-blossom-user-id": account.id || "",
+      },
+      body: JSON.stringify({
+        username: data.get("username"),
+        email: data.get("email"),
+        password: data.get("password"),
+      }),
+    });
+    const body = await response.json().catch(() => ({}));
+    if (!response.ok) throw new Error(body.error || "Não foi possível salvar as configurações.");
+
+    account = {
+      logged: true,
+      id: body.user.id,
+      name: body.user.username,
+      username: body.user.username,
+      email: body.user.email || "",
+      role: body.user.role || "cliente",
+    };
+    saveAccount();
+    renderCart();
+    message.dataset.type = "success";
+    message.textContent = "Conta atualizada.";
+  } catch (error) {
+    message.dataset.type = "error";
+    message.textContent = error.message;
+  } finally {
+    submitButton.disabled = false;
+  }
 }
 
 function addToCart(product) {
@@ -611,8 +714,11 @@ function renderCart() {
 
   selectors.cartCount.textContent = quantity;
   selectors.headerCartTotal.textContent = money.format(total);
-  selectors.accountName.textContent = account.logged ? account.name : "visitante";
+  selectors.accountName.textContent = account.logged ? (account.name || account.username || "visitante") : "visitante";
   selectors.accountLogout.textContent = account.logged ? "Logout" : "Entrar";
+  selectors.accountAdminLinks.forEach((link) => {
+    link.href = account.logged && account.role === "admin" ? "admin.html" : "login.html";
+  });
   selectors.subtotal.textContent = money.format(total);
   selectors.total.textContent = money.format(total);
   selectors.checkoutTotal.textContent = money.format(total);
@@ -877,8 +983,9 @@ selectors.accountToggle.addEventListener("click", (event) => {
 });
 selectors.accountLogout.addEventListener("click", () => {
   if (account.logged) {
-    account = { logged: false, name: "visitante" };
+    account = { logged: false, name: "visitante", username: "", email: "", role: "cliente" };
     localStorage.removeItem("blossom-user-account");
+    localStorage.removeItem("blossom-admin-session");
     toggleAccountMenu(false);
     renderCart();
     return;
@@ -888,7 +995,7 @@ selectors.accountLogout.addEventListener("click", () => {
 selectors.accountConfig.addEventListener("click", (event) => {
   event.preventDefault();
   toggleAccountMenu(false);
-  window.location.href = "login.html";
+  openAccountSettings();
 });
 selectors.checkoutOpen.addEventListener("click", openCheckout);
 selectors.checkoutClose.addEventListener("click", closeCheckout);

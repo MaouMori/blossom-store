@@ -5,10 +5,15 @@ function hashPassword(password) {
   return createHash("sha256").update(password).digest("hex");
 }
 
+function passwordMatches(savedPassword, password) {
+  return savedPassword === hashPassword(password) || savedPassword === password;
+}
+
 function publicUser(user) {
   return {
     id: user.id,
     username: user.username,
+    email: user.email || "",
     role: user.role || (user.username === "admin" ? "admin" : "cliente"),
     createdAt: user.createdAt || null,
   };
@@ -52,9 +57,15 @@ module.exports = async function handler(req, res) {
 
     if (action === "login") {
       const user = await findUser(username);
-      if (!user || user.password !== hashPassword(password)) {
+      if (!user || !passwordMatches(user.password, password)) {
         res.status(401).json({ error: "Usuário ou senha inválidos." });
         return;
+      }
+      if (user.password === password) {
+        await supabase(`admin_users?username=eq.${encodeURIComponent(username)}`, {
+          method: "PATCH",
+          body: JSON.stringify({ password: hashPassword(password) }),
+        });
       }
       res.status(200).json({ ok: true, user: publicUser(user) });
       return;

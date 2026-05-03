@@ -118,6 +118,7 @@ function writeSession(user) {
     id: user.id,
     name: user.username,
     username: user.username,
+    email: user.email || "",
     role: user.role || "cliente",
   }));
   if ((user.role || "cliente") === "admin") {
@@ -725,6 +726,7 @@ $$("[data-taxonomy-form]").forEach((form) => {
 
 $("[data-logout]")?.addEventListener("click", () => {
   localStorage.removeItem("blossom-user-account");
+  localStorage.removeItem("blossom-admin-session");
   window.location.href = "login.html";
 });
 

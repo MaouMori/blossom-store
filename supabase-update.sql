@@ -8,7 +8,8 @@ add column if not exists images jsonb not null default '[]'::jsonb,
 add column if not exists created bigint;
 
 alter table public.admin_users
-add column if not exists role text not null default 'cliente';
+add column if not exists role text not null default 'cliente',
+add column if not exists email text not null default '';
 
 update public.admin_users
 set role = 'admin'

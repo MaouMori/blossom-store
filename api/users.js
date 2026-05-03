@@ -4,6 +4,7 @@ function publicUser(user) {
   return {
     id: user.id,
     username: user.username,
+    email: user.email || "",
     role: user.role || (user.username === "admin" ? "admin" : "cliente"),
     createdAt: user.createdAt || null,
   };
