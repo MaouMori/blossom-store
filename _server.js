@@ -297,6 +297,76 @@ const server = http.createServer(async (req, res) => {
       return;
     }
 
+    if (url.pathname === "/api/orders" && req.method === "GET") {
+      const store = readStore();
+      const userId = String(url.searchParams.get("userId") || "").trim();
+      const email = String(url.searchParams.get("email") || "").trim();
+      const orders = (store.orders || []).filter((order) => {
+        if (userId) return order.userId === userId;
+        if (email) return order.email === email;
+        return false;
+      });
+      sendJson(res, 200, { orders });
+      return;
+    }
+
+    if (url.pathname === "/api/contact" && req.method === "POST") {
+      const body = await readBody(req);
+      if (!process.env.DISCORD_CONTACT_WEBHOOK_URL) {
+        sendJson(res, 500, { error: "Configure DISCORD_CONTACT_WEBHOOK_URL para enviar ao Discord." });
+        return;
+      }
+      const response = await fetch(process.env.DISCORD_CONTACT_WEBHOOK_URL, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          username: "Blossom Store",
+          embeds: [{
+            title: "Nova mensagem do site",
+            color: 16743596,
+            fields: [
+              { name: "Nome", value: body.name || "Não informado", inline: true },
+              { name: "E-mail", value: body.email || "Não informado", inline: true },
+              { name: "Discord", value: body.discord || "Não informado", inline: true },
+              { name: "Categoria", value: body.category || "Não informado", inline: true },
+              { name: "Tipo", value: body.type || "Não informado", inline: true },
+              { name: "Mensagem", value: String(body.message || "Sem mensagem").slice(0, 1000) },
+            ],
+          }],
+        }),
+      });
+      if (!response.ok) {
+        sendJson(res, 500, { error: await response.text() });
+        return;
+      }
+      sendJson(res, 200, { ok: true });
+      return;
+    }
+
+    if (url.pathname === "/api/discord-auth") {
+      if (!process.env.DISCORD_CLIENT_ID) {
+        res.writeHead(500, { "Content-Type": "text/plain; charset=utf-8" });
+        res.end("Configure DISCORD_CLIENT_ID, DISCORD_CLIENT_SECRET e DISCORD_REDIRECT_URI no ambiente.");
+        return;
+      }
+      const redirectUri = process.env.DISCORD_REDIRECT_URI || `http://${req.headers.host}/api/discord-auth?action=callback`;
+      if ((url.searchParams.get("action") || "start") === "start") {
+        const params = new URLSearchParams({
+          response_type: "code",
+          client_id: process.env.DISCORD_CLIENT_ID,
+          redirect_uri: redirectUri,
+          scope: "identify email",
+          prompt: "consent",
+        });
+        res.writeHead(302, { Location: `https://discord.com/oauth2/authorize?${params.toString()}` });
+        res.end();
+        return;
+      }
+      res.writeHead(501, { "Content-Type": "text/plain; charset=utf-8" });
+      res.end("Callback do Discord funciona no Vercel pela API serverless.");
+      return;
+    }
+
     serveStatic(req, res);
   } catch (error) {
     sendJson(res, 500, { error: error.message });

@@ -179,15 +179,32 @@ function recentItems(items, limit) {
   return [...items].sort((a, b) => recentValue(b) - recentValue(a)).slice(0, limit);
 }
 
-function itemImages(item) {
+function ownItemImages(item) {
   if (Array.isArray(item?.images) && item.images.length) return item.images;
   if (item?.image) return [item.image];
   return [];
 }
 
+function itemImages(item) {
+  if (!item) return [];
+  const isCollection = item.kind === "collection" || collections.some((collection) => collection.id === item.id);
+  if (isCollection) {
+    const ownImages = ownItemImages(item);
+    if (ownImages.length) return ownImages;
+    return collectionProducts(item.collectionId || item.id).flatMap((product) => ownItemImages(product));
+  }
+  return ownItemImages(item);
+}
+
 function primaryImage(item) {
   return itemImages(item)[0] || "";
 }
+
+const couponRules = {
+  BLOSSOM10: { label: "BLOSSOM10", type: "percent", value: 10 },
+  RP15: { label: "RP15", type: "percent", value: 15 },
+  PINK20: { label: "PINK20", type: "fixed", value: 20 },
+};
 
 let products = apiEnabled ? [] : readStore("blossom-products", []);
 let collections = apiEnabled ? [] : readStore("blossom-collections", []);
@@ -252,6 +269,7 @@ const selectors = {
   contactMessageCount: document.querySelector("[data-message-count]"),
   contactFile: document.querySelector("[data-contact-file]"),
   contactFileLabel: document.querySelector("[data-file-label]"),
+  cartSummary: document.querySelector(".cart-summary"),
 };
 
 const state = {
@@ -271,6 +289,7 @@ const state = {
 
 let cart = loadCart();
 let account = loadAccount();
+let activeCoupon = loadCoupon();
 
 async function loadApiStore() {
   if (!apiEnabled) return;
@@ -573,6 +592,19 @@ function saveCart() {
   localStorage.setItem("blossom-cart", JSON.stringify(cart));
 }
 
+function loadCoupon() {
+  const code = localStorage.getItem("blossom-coupon") || "";
+  return couponRules[code] ? code : "";
+}
+
+function saveCoupon() {
+  if (activeCoupon) {
+    localStorage.setItem("blossom-coupon", activeCoupon);
+  } else {
+    localStorage.removeItem("blossom-coupon");
+  }
+}
+
 function loadAccount() {
   try {
     const saved = JSON.parse(localStorage.getItem("blossom-user-account"));
@@ -599,6 +631,39 @@ function saveAccount() {
   } else {
     localStorage.removeItem("blossom-admin-session");
   }
+}
+
+function ensureAccountMenuExtras() {
+  if (!selectors.accountMenu || selectors.accountMenu.querySelector("[data-order-history-open]")) return;
+  const history = document.createElement("a");
+  history.href = "#";
+  history.dataset.orderHistoryOpen = "";
+  history.textContent = "Histórico de compras";
+  const logout = selectors.accountLogout;
+  selectors.accountMenu.insertBefore(history, logout);
+}
+
+function ensureCartExtras() {
+  if (!selectors.cartSummary || selectors.cartSummary.querySelector("[data-coupon-form]")) return;
+  const couponBox = document.createElement("form");
+  couponBox.className = "coupon-form";
+  couponBox.dataset.couponForm = "";
+  couponBox.innerHTML = `
+    <label for="coupon-code">Cupom de desconto</label>
+    <div>
+      <input id="coupon-code" name="coupon" type="text" placeholder="BLOSSOM10" autocomplete="off">
+      <button type="submit">Aplicar</button>
+    </div>
+    <small data-coupon-feedback></small>
+  `;
+  const discountRow = document.createElement("div");
+  discountRow.className = "discount-row";
+  discountRow.dataset.discountRow = "";
+  discountRow.hidden = true;
+  discountRow.innerHTML = '<span>Desconto</span><strong data-discount-total>-R$0,00</strong>';
+  const totalRow = selectors.cartSummary.querySelector(".summary-total");
+  selectors.cartSummary.insertBefore(couponBox, totalRow);
+  selectors.cartSummary.insertBefore(discountRow, totalRow);
 }
 
 function createAccountSettingsDialog() {
@@ -687,6 +752,60 @@ async function saveAccountSettings(event) {
   }
 }
 
+function createOrderHistoryDialog() {
+  let dialog = document.querySelector("[data-order-history]");
+  if (dialog) return dialog;
+
+  dialog = document.createElement("dialog");
+  dialog.className = "admin-dialog order-history-dialog";
+  dialog.dataset.orderHistory = "";
+  dialog.innerHTML = `
+    <button class="icon-button dialog-close" type="button" data-order-history-close>×</button>
+    <span class="eyebrow">Conta Blossom</span>
+    <h2>Histórico de compras</h2>
+    <div class="order-history-list" data-order-history-list>
+      <p class="empty-cart">Carregando pedidos...</p>
+    </div>
+  `;
+  document.body.appendChild(dialog);
+  dialog.querySelector("[data-order-history-close]").addEventListener("click", () => dialog.close());
+  return dialog;
+}
+
+async function openOrderHistory() {
+  if (!account.logged) {
+    window.location.href = "login.html";
+    return;
+  }
+
+  const dialog = createOrderHistoryDialog();
+  const list = dialog.querySelector("[data-order-history-list]");
+  list.innerHTML = '<p class="empty-cart">Carregando pedidos...</p>';
+  dialog.showModal();
+
+  try {
+    const params = new URLSearchParams();
+    if (account.id) params.set("userId", account.id);
+    if (account.email) params.set("email", account.email);
+    const response = await fetch(`/api/orders?${params.toString()}`);
+    const body = await response.json().catch(() => ({}));
+    if (!response.ok) throw new Error(body.error || "Não foi possível carregar o histórico.");
+    const orders = Array.isArray(body.orders) ? body.orders : [];
+    list.innerHTML = orders.map((order) => `
+      <article class="history-order">
+        <div>
+          <h3>${order.id}</h3>
+          <p>${new Date(order.createdAt || Date.now()).toLocaleString("pt-BR")} • ${order.payment || "Pagamento"}</p>
+          <small>${(order.items || []).map((item) => `${item.quantity || 1}x ${item.name}`).join(", ")}</small>
+        </div>
+        <strong>${money.format(Number(order.total || 0))}</strong>
+      </article>
+    `).join("") || '<p class="empty-cart">Nenhuma compra encontrada para esta conta.</p>';
+  } catch (error) {
+    list.innerHTML = `<p class="empty-cart">${error.message}</p>`;
+  }
+}
+
 function addToCart(product) {
   const current = cart.find((item) => item.id === product.id);
   if (current) {
@@ -736,7 +855,19 @@ function removeFromCart(id) {
 }
 
 function cartTotal() {
+  return Math.max(0, cartSubtotal() - cartDiscount());
+}
+
+function cartSubtotal() {
   return cart.reduce((sum, item) => sum + cartItemPrice(item) * item.quantity, 0);
+}
+
+function cartDiscount() {
+  const subtotal = cartSubtotal();
+  const coupon = couponRules[activeCoupon];
+  if (!coupon || !subtotal) return 0;
+  if (coupon.type === "percent") return subtotal * (coupon.value / 100);
+  return Math.min(subtotal, coupon.value);
 }
 
 function cartQuantity() {
@@ -744,6 +875,10 @@ function cartQuantity() {
 }
 
 function renderCart() {
+  ensureCartExtras();
+  ensureAccountMenuExtras();
+  const subtotal = cartSubtotal();
+  const discount = cartDiscount();
   const total = cartTotal();
   const quantity = cartQuantity();
 
@@ -754,10 +889,20 @@ function renderCart() {
   selectors.accountAdminLinks.forEach((link) => {
     link.href = account.logged && account.role === "admin" ? "admin.html" : "login.html";
   });
-  selectors.subtotal.textContent = money.format(total);
+  selectors.subtotal.textContent = money.format(subtotal);
   selectors.total.textContent = money.format(total);
   selectors.checkoutTotal.textContent = money.format(total);
   selectors.checkoutOpen.disabled = cart.length === 0;
+  const couponInput = selectors.cartSummary?.querySelector("[data-coupon-form] input");
+  const couponFeedback = selectors.cartSummary?.querySelector("[data-coupon-feedback]");
+  const discountRow = selectors.cartSummary?.querySelector("[data-discount-row]");
+  const discountTotal = selectors.cartSummary?.querySelector("[data-discount-total]");
+  if (couponInput) couponInput.value = activeCoupon;
+  if (couponFeedback) couponFeedback.textContent = activeCoupon ? `Cupom ${activeCoupon} aplicado.` : "";
+  if (discountRow && discountTotal) {
+    discountRow.hidden = discount <= 0;
+    discountTotal.textContent = `-${money.format(discount)}`;
+  }
 
   if (!cart.length) {
     selectors.cartItems.innerHTML = '<p class="empty-cart">Seu carrinho esta vazio.</p>';
@@ -790,6 +935,26 @@ function renderCart() {
   `).join("");
 }
 
+function applyCoupon(code) {
+  const normalized = String(code || "").trim().toUpperCase();
+  if (!normalized) {
+    activeCoupon = "";
+    saveCoupon();
+    renderCart();
+    return { ok: true, message: "" };
+  }
+  if (!couponRules[normalized]) {
+    activeCoupon = "";
+    saveCoupon();
+    renderCart();
+    return { ok: false, message: "Cupom inválido." };
+  }
+  activeCoupon = normalized;
+  saveCoupon();
+  renderCart();
+  return { ok: true, message: `Cupom ${normalized} aplicado.` };
+}
+
 function toggleAccountMenu(force) {
   const shouldOpen = typeof force === "boolean" ? force : selectors.accountMenu.hidden;
   selectors.accountMenu.hidden = !shouldOpen;
@@ -812,6 +977,10 @@ function closeCart() {
 
 function openCheckout() {
   if (!cart.length) return;
+  if (account.logged) {
+    selectors.checkoutForm.elements.customer.value = account.name || account.username || selectors.checkoutForm.elements.customer.value;
+    selectors.checkoutForm.elements.email.value = account.email || selectors.checkoutForm.elements.email.value;
+  }
   selectors.overlay.hidden = false;
   selectors.checkoutModal.hidden = false;
   selectors.checkoutModal.classList.add("open");
@@ -841,6 +1010,8 @@ function createOrder(event) {
   const data = new FormData(selectors.checkoutForm);
   const orderId = `BLS-${Date.now().toString().slice(-6)}`;
   const payment = data.get("payment");
+  const orderSubtotal = cartSubtotal();
+  const orderDiscount = cartDiscount();
   const orderTotal = cartTotal();
   const orderItems = cart.map((item) => ({
     id: item.id,
@@ -849,7 +1020,6 @@ function createOrder(event) {
     quantity: item.quantity,
   }));
 
-  showToast(`Pedido ${orderId} criado em modo demonstracao.`);
   selectors.paymentPreview.innerHTML = `
     <div class="success-box">✓</div>
     <p><b>Pedido ${orderId}</b> criado com pagamento via ${payment.toUpperCase()}. Integre um gateway para cobranca real.</p>
@@ -864,7 +1034,18 @@ function createOrder(event) {
     fetch("/api/orders", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ orderId, payment, customer: data.get("customer"), email: data.get("email"), total: orderTotal, items: orderItems }),
+      body: JSON.stringify({
+        orderId,
+        userId: account.logged ? account.id : "",
+        payment,
+        customer: data.get("customer"),
+        email: data.get("email"),
+        subtotal: orderSubtotal,
+        discount: orderDiscount,
+        coupon: activeCoupon,
+        total: orderTotal,
+        items: orderItems,
+      }),
     }).catch(() => {});
   }
 }
@@ -881,6 +1062,27 @@ function showToast(message) {
     el.style.transform = "translateY(12px)";
     setTimeout(() => el.remove(), 300);
   }, 3000);
+}
+
+function fileToDataUrl(file) {
+  return new Promise((resolve, reject) => {
+    if (!file) {
+      resolve(null);
+      return;
+    }
+    if (file.size > 5 * 1024 * 1024) {
+      reject(new Error("A imagem precisa ter no máximo 5MB."));
+      return;
+    }
+    const reader = new FileReader();
+    reader.onload = () => resolve({
+      name: file.name,
+      type: file.type || "application/octet-stream",
+      dataUrl: reader.result,
+    });
+    reader.onerror = () => reject(new Error("Não foi possível ler a imagem."));
+    reader.readAsDataURL(file);
+  });
 }
 
 if (hasShop) {
@@ -993,13 +1195,40 @@ if (hasContact) {
     selectors.contactFileLabel.textContent = file ? file.name : "Clique ou arraste arquivos para enviar";
   });
 
-  selectors.contactForm.addEventListener("submit", (event) => {
+  selectors.contactForm.addEventListener("submit", async (event) => {
     event.preventDefault();
-    const ticket = `BLS-CNT-${Date.now().toString().slice(-5)}`;
-    showToast(`Mensagem recebida! Protocolo ${ticket}.`);
-    selectors.contactForm.reset();
-    selectors.contactMessageCount.textContent = "0";
-    selectors.contactFileLabel.textContent = "Clique ou arraste arquivos para enviar";
+    const submitButton = selectors.contactForm.querySelector("[type='submit']");
+    const originalText = submitButton.querySelector("span")?.textContent || submitButton.textContent;
+    const data = new FormData(selectors.contactForm);
+    submitButton.disabled = true;
+    if (submitButton.querySelector("span")) submitButton.querySelector("span").textContent = "Enviando...";
+
+    try {
+      const attachment = await fileToDataUrl(selectors.contactFile.files[0]);
+      const response = await fetch("/api/contact", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          name: data.get("name"),
+          email: data.get("email"),
+          discord: data.get("discord"),
+          category: data.get("category"),
+          type: data.get("type"),
+          message: data.get("message"),
+          attachment,
+        }),
+      });
+      const body = await response.json().catch(() => ({}));
+      if (!response.ok) throw new Error(body.error || "Não foi possível enviar para o Discord.");
+      selectors.contactForm.reset();
+      selectors.contactMessageCount.textContent = "0";
+      selectors.contactFileLabel.textContent = "Clique ou arraste arquivos para enviar";
+    } catch (error) {
+      selectors.contactFileLabel.textContent = error.message;
+    } finally {
+      submitButton.disabled = false;
+      if (submitButton.querySelector("span")) submitButton.querySelector("span").textContent = originalText;
+    }
   });
 }
 
@@ -1040,6 +1269,13 @@ selectors.accountConfig.addEventListener("click", (event) => {
   toggleAccountMenu(false);
   openAccountSettings();
 });
+selectors.accountMenu.addEventListener("click", (event) => {
+  const history = event.target.closest("[data-order-history-open]");
+  if (!history) return;
+  event.preventDefault();
+  toggleAccountMenu(false);
+  openOrderHistory();
+});
 selectors.checkoutOpen.addEventListener("click", openCheckout);
 selectors.checkoutClose.addEventListener("click", closeCheckout);
 selectors.checkoutForm.addEventListener("submit", createOrder);
@@ -1057,6 +1293,16 @@ selectors.cartItems.addEventListener("click", (event) => {
   if (minus) updateQuantity(minus.dataset.qtyMinus, -1);
   if (plus) updateQuantity(plus.dataset.qtyPlus, 1);
   if (remove) removeFromCart(remove.dataset.remove);
+});
+
+selectors.cartSummary?.addEventListener("submit", (event) => {
+  const form = event.target.closest("[data-coupon-form]");
+  if (!form) return;
+  event.preventDefault();
+  const result = applyCoupon(new FormData(form).get("coupon"));
+  const feedback = form.querySelector("[data-coupon-feedback]");
+  feedback.textContent = result.message;
+  feedback.dataset.type = result.ok ? "success" : "error";
 });
 
 selectors.paymentInputs.forEach((input) => {
