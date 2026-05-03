@@ -33,6 +33,51 @@ function initMobileMenu() {
 
 document.addEventListener("DOMContentLoaded", initMobileMenu);
 
+function initLazyImages() {
+  if ("IntersectionObserver" in window) {
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          const el = entry.target;
+          const src = el.dataset.src;
+          if (src) {
+            if (el.tagName === "IMG") {
+              el.src = src;
+            } else {
+              el.style.backgroundImage = `url('${src}')`;
+            }
+            el.removeAttribute("data-src");
+            observer.unobserve(el);
+          }
+        }
+      });
+    }, { rootMargin: "200px 0px" });
+
+    window._lazyObserver = observer;
+    document.querySelectorAll("[data-src]").forEach((el) => observer.observe(el));
+  } else {
+    document.querySelectorAll("[data-src]").forEach((el) => {
+      const src = el.dataset.src;
+      if (src) {
+        if (el.tagName === "IMG") {
+          el.src = src;
+        } else {
+          el.style.backgroundImage = `url('${src}')`;
+        }
+        el.removeAttribute("data-src");
+      }
+    });
+  }
+}
+
+function refreshLazyImages() {
+  if (window._lazyObserver) {
+    document.querySelectorAll("[data-src]").forEach((el) => window._lazyObserver.observe(el));
+  }
+}
+
+document.addEventListener("DOMContentLoaded", initLazyImages);
+
 const defaultProductRows = [
   ["hoodie-black", "Blossom Hoodie Black", "Masculino", "Moletons", "Preto", 199.9, "hoodie-dark", true],
   ["tee-white", "Blossom Tee White", "Masculino", "Camisetas", "Branco", 129.9, "tee-white", true],
@@ -324,7 +369,7 @@ function getFilteredProducts() {
 function productCard(product, compact = false) {
   const visual = product.visual || "hoodie-dark";
   const image = primaryImage(product);
-  const imageStyle = image ? `style="background-image: linear-gradient(0deg, rgba(5,8,10,.36), rgba(5,8,10,.1)), url('${image}')"` : "";
+  const imageStyle = image ? `data-src="${image}"` : "";
   const label = String(product.type || product.category || "Peça").replace("Moletons", "Moleton").replace("Camisetas", "Camiseta").replace("Calças", "Calça");
   return `
     <article class="product-card ${compact ? "" : "shop-product"}" data-product-id="${product.id}">
@@ -343,7 +388,7 @@ function productCard(product, compact = false) {
 
 function collectionCard(collection) {
   const image = primaryImage(collection);
-  const imageStyle = image ? `style="background-image: linear-gradient(0deg, rgba(5,8,10,.36), rgba(5,8,10,.1)), url('${image}')"` : "";
+  const imageStyle = image ? `data-src="${image}"` : "";
   return `
     <article class="collection-card">
       <div class="template-visual collection-media ${collection.visual || "essentials"} ${image ? "has-upload" : ""}" ${imageStyle}>
@@ -376,6 +421,8 @@ function renderCatalog() {
     selectors.shopGrid.innerHTML = pageItems.map((product) => productCard(product)).join("");
   }
 
+  refreshLazyImages();
+
   renderPagination(totalPages);
 }
 
@@ -400,6 +447,8 @@ function renderHomeSections() {
     selectors.homeCollections.innerHTML = recentItems(collections, 4).map(collectionCard).join("")
       || '<p class="empty-products">Nenhuma coleção cadastrada ainda.</p>';
   }
+
+  refreshLazyImages();
 }
 
 function collectionProducts(collectionId) {
@@ -449,7 +498,7 @@ function renderCollections() {
   const visibleCollections = getFilteredCollections();
   selectors.collectionsGrid.innerHTML = visibleCollections.map((collection) => `
     <article>
-      <div class="template-visual collection-preview ${collection.visual || "essentials"} ${primaryImage(collection) ? "has-upload" : ""}" ${primaryImage(collection) ? `style="background-image: linear-gradient(0deg, rgba(5,8,10,.36), rgba(5,8,10,.1)), url('${primaryImage(collection)}')"` : ""}>
+      <div class="template-visual collection-preview ${collection.visual || "essentials"} ${primaryImage(collection) ? "has-upload" : ""}" ${primaryImage(collection) ? `data-src="${primaryImage(collection)}"` : ""}>
         ${collection.badge ? `<span>${collection.badge}</span>` : ""}
       </div>
       <div>
@@ -460,6 +509,9 @@ function renderCollections() {
       </div>
     </article>
   `).join("") || '<p class="empty-products">Nenhuma coleção encontrada com esses filtros.</p>';
+
+  refreshLazyImages();
+}
 }
 
 function renderCollectionDetail() {
