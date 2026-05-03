@@ -122,7 +122,9 @@ function writeSession(user) {
     role: user.role || "cliente",
   }));
   if ((user.role || "cliente") === "admin") {
-    writeSession(user);
+    localStorage.setItem("blossom-admin-session", "active");
+  } else {
+    localStorage.removeItem("blossom-admin-session");
   }
 }
 
