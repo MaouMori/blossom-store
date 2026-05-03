@@ -76,6 +76,32 @@ function refreshLazyImages() {
   }
 }
 
+function initHomeCarousels() {
+  const pairs = [
+    [document.querySelector("[data-home-collections]"), document.querySelector("[data-collection-prev]"), document.querySelector("[data-collection-next]")],
+    [document.querySelector("[data-lookbook-track]"), document.querySelector("[data-lookbook-prev]"), document.querySelector("[data-lookbook-next]")],
+  ];
+
+  pairs.forEach(([track, prev, next]) => {
+    if (!track || track.dataset.carouselReady) return;
+    track.dataset.carouselReady = "true";
+    const move = (direction = 1) => {
+      const card = track.querySelector("article");
+      if (!card) return;
+      const step = card.getBoundingClientRect().width + 18;
+      const end = track.scrollLeft + track.clientWidth >= track.scrollWidth - 8;
+      if (direction > 0 && end) {
+        track.scrollTo({ left: 0, behavior: "smooth" });
+        return;
+      }
+      track.scrollBy({ left: step * direction, behavior: "smooth" });
+    };
+    prev?.addEventListener("click", () => move(-1));
+    next?.addEventListener("click", () => move(1));
+    window.setInterval(() => move(1), 3600);
+  });
+}
+
 document.addEventListener("DOMContentLoaded", initLazyImages);
 
 const defaultProductRows = [
@@ -264,6 +290,7 @@ const selectors = {
   collectionGallery: document.querySelector("[data-collection-gallery]"),
   homeProducts: document.querySelector("[data-home-products]"),
   homeCollections: document.querySelector("[data-home-collections]"),
+  lookbookTrack: document.querySelector("[data-lookbook-track]"),
   contactForm: document.querySelector("[data-contact-form]"),
   contactMessage: document.querySelector("[data-message]"),
   contactMessageCount: document.querySelector("[data-message-count]"),
@@ -425,6 +452,35 @@ function collectionCard(collection) {
   `;
 }
 
+function homeCollectionCard(collection) {
+  const image = primaryImage(collection);
+  const imageStyle = image ? `data-src="${image}"` : "";
+  const shortName = String(collection.name || "Blossom Collection").replace(/^Blossom\s+/i, "");
+  return `
+    <article class="home-collection-card">
+      <div class="home-image-slot ${image ? "has-upload" : ""}" ${imageStyle}>
+        <span>${image ? "" : "Imagem da coleção"}</span>
+      </div>
+      <div>
+        <h3>${shortName}</h3>
+        <a href="colecao.html?id=${collection.id}">Ver coleção <span>↗</span></a>
+      </div>
+    </article>
+  `;
+}
+
+function lookbookCard(product, index) {
+  const image = primaryImage(product);
+  const imageStyle = image ? `data-src="${image}"` : "";
+  return `
+    <article class="lookbook-card">
+      <div class="home-image-slot ${image ? "has-upload" : ""} ${product.visual || ""}" ${imageStyle}>
+        <span>${image ? "" : `Foto ${index + 1}`}</span>
+      </div>
+    </article>
+  `;
+}
+
 function renderCatalog() {
   if (!hasShop) return;
 
@@ -462,16 +518,24 @@ function renderPagination(totalPages) {
 
 function renderHomeSections() {
   if (hasHomeProducts) {
-    selectors.homeProducts.innerHTML = recentItems(products.filter((product) => product.visibility !== "collection-only"), 6).map((product) => productCard(product, true)).join("")
-      || '<p class="empty-products">Nenhuma peça cadastrada ainda.</p>';
+    const saleProducts = recentItems(products.filter((product) => product.visibility !== "collection-only"), 8);
+    selectors.homeProducts.innerHTML = saleProducts.map((product, index) => lookbookCard(product, index)).join("")
+      || Array.from({ length: 5 }, (_, index) => lookbookCard({ name: `Foto ${index + 1}`, visual: "" }, index)).join("");
   }
 
   if (hasHomeCollections) {
-    selectors.homeCollections.innerHTML = recentItems(collections, 4).map(collectionCard).join("")
+    selectors.homeCollections.innerHTML = recentItems(collections, 8).map(homeCollectionCard).join("")
       || '<p class="empty-products">Nenhuma coleção cadastrada ainda.</p>';
   }
 
+  if (selectors.lookbookTrack) {
+    const looks = recentItems(products.filter((product) => product.visibility !== "collection-only"), 8);
+    selectors.lookbookTrack.innerHTML = looks.map((product, index) => lookbookCard(product, index)).join("")
+      || Array.from({ length: 5 }, (_, index) => lookbookCard({ name: `Foto ${index + 1}`, visual: "" }, index)).join("");
+  }
+
   refreshLazyImages();
+  initHomeCarousels();
 }
 
 function collectionProducts(collectionId) {

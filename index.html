@@ -3,16 +3,16 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
-  <meta name="theme-color" content="#1a0b12">
+  <meta name="theme-color" content="#fff0f5">
   <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
   <title>Blossom Store</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700;800&family=Playfair+Display:wght@500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles.css">
 </head>
-<body>
+<body class="home-light">
   <header class="site-header">
     <a class="brand" href="index.html">
       <span class="brand-mark">✿</span>
@@ -22,23 +22,23 @@
       </span>
     </a>
 
-    <nav class="main-nav" aria-label="Navegação principal">
+    <nav class="main-nav" aria-label="Navegacao principal">
       <a class="active" href="index.html">Home</a>
-      <a href="colecoes.html">Coleções</a>
+      <a href="colecoes.html">Colecoes</a>
       <a href="loja.html">Loja</a>
-      <a href="sobre.html">Sobre nós</a>
+      <a href="sobre.html">Sobre nos</a>
       <a href="contato.html">Contato</a>
     </nav>
 
     <button class="mobile-menu-toggle" type="button" aria-label="Abrir menu" data-mobile-menu-toggle>☰</button>
 
     <div class="mobile-nav-overlay" data-mobile-nav-overlay></div>
-    <nav class="mobile-nav" aria-label="Navegação mobile" data-mobile-nav>
-      <button class="mobile-nav-close" type="button" aria-label="Fechar menu" data-mobile-nav-close>✕</button>
+    <nav class="mobile-nav" aria-label="Navegacao mobile" data-mobile-nav>
+      <button class="mobile-nav-close" type="button" aria-label="Fechar menu" data-mobile-nav-close>×</button>
       <a class="active" href="index.html">Home</a>
-      <a href="colecoes.html">Coleções</a>
+      <a href="colecoes.html">Colecoes</a>
       <a href="loja.html">Loja</a>
-      <a href="sobre.html">Sobre nós</a>
+      <a href="sobre.html">Sobre nos</a>
       <a href="contato.html">Contato</a>
     </nav>
 
@@ -52,7 +52,7 @@
         <span class="chevron">⌄</span>
       </button>
       <div class="account-menu" data-account-menu hidden>
-        <a href="#" data-account-config>⚙ Configurações</a>
+        <a href="#" data-account-config>⚙ Configuracoes</a>
         <a href="login.html">✿ Painel Admin</a>
         <button type="button" data-account-logout>Entrar</button>
       </div>
@@ -61,185 +61,128 @@
     </div>
   </header>
 
-  <main>
-    <section class="hero">
-      <div class="template-visual hero-media" aria-hidden="true">
-        <div class="figure figure-main"></div>
-        <div class="garage-flower">✿</div>
-        <div class="car-shape"></div>
+  <main class="home-new">
+    <section class="pink-hero container">
+      <button class="home-arrow left" type="button" data-hero-prev aria-label="Anterior">‹</button>
+      <div class="pink-hero-card">
+        <div class="home-petals" aria-hidden="true"></div>
+        <div class="pink-hero-copy">
+          <span class="home-kicker">Mais que roupas.</span>
+          <h1>Vista&nbsp;sua <strong>identidade</strong></h1>
+          <p>Cada peca e feita com atencao aos detalhes, unindo estilo, qualidade e exclusividade.</p>
+          <div class="home-actions">
+            <a class="home-primary" href="colecoes.html">Ver colecoes <span>↗</span></a>
+            <a class="home-link" href="sobre.html">Sobre nos <span>↗</span></a>
+          </div>
+        </div>
+        <div class="home-image-slot hero-slot">
+          <span>Imagem principal</span>
+        </div>
+        <div class="home-dots" aria-hidden="true"><span class="active"></span><span></span><span></span></div>
       </div>
-      <div class="container hero-content">
-        <span class="eyebrow">Blossom Store</span>
-        <h1>Vista sua <strong>identidade.</strong></h1>
-        <p>Roupas exclusivas para quem vive o roleplay com atitude.</p>
-        <div class="hero-actions">
-          <a class="button primary" href="loja.html">Ver coleções <span>→</span></a>
-          <a class="button secondary" href="#lookbook">Explorar looks</a>
+      <button class="home-arrow right" type="button" data-hero-next aria-label="Proxima">›</button>
+    </section>
+
+    <section class="home-benefits container" aria-label="Diferenciais da loja">
+      <article><span>◇</span><div><b>Qualidade premium</b><small>Tecidos e detalhes selecionados</small></div></article>
+      <article><span>✿</span><div><b>Estilo exclusivo</b><small>Pecas unicas feitas para se destacar</small></div></article>
+      <article><span>♧</span><div><b>Comunidade</b><small>Feito por players, para players</small></div></article>
+      <article><span>♡</span><div><b>Atendimento</b><small>Suporte humanizado e dedicado</small></div></article>
+    </section>
+
+    <section class="home-collections container" id="colecoes">
+      <div class="home-section-heading">
+        <span>Nossas</span>
+        <h2>Colecoes</h2>
+        <a href="colecoes.html">Ver todas <span>↗</span></a>
+      </div>
+      <div class="home-carousel-shell">
+        <button class="home-arrow small left" type="button" data-collection-prev aria-label="Colecao anterior">‹</button>
+        <div class="home-collection-track" data-home-collections></div>
+        <button class="home-arrow small right" type="button" data-collection-next aria-label="Proxima colecao">›</button>
+      </div>
+      <div class="home-dots below" aria-hidden="true"><span class="active"></span><span></span><span></span><span></span><span></span></div>
+    </section>
+
+    <section class="home-culture">
+      <div class="container culture-card">
+        <div>
+          <span>Blossom culture</span>
+          <h2>Feito por players,<br>para players.</h2>
+          <p>Mais que uma marca, somos uma comunidade que vive o roleplay e traduz isso em cada detalhe.</p>
+          <a class="home-primary dark" href="sobre.html">Conheca nossa historia <span>↗</span></a>
+        </div>
+        <div class="culture-gallery" aria-label="Espacos para fotos da cultura Blossom">
+          <div class="home-image-slot"></div>
+          <div class="home-image-slot"></div>
+          <div class="home-image-slot"></div>
+          <div class="home-image-slot"></div>
         </div>
       </div>
     </section>
 
-    <section class="benefits container" aria-label="Diferenciais da loja">
+    <section class="home-essence container" id="sobre">
+      <div class="home-section-heading left">
+        <span>Sobre nos</span>
+        <h2>Nossa<br>essencia</h2>
+      </div>
       <article>
-        <span class="benefit-icon">♧</span>
-        <div>
-          <h2>Peças exclusivas</h2>
-          <p>Modelagens únicas e limitadas.</p>
-        </div>
+        <span>◎</span>
+        <h3>Nossa missao</h3>
+        <p>Entregamos roupas exclusivas para a comunidade de roleplay, valorizando criatividade, autenticidade e estilo.</p>
+        <a href="sobre.html">Saiba mais ↗</a>
       </article>
       <article>
-        <span class="benefit-icon">◇</span>
-        <div>
-          <h2>Qualidade premium</h2>
-          <p>Tecidos selecionados com cuidado.</p>
-        </div>
+        <span>⊙</span>
+        <h3>Nossa visao</h3>
+        <p>Ser a marca de roupas mais reconhecida e desejada no universo do FiveM.</p>
+        <a href="sobre.html">Saiba mais ↗</a>
       </article>
       <article>
-        <span class="benefit-icon">▣</span>
-        <div>
-          <h2>Estilo para RP</h2>
-          <p>Criado para se destacar nas ruas.</p>
-        </div>
-      </article>
-      <article>
-        <span class="benefit-icon">☆</span>
-        <div>
-          <h2>Atualizações constantes</h2>
-          <p>Novos drops e coleções sempre.</p>
-        </div>
+        <span>◇</span>
+        <h3>Nossos valores</h3>
+        <ul><li>Autenticidade</li><li>Criatividade</li><li>Respeito</li><li>Inovacao</li></ul>
       </article>
     </section>
 
-    <section class="section-block container" id="colecoes">
-      <div class="section-title-row">
-        <div>
-          <span class="eyebrow">Coleções em destaque</span>
-          <h2>Nossas coleções</h2>
-        </div>
-        <a class="button ghost" href="loja.html">Ver catálogo completo</a>
-      </div>
-
-      <div class="collection-grid" data-home-collections>
-        <article class="collection-card">
-          <div class="template-visual collection-media male"></div>
-          <div class="collection-copy">
-            <h3>Masculino</h3>
-            <a href="loja.html">Ver peças →</a>
-          </div>
-        </article>
-        <article class="collection-card">
-          <div class="template-visual collection-media female"></div>
-          <div class="collection-copy">
-            <h3>Feminino</h3>
-            <a href="loja.html">Ver peças →</a>
-          </div>
-        </article>
-        <article class="collection-card">
-          <div class="template-visual collection-media drops"></div>
-          <div class="collection-copy">
-            <h3>Drops exclusivos</h3>
-            <a href="loja.html">Ver peças →</a>
-          </div>
-        </article>
-        <article class="collection-card">
-          <div class="template-visual collection-media caps"></div>
-          <div class="collection-copy">
-            <h3>Acessórios</h3>
-            <a href="loja.html">Ver peças →</a>
-          </div>
-        </article>
-      </div>
+    <section class="home-stats container" aria-label="Numeros Blossom">
+      <article><span>♙</span><b>+10K</b><small>Players vestidos</small></article>
+      <article><span>♕</span><b>+150</b><small>Pecas exclusivas</small></article>
+      <article><span>☆</span><b>+5K</b><small>Clientes satisfeitos</small></article>
+      <article><span>▣</span><b>Desde<br>2023</b><small>No roleplay</small></article>
     </section>
 
-    <section class="section-block container">
-      <div class="section-title-row compact">
-        <div>
-          <span class="eyebrow">Produtos em destaque</span>
-          <h2>Peças em alta</h2>
-        </div>
-        <a class="text-link" href="loja.html">Ver todas as peças →</a>
+    <section class="home-lookbook container" id="lookbook">
+      <div class="home-section-heading left">
+        <span>Lookbook</span>
+        <h2>Blossom<br>inspira</h2>
+        <a href="colecoes.html">Ver mais fotos <span>↗</span></a>
       </div>
-
-      <div class="product-grid" data-home-products>
-        <article class="product-card" data-product-id="hoodie-black">
-          <div class="template-visual product-media hoodie-dark"><span>Novo</span></div>
-          <div class="product-copy">
-            <h3>Blossom Hoodie Black</h3>
-            <p>Moleton</p>
-            <strong>R$199,90</strong>
-            <button class="add-button" type="button" data-add-to-cart="hoodie-black">Adicionar</button>
-          </div>
-        </article>
-        <article class="product-card" data-product-id="tee-white">
-          <div class="template-visual product-media tee-white"><span>Novo</span></div>
-          <div class="product-copy">
-            <h3>Blossom Tee White</h3>
-            <p>Camiseta</p>
-            <strong>R$129,90</strong>
-            <button class="add-button" type="button" data-add-to-cart="tee-white">Adicionar</button>
-          </div>
-        </article>
-        <article class="product-card" data-product-id="jersey">
-          <div class="template-visual product-media jersey"><span>Novo</span></div>
-          <div class="product-copy">
-            <h3>Blossom Jersey</h3>
-            <p>Camisa</p>
-            <strong>R$169,90</strong>
-            <button class="add-button" type="button" data-add-to-cart="jersey">Adicionar</button>
-          </div>
-        </article>
-        <article class="product-card" data-product-id="zip-pink">
-          <div class="template-visual product-media zip"><span>Novo</span></div>
-          <div class="product-copy">
-            <h3>Blossom Zip Pink</h3>
-            <p>Jaqueta</p>
-            <strong>R$249,90</strong>
-            <button class="add-button" type="button" data-add-to-cart="zip-pink">Adicionar</button>
-          </div>
-        </article>
-        <article class="product-card" data-product-id="cargo-black">
-          <div class="template-visual product-media cargo"></div>
-          <div class="product-copy">
-            <h3>Blossom Cargo Black</h3>
-            <p>Calça</p>
-            <strong>R$189,90</strong>
-            <button class="add-button" type="button" data-add-to-cart="cargo-black">Adicionar</button>
-          </div>
-        </article>
-        <article class="product-card" data-product-id="cap-pink">
-          <div class="template-visual product-media cap-pink"></div>
-          <div class="product-copy">
-            <h3>Blossom Cap Pink</h3>
-            <p>Acessório</p>
-            <strong>R$89,90</strong>
-            <button class="add-button" type="button" data-add-to-cart="cap-pink">Adicionar</button>
-          </div>
-        </article>
+      <div class="home-carousel-shell">
+        <button class="home-arrow small left" type="button" data-lookbook-prev aria-label="Foto anterior">‹</button>
+        <div class="lookbook-track" data-lookbook-track></div>
+        <button class="home-arrow small right" type="button" data-lookbook-next aria-label="Proxima foto">›</button>
       </div>
+      <div class="home-dots below" aria-hidden="true"><span class="active"></span><span></span><span></span><span></span><span></span></div>
     </section>
 
-    <section class="about-strip container" id="sobre">
-      <div class="about-brand-mark">✿</div>
-      <div class="about-copy">
-        <span class="eyebrow">Sobre a Blossom</span>
-        <h2>Mais que roupas, é identidade.</h2>
-        <p>A Blossom Store nasceu dentro do universo do FiveM com um propósito: criar roupas que representam quem você é nas ruas do roleplay.</p>
-        <p>Cada peça é feita com atenção aos detalhes, unindo estilo, qualidade e exclusividade.</p>
-        <a class="button secondary" href="#sobre">Conheça nossa história</a>
+    <section class="home-cta container">
+      <div class="cta-flower">✿</div>
+      <div>
+        <h2>Faca parte da <strong>nossa historia</strong></h2>
+        <p>Vista sua identidade. Vista Blossom.</p>
       </div>
-      <div class="look-strip" id="lookbook" aria-label="Prévia de looks">
-        <div class="template-visual look-item"></div>
-        <div class="template-visual look-item"></div>
-        <div class="template-visual look-item"></div>
-        <div class="template-visual look-item"></div>
-      </div>
+      <form>
+        <input type="email" placeholder="Seu melhor e-mail" aria-label="Seu melhor e-mail">
+        <button type="button">Quero fazer parte <span>↗</span></button>
+      </form>
     </section>
 
-    <section class="services container" id="contato" aria-label="Informações de compra">
-      <article><span>▱</span><b>Entrega digital</b><small>Receba na hora</small></article>
-      <article><span>◇</span><b>Compatível com FiveM</b><small>100% otimizado</small></article>
-      <article><span>☻</span><b>Suporte humanizado</b><small>Estamos aqui por você</small></article>
-      <article><span>⬟</span><b>Pagamento seguro</b><small>Segurança garantida</small></article>
+    <section class="home-services container" id="contato" aria-label="Informacoes de compra">
+      <article><span>▱</span><div><b>Entrega digital</b><small>Receba na hora</small></div></article>
+      <article><span>◇</span><div><b>Compativel com FiveM</b><small>100% otimizado</small></div></article>
+      <article><span>☻</span><div><b>Suporte humanizado</b><small>Estamos aqui por voce</small></div></article>
+      <article><span>▣</span><div><b>Pagamento seguro</b><small>Seguranca garantida</small></div></article>
     </section>
   </main>
 
@@ -255,12 +198,12 @@
     </div>
 
     <div class="cart-items" data-cart-items>
-      <p class="empty-cart">Seu carrinho está vazio.</p>
+      <p class="empty-cart">Seu carrinho esta vazio.</p>
     </div>
 
     <div class="cart-summary">
       <div><span>Subtotal</span><strong data-subtotal>R$0,00</strong></div>
-      <div><span>Entrega digital</span><strong>Grátis</strong></div>
+      <div><span>Entrega digital</span><strong>Gratis</strong></div>
       <div class="summary-total"><span>Total</span><strong data-total>R$0,00</strong></div>
       <button class="checkout-button" type="button" data-checkout-open disabled>Finalizar compra</button>
     </div>
@@ -274,35 +217,19 @@
           <span class="eyebrow">Pagamento</span>
           <h2>Finalizar compra</h2>
 
-          <label>
-            Nome no pedido
-            <input type="text" name="customer" placeholder="Seu nome" required>
-          </label>
-
-          <label>
-            E-mail para entrega
-            <input type="email" name="email" placeholder="seu@email.com" required>
-          </label>
+          <label>Nome no pedido<input type="text" name="customer" placeholder="Seu nome" required></label>
+          <label>E-mail para entrega<input type="email" name="email" placeholder="seu@email.com" required></label>
 
           <fieldset>
             <legend>Forma de pagamento</legend>
-            <label class="payment-option">
-              <input type="radio" name="payment" value="pix" checked>
-              <span><b>PIX</b><small>Gera código e QR de demonstração.</small></span>
-            </label>
-            <label class="payment-option">
-              <input type="radio" name="payment" value="card">
-              <span><b>Cartão</b><small>Tela pronta para integrar gateway.</small></span>
-            </label>
-            <label class="payment-option">
-              <input type="radio" name="payment" value="boleto">
-              <span><b>Boleto</b><small>Gera referência de pedido.</small></span>
-            </label>
+            <label class="payment-option"><input type="radio" name="payment" value="pix" checked><span><b>PIX</b><small>Gera codigo e QR de demonstracao.</small></span></label>
+            <label class="payment-option"><input type="radio" name="payment" value="card"><span><b>Cartao</b><small>Tela pronta para integrar gateway.</small></span></label>
+            <label class="payment-option"><input type="radio" name="payment" value="boleto"><span><b>Boleto</b><small>Gera referencia de pedido.</small></span></label>
           </fieldset>
 
           <div class="payment-preview" data-payment-preview>
             <div class="qr-placeholder">PIX</div>
-            <p>Ao confirmar, o sistema cria um pedido em modo demonstração. Para pagamento real, basta conectar Mercado Pago, Stripe ou Asaas.</p>
+            <p>Ao confirmar, o sistema cria um pedido em modo demonstracao. Para pagamento real, basta conectar Mercado Pago, Stripe ou Asaas.</p>
           </div>
 
           <button class="checkout-button" type="submit">Criar pedido</button>
@@ -313,7 +240,7 @@
           <h3>Itens do pedido</h3>
           <div data-checkout-items></div>
           <div class="summary-total"><span>Total</span><strong data-checkout-total>R$0,00</strong></div>
-          <p class="order-note">Entrega digital automática após confirmação do pagamento real.</p>
+          <p class="order-note">Entrega digital automatica apos confirmacao do pagamento real.</p>
         </aside>
       </div>
     </div>
@@ -327,9 +254,9 @@
       </a>
       <p>© 2025 Blossom Store. Todos os direitos reservados.</p>
       <nav aria-label="Links legais">
-        <a href="#">Política de privacidade</a>
+        <a href="#">Politica de privacidade</a>
         <a href="#">Termos de uso</a>
-        <a href="#">Trocas e devoluções</a>
+        <a href="#">Trocas e devolucoes</a>
       </nav>
       <div class="footer-socials">
         <a href="#">IG</a>
