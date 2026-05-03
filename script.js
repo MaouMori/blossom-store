@@ -142,14 +142,14 @@ const defaultProducts = defaultProductRows.map(([id, name, category, type, color
 }));
 
 const defaultCollections = [
-  { id: "spring-25", name: "Blossom Spring '25", label: "Coleção Primavera 2025", description: "Peças leves e estilosas para dominar as ruas.", pieces: 12, visual: "spring", badge: "Nova" },
-  { id: "essentials", name: "Blossom Essentials", label: "Coleção Essentials", description: "Peças básicas com o padrão de qualidade Blossom.", pieces: 18, visual: "essentials", badge: "" },
-  { id: "nightfall", name: "Blossom Nightfall", label: "Coleção Nightfall", description: "Cores escuras. Estilo pesado. Presença marcante.", pieces: 10, visual: "nightfall", badge: "" },
-  { id: "luxury", name: "Blossom Luxury", label: "Coleção Luxury", description: "Detalhes premium para quem vive o topo do roleplay.", pieces: 8, visual: "luxury", badge: "" },
-  { id: "sport", name: "Blossom Sport", label: "Coleção Sport", description: "Performance, conforto e estilo para qualquer missão.", pieces: 11, visual: "sport", badge: "" },
-  { id: "oversized", name: "Blossom Oversized", label: "Coleção Oversized", description: "Modelagens amplas para um visual urbano e autêntico.", pieces: 14, visual: "oversized", badge: "" },
-  { id: "pink-label", name: "Blossom Pink Label", label: "Coleção Pink Label", description: "A identidade rosa da Blossom. Única, forte e feminina.", pieces: 9, visual: "pink-label", badge: "" },
-  { id: "collabs", name: "Blossom Collabs", label: "Coleção Collabs", description: "Parcerias especiais que viram história.", pieces: 7, visual: "collabs", badge: "" },
+  { id: "spring-25", name: "Blossom Spring '25", label: "Coleção Primavera 2025", description: "Peças leves e estilosas para dominar as ruas.", pieces: 12, price: 299.9, visual: "spring", badge: "Nova" },
+  { id: "essentials", name: "Blossom Essentials", label: "Coleção Essentials", description: "Peças básicas com o padrão de qualidade Blossom.", pieces: 18, price: 349.9, visual: "essentials", badge: "" },
+  { id: "nightfall", name: "Blossom Nightfall", label: "Coleção Nightfall", description: "Cores escuras. Estilo pesado. Presença marcante.", pieces: 10, price: 399.9, visual: "nightfall", badge: "" },
+  { id: "luxury", name: "Blossom Luxury", label: "Coleção Luxury", description: "Detalhes premium para quem vive o topo do roleplay.", pieces: 8, price: 499.9, visual: "luxury", badge: "" },
+  { id: "sport", name: "Blossom Sport", label: "Coleção Sport", description: "Performance, conforto e estilo para qualquer missão.", pieces: 11, price: 329.9, visual: "sport", badge: "" },
+  { id: "oversized", name: "Blossom Oversized", label: "Coleção Oversized", description: "Modelagens amplas para um visual urbano e autêntico.", pieces: 14, price: 369.9, visual: "oversized", badge: "" },
+  { id: "pink-label", name: "Blossom Pink Label", label: "Coleção Pink Label", description: "A identidade rosa da Blossom. Única, forte e feminina.", pieces: 9, price: 289.9, visual: "pink-label", badge: "" },
+  { id: "collabs", name: "Blossom Collabs", label: "Coleção Collabs", description: "Parcerias especiais que viram história.", pieces: 7, price: 449.9, visual: "collabs", badge: "" },
 ];
 
 const defaultTaxonomies = {
@@ -373,16 +373,18 @@ function productCard(product, compact = false) {
   const image = primaryImage(product);
   const imageStyle = image ? `data-src="${image}"` : "";
   const label = String(product.type || product.category || "Peça").replace("Moletons", "Moleton").replace("Camisetas", "Camiseta").replace("Calças", "Calça");
+  const collectionOnly = product.visibility === "collection-only";
   return `
-    <article class="product-card ${compact ? "" : "shop-product"}" data-product-id="${product.id}">
+    <article class="product-card ${compact ? "" : "shop-product"} ${collectionOnly ? "included-product" : ""}" data-product-id="${product.id}">
       <div class="template-visual product-media ${visual} ${image ? "has-upload" : ""}" ${imageStyle}>
         ${product.isNew ? "<span>Novo</span>" : ""}
       </div>
       <div class="product-copy">
         <h3>${product.name}</h3>
         <p>${label}</p>
-        <strong>${money.format(Number(product.price || 0))}</strong>
-        <button class="add-button" type="button" aria-label="Adicionar ${product.name}" data-add-to-cart="${product.id}">Adicionar</button>
+        ${collectionOnly
+          ? '<strong class="included-label">Incluso na coleção</strong>'
+          : `<strong>${money.format(Number(product.price || 0))}</strong><button class="add-button" type="button" aria-label="Adicionar ${product.name}" data-add-to-cart="${product.id}">Adicionar</button>`}
       </div>
     </article>
   `;
@@ -461,6 +463,18 @@ function collectionPieceCount(collection) {
   return collectionProducts(collection.id).length;
 }
 
+function collectionPrice(collection) {
+  const explicit = Number(collection.price || 0);
+  if (explicit > 0) return explicit;
+  return collectionProducts(collection.id)
+    .filter((product) => product.visibility !== "collection-only")
+    .reduce((sum, product) => sum + Number(product.price || 0), 0);
+}
+
+function cartItemPrice(item) {
+  return Number(item.price || 0);
+}
+
 function getFilteredCollections() {
   let filtered = collections.filter((collection) => {
     const related = collectionProducts(collection.id);
@@ -507,7 +521,7 @@ function renderCollections() {
         <h2>${collection.name}</h2>
         <b>${collection.label}</b>
         <p>${collection.description}</p>
-        <footer><span>${String(collectionPieceCount(collection)).padStart(2, "0")} peças</span><a href="colecao.html?id=${collection.id}">Ver coleção</a></footer>
+        <footer><span>${String(collectionPieceCount(collection)).padStart(2, "0")} peças • ${money.format(collectionPrice(collection))}</span><a href="colecao.html?id=${collection.id}">Ver coleção</a></footer>
       </div>
     </article>
   `).join("") || '<p class="empty-products">Nenhuma coleção encontrada com esses filtros.</p>';
@@ -529,11 +543,17 @@ function renderCollectionDetail() {
 
   const related = collectionProducts(collection.id);
   const images = itemImages(collection);
+  const price = collectionPrice(collection);
   selectors.collectionDetail.innerHTML = `
     <span class="eyebrow">Coleção</span>
     <h1>${collection.name}</h1>
     <p>${collection.description || collection.label || ""}</p>
-    <a class="button primary" href="loja.html">Ver loja completa</a>
+    <div class="collection-buy-panel">
+      <strong>${money.format(price)}</strong>
+      <span>${String(related.length).padStart(2, "0")} peças inclusas</span>
+      <button class="button primary" type="button" data-add-collection="${collection.id}">Adicionar coleção</button>
+      <a class="button secondary" href="loja.html">Ver loja completa</a>
+    </div>
   `;
   selectors.collectionGallery.innerHTML = images.map((image) => `<div class="collection-photo" style="background-image:url('${image}')"></div>`).join("")
     || `<div class="template-visual collection-photo ${collection.visual || "essentials"}"></div>`;
@@ -678,7 +698,22 @@ function addToCart(product) {
   saveCart();
   renderCart();
   openCart();
-  showToast(`${product.name} adicionado ao carrinho.`);
+}
+
+function collectionCartItem(collection) {
+  const related = collectionProducts(collection.id);
+  return {
+    id: `collection-${collection.id}`,
+    kind: "collection",
+    collectionId: collection.id,
+    name: collection.name,
+    category: "Coleção",
+    type: `${related.length} peças inclusas`,
+    price: collectionPrice(collection),
+    visual: collection.visual,
+    image: primaryImage(collection),
+    images: itemImages(collection),
+  };
 }
 
 function updateQuantity(id, direction) {
@@ -701,7 +736,7 @@ function removeFromCart(id) {
 }
 
 function cartTotal() {
-  return cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
+  return cart.reduce((sum, item) => sum + cartItemPrice(item) * item.quantity, 0);
 }
 
 function cartQuantity() {
@@ -736,7 +771,7 @@ function renderCart() {
       <div>
         <h3>${item.name}</h3>
         <p>${item.type || item.category}</p>
-        <strong>${money.format(item.price)}</strong>
+        <strong>${money.format(cartItemPrice(item))}</strong>
       </div>
       <div class="quantity-control" aria-label="Quantidade de ${item.name}">
         <button type="button" data-qty-minus="${item.id}">-</button>
@@ -750,7 +785,7 @@ function renderCart() {
   selectors.checkoutItems.innerHTML = cart.map((item) => `
     <article class="review-item">
       <span>${item.quantity}x ${item.name}</span>
-      <strong>${money.format(item.price * item.quantity)}</strong>
+      <strong>${money.format(cartItemPrice(item) * item.quantity)}</strong>
     </article>
   `).join("");
 }
@@ -810,7 +845,7 @@ function createOrder(event) {
   const orderItems = cart.map((item) => ({
     id: item.id,
     name: item.name,
-    price: item.price,
+    price: cartItemPrice(item),
     quantity: item.quantity,
   }));
 
@@ -969,10 +1004,18 @@ if (hasContact) {
 }
 
 document.addEventListener("click", (event) => {
-  const button = event.target.closest("[data-add-to-cart]");
-  if (!button) return;
-  const product = products.find((item) => item.id === button.dataset.addToCart);
-  if (product) addToCart(product);
+  const productButton = event.target.closest("[data-add-to-cart]");
+  if (productButton) {
+    const product = products.find((item) => item.id === productButton.dataset.addToCart);
+    if (product && product.visibility !== "collection-only") addToCart(product);
+    return;
+  }
+
+  const collectionButton = event.target.closest("[data-add-collection]");
+  if (collectionButton) {
+    const collection = collections.find((item) => item.id === collectionButton.dataset.addCollection);
+    if (collection) addToCart(collectionCartItem(collection));
+  }
 });
 
 selectors.cartOpen.addEventListener("click", openCart);

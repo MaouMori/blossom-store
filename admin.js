@@ -54,14 +54,14 @@ const productSeed = [
 ].map(([id, name, category, type, color, price, visual, isNew], created) => ({ id, name, category, type, color, price, visual, isNew, created }));
 
 const collectionSeed = [
-  { id: "spring-25", name: "Blossom Spring '25", label: "Coleção Primavera 2025", description: "Peças leves e estilosas para dominar as ruas.", pieces: 12, visual: "spring", badge: "Nova" },
-  { id: "essentials", name: "Blossom Essentials", label: "Coleção Essentials", description: "Peças básicas com o padrão de qualidade Blossom.", pieces: 18, visual: "essentials", badge: "" },
-  { id: "nightfall", name: "Blossom Nightfall", label: "Coleção Nightfall", description: "Cores escuras. Estilo pesado. Presença marcante.", pieces: 10, visual: "nightfall", badge: "" },
-  { id: "luxury", name: "Blossom Luxury", label: "Coleção Luxury", description: "Detalhes premium para quem vive o topo do roleplay.", pieces: 8, visual: "luxury", badge: "" },
-  { id: "sport", name: "Blossom Sport", label: "Coleção Sport", description: "Performance, conforto e estilo para qualquer missão.", pieces: 11, visual: "sport", badge: "" },
-  { id: "oversized", name: "Blossom Oversized", label: "Coleção Oversized", description: "Modelagens amplas para um visual urbano e autêntico.", pieces: 14, visual: "oversized", badge: "" },
-  { id: "pink-label", name: "Blossom Pink Label", label: "Coleção Pink Label", description: "A identidade rosa da Blossom. Única, forte e feminina.", pieces: 9, visual: "pink-label", badge: "" },
-  { id: "collabs", name: "Blossom Collabs", label: "Coleção Collabs", description: "Parcerias especiais que viram história.", pieces: 7, visual: "collabs", badge: "" },
+  { id: "spring-25", name: "Blossom Spring '25", label: "Coleção Primavera 2025", description: "Peças leves e estilosas para dominar as ruas.", pieces: 12, price: 299.9, visual: "spring", badge: "Nova" },
+  { id: "essentials", name: "Blossom Essentials", label: "Coleção Essentials", description: "Peças básicas com o padrão de qualidade Blossom.", pieces: 18, price: 349.9, visual: "essentials", badge: "" },
+  { id: "nightfall", name: "Blossom Nightfall", label: "Coleção Nightfall", description: "Cores escuras. Estilo pesado. Presença marcante.", pieces: 10, price: 399.9, visual: "nightfall", badge: "" },
+  { id: "luxury", name: "Blossom Luxury", label: "Coleção Luxury", description: "Detalhes premium para quem vive o topo do roleplay.", pieces: 8, price: 499.9, visual: "luxury", badge: "" },
+  { id: "sport", name: "Blossom Sport", label: "Coleção Sport", description: "Performance, conforto e estilo para qualquer missão.", pieces: 11, price: 329.9, visual: "sport", badge: "" },
+  { id: "oversized", name: "Blossom Oversized", label: "Coleção Oversized", description: "Modelagens amplas para um visual urbano e autêntico.", pieces: 14, price: 369.9, visual: "oversized", badge: "" },
+  { id: "pink-label", name: "Blossom Pink Label", label: "Coleção Pink Label", description: "A identidade rosa da Blossom. Única, forte e feminina.", pieces: 9, price: 289.9, visual: "pink-label", badge: "" },
+  { id: "collabs", name: "Blossom Collabs", label: "Coleção Collabs", description: "Parcerias especiais que viram história.", pieces: 7, price: 449.9, visual: "collabs", badge: "" },
 ];
 
 const taxonomySeed = {
@@ -427,7 +427,7 @@ function renderAdmin() {
       <div>
         <h3>${item.name}</h3>
         <p>${item.category} • ${item.type} • ${item.color}</p>
-        <strong>${adminMoney.format(Number(item.price))}${item.isNew ? " • Novo" : ""}${item.visibility === "collection-only" ? " • Somente coleção" : ""}${itemImages(item).length ? ` • ${itemImages(item).length} fotos` : ""}</strong>
+        <strong>${item.visibility === "collection-only" ? "Sem preço individual" : adminMoney.format(Number(item.price))}${item.isNew ? " • Novo" : ""}${item.visibility === "collection-only" ? " • Somente coleção" : ""}${itemImages(item).length ? ` • ${itemImages(item).length} fotos` : ""}</strong>
       </div>
       <div>
         <button type="button" data-edit-product="${item.id}">Editar</button>
@@ -442,7 +442,7 @@ function renderAdmin() {
       <div>
         <h3>${item.name}</h3>
         <p>${item.label}</p>
-        <strong>${adminProducts.filter((product) => product.collection === item.id).length} peças${item.badge ? ` • ${item.badge}` : ""}${itemImages(item).length ? ` • ${itemImages(item).length} fotos` : ""}</strong>
+        <strong>${adminMoney.format(Number(item.price || 0))} • ${adminProducts.filter((product) => product.collection === item.id).length} peças${item.badge ? ` • ${item.badge}` : ""}${itemImages(item).length ? ` • ${itemImages(item).length} fotos` : ""}</strong>
       </div>
       <div>
         <button type="button" data-edit-collection="${item.id}">Editar</button>
@@ -512,6 +512,7 @@ function openCollectionForm(collection = null) {
   field(form, "label").value = collection?.label || "";
   field(form, "description").value = collection?.description || "";
   field(form, "pieces").value = collection?.pieces || "";
+  field(form, "price").value = collection?.price || "";
   field(form, "badge").value = collection?.badge || "";
   form.dataset.currentImages = JSON.stringify(itemImages(collection));
   const count = itemImages(collection).length;
@@ -615,6 +616,12 @@ $("[data-product-form]")?.addEventListener("submit", async (event) => {
     submitButton.textContent = originalText;
     return;
   }
+  if (data.get("visibility") !== "collection-only" && !data.get("price")) {
+    $("[data-product-image-note]").textContent = "Informe o preço para produtos que aparecem na loja.";
+    submitButton.disabled = false;
+    submitButton.textContent = originalText;
+    return;
+  }
 
   const product = {
     id,
@@ -624,7 +631,7 @@ $("[data-product-form]")?.addEventListener("submit", async (event) => {
     color: data.get("color"),
     collection: data.get("collection"),
     visibility: data.get("visibility"),
-    price: Number(data.get("price")),
+    price: data.get("visibility") === "collection-only" ? 0 : Number(data.get("price")),
     visual: data.get("visual"),
     image: images[0] || "",
     images,
@@ -676,6 +683,7 @@ $("[data-collection-form]")?.addEventListener("submit", async (event) => {
     label: data.get("label"),
     description: data.get("description"),
     pieces: adminProducts.filter((product) => product.collection === id).length,
+    price: Number(data.get("price")),
     visual: data.get("visual"),
     badge: data.get("badge"),
     image: images[0] || "",

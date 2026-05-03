@@ -5,7 +5,8 @@ add column if not exists visibility text not null default 'store';
 
 alter table public.collections
 add column if not exists images jsonb not null default '[]'::jsonb,
-add column if not exists created bigint;
+add column if not exists created bigint,
+add column if not exists price numeric not null default 0;
 
 alter table public.admin_users
 add column if not exists role text not null default 'cliente',

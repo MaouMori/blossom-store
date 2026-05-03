@@ -2780,18 +2780,21 @@ select option:checked {
   margin-top: 28px;
   display: flex;
   justify-content: center;
+  flex-wrap: wrap;
   gap: 8px;
 }
 
 .pagination button {
-  width: 36px;
+  min-width: 38px;
   height: 36px;
+  padding: 0 14px;
   border: 1px solid var(--line);
   border-radius: 5px;
   background: rgba(255, 255, 255, 0.035);
   color: white;
   cursor: pointer;
   font-weight: 800;
+  white-space: nowrap;
 }
 
 .pagination button.active {
@@ -3019,6 +3022,15 @@ select option:checked {
   transform: translateY(-1px);
 }
 
+.included-product {
+  border-style: dashed;
+}
+
+.included-label {
+  color: #c7cdd4;
+  font-size: 12px;
+}
+
 .about-strip {
   min-height: 146px;
   margin-top: 20px;
@@ -3132,6 +3144,32 @@ select option:checked {
   max-width: 560px;
   color: #c7cdd4;
   line-height: 1.7;
+}
+
+.collection-buy-panel {
+  margin-top: 24px;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+}
+
+.collection-buy-panel strong {
+  min-height: 42px;
+  padding: 0 16px;
+  border: 1px solid rgba(255, 156, 188, 0.36);
+  border-radius: 5px;
+  color: var(--pink-soft);
+  display: inline-flex;
+  align-items: center;
+  font-size: 18px;
+}
+
+.collection-buy-panel span {
+  color: #c7cdd4;
+  font-size: 12px;
+  font-weight: 800;
+  text-transform: uppercase;
 }
 
 .collection-gallery {
