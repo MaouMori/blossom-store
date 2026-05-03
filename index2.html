@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+  <meta name="theme-color" content="#fff0f5">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <title>Blossom Store</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700;800&family=Playfair+Display:wght@500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="index2.css">
+</head>
+<body class="home-v2" data-theme="light">
+  <header class="site-header">
+    <a class="brand" href="index.html">
+      <span class="brand-mark">✿</span>
+      <span>
+        <b>BLOSSOM</b>
+        <small>STORE</small>
+      </span>
+    </a>
+
+    <nav class="main-nav" aria-label="Navegacao principal">
+      <a class="active" href="index2.html">HOME</a>
+      <a href="colecoes.html">COLECOES</a>
+      <a href="loja.html">LOJA</a>
+      <a href="sobre.html">SOBRE NOS</a>
+      <a href="contato.html">CONTATO</a>
+    </nav>
+
+    <button class="mobile-menu-toggle" type="button" aria-label="Abrir menu" data-mobile-menu-toggle>☰</button>
+
+    <div class="mobile-nav-overlay" data-mobile-nav-overlay></div>
+    <nav class="mobile-nav" aria-label="Navegacao mobile" data-mobile-nav>
+      <button class="mobile-nav-close" type="button" aria-label="Fechar menu" data-mobile-nav-close>×</button>
+      <a class="active" href="index2.html">HOME</a>
+      <a href="colecoes.html">COLECOES</a>
+      <a href="loja.html">LOJA</a>
+      <a href="sobre.html">SOBRE NOS</a>
+      <a href="contato.html">CONTATO</a>
+    </nav>
+
+    <div class="header-actions">
+      <button class="theme-toggle" type="button" aria-label="Alternar tema" data-theme-toggle>
+        <span class="theme-icon-light">☀</span>
+        <span class="theme-icon-dark">☾</span>
+      </button>
+      <a href="login.html" class="header-icon" aria-label="Conta">♙</a>
+      <a href="#" class="header-icon discord" aria-label="Discord">☎</a>
+      <button class="cart" type="button" aria-label="Abrir carrinho" data-cart-open>▱<small data-cart-count>0</small></button>
+    </div>
+  </header>
+
+  <main>
+    <!-- HERO SECTION -->
+    <section class="v2-hero">
+      <div class="v2-hero-bg" style="background-image: url('img/mulher.png');">
+        <div class="v2-hero-overlay"></div>
+      </div>
+      
+      <div class="v2-hero-content">
+        <div class="v2-hero-left">
+          <div class="v2-hero-numbers">
+            <span>01</span>
+            <span>02</span>
+            <span>03</span>
+            <span>04</span>
+          </div>
+          <div class="v2-hero-text">
+            <span class="v2-kicker">✦ BLOSSOM STORE</span>
+            <h1>VISTA SUA <em>IDENTIDADE.</em></h1>
+            <p>Mais que roupas, é sobre quem você é<br>e o que você representa.</p>
+            <a href="colecoes.html" class="v2-cta-btn">DESCUBRA AS COLEÇÕES <span>→</span></a>
+          </div>
+        </div>
+        
+        <div class="v2-hero-scroll">
+          <span>SCROLL</span>
+          <span class="v2-scroll-arrow">↓</span>
+        </div>
+        
+        <div class="v2-hero-right">
+          <span class="v2-vertical-text">FEITO POR PLAYERS. PARA PLAYERS.</span>
+          <span class="v2-vertical-text v2-year">DESDE 2023</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- BLOSSOM CULTURE SECTION -->
+    <section class="v2-culture">
+      <div class="container v2-culture-grid">
+        <div class="v2-culture-text">
+          <span class="v2-section-label">✦ BLOSSOM CULTURE</span>
+          <h2>CRIADO PARA<br>QUEM <em>VIVE O RP.</em></h2>
+          <p>Cada detalhe carrega intenção.<br>Cada peça transmite atitude.<br>Cada coleção é um manifesto.</p>
+          <a href="sobre.html" class="v2-link-btn">NOSSA HISTÓRIA <span>→</span></a>
+        </div>
+        <div class="v2-culture-gallery">
+          <div class="v2-culture-img" data-src="img/mulher.png">
+            
+          </div>
+          <div class="v2-culture-img" data-src="img/mulher.png">
+            
+          </div>
+          <div class="v2-culture-img" data-src="img/mulher.png">
+            
+          </div>
+          <div class="v2-culture-img" data-src="img/mulher.png">
+            
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- COLEÇÕES SECTION -->
+    <section class="v2-collections">
+      <div class="container">
+        <div class="v2-collections-header">
+          <div>
+            <span class="v2-section-label">✦ COLEÇÕES</span>
+            <h2>EXPLORE NOSSOS<br><em>MUNDOS.</em></h2>
+            <p class="v2-collections-sub">CADA COLEÇÃO, UMA IDENTIDADE.</p>
+          </div>
+          <a href="colecoes.html" class="v2-link-btn">VER TODAS AS COLEÇÕES <span>→</span></a>
+        </div>
+        
+        <div class="v2-collections-grid">
+          <div class="v2-collection-card" data-src="img/mulher.png">
+            <div class="v2-collection-overlay"></div>
+            <div class="v2-collection-info">
+              <h3>PINK SEASON</h3>
+              <p>Peças com a vibe pink que<br>marcam presença.</p>
+              <span class="v2-collection-line"></span>
+            </div>
+          </div>
+          <div class="v2-collection-card" data-src="img/mulher.png">
+            <div class="v2-collection-overlay"></div>
+            <div class="v2-collection-info">
+              <h3>OVERSIZED ESSENTIALS</h3>
+              <p>Conforto, estilo e presença<br>em cada detalhe.</p>
+              <span class="v2-collection-line"></span>
+            </div>
+          </div>
+          <div class="v2-collection-card" data-src="img/mulher.png">
+            <div class="v2-collection-overlay"></div>
+            <div class="v2-collection-info">
+              <h3>LIMITED EDITION</h3>
+              <p>Edições limitadas para quem<br>vive o roleplay de verdade.</p>
+              <span class="v2-collection-line"></span>
+            </div>
+          </div>
+          <div class="v2-collection-card" data-src="img/mulher.png">
+            <div class="v2-collection-overlay"></div>
+            <div class="v2-collection-info">
+              <h3>BLOSSOM CLASSICS</h3>
+              <p>Peças clássicas que nunca<br>saem de moda.</p>
+              <span class="v2-collection-line"></span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- BENEFÍCIOS SECTION -->
+    <section class="v2-benefits">
+      <div class="container">
+        <div class="v2-benefits-grid">
+          <div class="v2-benefit-item">
+            <span class="v2-benefit-icon">⚡</span>
+            <div>
+              <b>ENTREGA IMEDIATA</b>
+              <small>Receba o pack no<br>Discord na hora.</small>
+            </div>
+          </div>
+          <div class="v2-benefit-item">
+            <span class="v2-benefit-icon">📦</span>
+            <div>
+              <b>ARQUIVOS OTIMIZADOS</b>
+              <small>Desempenho leve e<br>sem perda de qualidade.</small>
+            </div>
+          </div>
+          <div class="v2-benefit-item">
+            <span class="v2-benefit-icon">🎧</span>
+            <div>
+              <b>SUPORTE EXCLUSIVO</b>
+              <small>Ajuda para instalação<br>e dúvidas.</small>
+            </div>
+          </div>
+          <div class="v2-benefit-item">
+            <span class="v2-benefit-icon">🛡</span>
+            <div>
+              <b>100% SEGURO</b>
+              <small>Pagamento protegido<br>e sem riscos.</small>
+            </div>
+          </div>
+          <div class="v2-benefit-item">
+            <span class="v2-benefit-icon">👥</span>
+            <div>
+              <b>PARA PLAYERS</b>
+              <small>Feito para quem vive o RP<br>e representa de verdade.</small>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- LOOKBOOK SECTION -->
+    <section class="v2-lookbook">
+      <div class="container">
+        <div class="v2-lookbook-header">
+          <span class="v2-section-label">✦ LOOKBOOK</span>
+          <div class="v2-lookbook-nav">
+            <button class="v2-lookbook-arrow" data-lookbook-prev aria-label="Anterior">‹</button>
+            <button class="v2-lookbook-arrow" data-lookbook-next aria-label="Próximo">›</button>
+          </div>
+        </div>
+        <div class="v2-lookbook-track" data-lookbook-track>
+          <div class="v2-lookbook-img" data-src="img/mulher.png"></div>
+          <div class="v2-lookbook-img" data-src="img/mulher.png"></div>
+          <div class="v2-lookbook-img" data-src="img/mulher.png"></div>
+          <div class="v2-lookbook-img" data-src="img/mulher.png"></div>
+          <div class="v2-lookbook-img" data-src="img/mulher.png"></div>
+          <div class="v2-lookbook-img" data-src="img/mulher.png"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- NEWSLETTER SECTION -->
+    <section class="v2-newsletter">
+      <div class="container v2-newsletter-grid">
+        <div class="v2-newsletter-text">
+          <h2>FAÇA PARTE DA<br><em>NOSSA HISTÓRIA.</em></h2>
+        </div>
+        <div class="v2-newsletter-desc">
+          <p>Receba novidades, lançamentos<br>e conteúdos exclusivos.</p>
+        </div>
+        <form class="v2-newsletter-form">
+          <input type="email" placeholder="Seu melhor e-mail" aria-label="Seu melhor e-mail">
+          <button type="button" aria-label="Inscrever">→</button>
+        </form>
+      </div>
+    </section>
+  </main>
+
+  <!-- FOOTER -->
+  <footer class="site-footer v2-footer">
+    <div class="container v2-footer-grid">
+      <div class="v2-footer-brand">
+        <a class="footer-brand" href="index.html">
+          <span class="brand-mark">✿</span>
+          <span><b>BLOSSOM</b><small>STORE</small></span>
+        </a>
+        <p>Roupas exclusivas para quem<br>vive o roleplay. Qualidade,<br>estilo e performance.</p>
+        <div class="v2-footer-socials">
+          <a href="#" aria-label="Discord">☎</a>
+          <a href="#" aria-label="Instagram">📷</a>
+          <a href="#" aria-label="TikTok">🎵</a>
+          <a href="#" aria-label="YouTube">▶</a>
+        </div>
+      </div>
+      
+      <div class="v2-footer-col">
+        <h4>MENU</h4>
+        <a href="colecoes.html">Coleções</a>
+        <a href="loja.html">Loja</a>
+        <a href="sobre.html">Sobre nós</a>
+        <a href="contato.html">Contato</a>
+      </div>
+      
+      <div class="v2-footer-col">
+        <h4>AJUDA</h4>
+        <a href="#">Como comprar</a>
+        <a href="#">Como instalar</a>
+        <a href="#">Perguntas frequentes</a>
+        <a href="#">Trocas e reembolsos</a>
+        <a href="#">Termos de uso</a>
+      </div>
+      
+      <div class="v2-footer-col">
+        <h4>INFORMAÇÕES</h4>
+        <a href="mailto:contato@blossomstore.com">contato@blossomstore.com</a>
+        <a href="tel:+550000000000">(11) 00000-0000</a>
+        <span>Seg - Sex: 14h às 22h</span>
+      </div>
+      
+      <div class="v2-footer-col">
+        <h4>FORMAS DE PAGAMENTO</h4>
+        <div class="v2-payment-methods">
+          <span class="v2-payment">pix</span>
+          <span class="v2-payment">hiper</span>
+          <span class="v2-payment">VISA</span>
+          <span class="v2-payment">Mastercard</span>
+        </div>
+      </div>
+    </div>
+    
+    <div class="v2-footer-bottom">
+      <p>© 2025 Blossom Store. Todos os direitos reservados.</p>
+    </div>
+  </footer>
+
+  <!-- CART DRAWER -->
+  <div class="overlay" data-overlay hidden></div>
+  <aside class="cart-drawer" data-cart-drawer aria-hidden="true" aria-label="Carrinho de compras">
+    <div class="drawer-head">
+      <div>
+        <span class="eyebrow">Seu pedido</span>
+        <h2>Carrinho</h2>
+      </div>
+      <button class="icon-button" type="button" aria-label="Fechar carrinho" data-cart-close>×</button>
+    </div>
+    <div class="cart-items" data-cart-items>
+      <p class="empty-cart">Seu carrinho está vazio.</p>
+    </div>
+    <div class="cart-summary">
+      <div><span>Subtotal</span><strong data-subtotal>R$0,00</strong></div>
+      <div><span>Entrega digital</span><strong>Grátis</strong></div>
+      <div class="summary-total"><span>Total</span><strong data-total>R$0,00</strong></div>
+      <button class="checkout-button" type="button" data-checkout-open disabled>Finalizar compra</button>
+    </div>
+  </aside>
+
+  <!-- CHECKOUT MODAL -->
+  <section class="checkout-modal" data-checkout-modal hidden aria-label="Finalizar compra">
+    <div class="checkout-panel">
+      <button class="icon-button checkout-close" type="button" aria-label="Fechar checkout" data-checkout-close>×</button>
+      <div class="checkout-grid">
+        <form class="checkout-form" data-checkout-form>
+          <span class="eyebrow">Pagamento</span>
+          <h2>Finalizar compra</h2>
+          <label>Nome no pedido<input type="text" name="customer" placeholder="Seu nome" required></label>
+          <label>E-mail para entrega<input type="email" name="email" placeholder="seu@email.com" required></label>
+          <fieldset>
+            <legend>Forma de pagamento</legend>
+            <label class="payment-option"><input type="radio" name="payment" value="pix" checked><span><b>PIX</b><small>Gera código e QR de demonstração.</small></span></label>
+            <label class="payment-option"><input type="radio" name="payment" value="card"><span><b>Cartão</b><small>Tela pronta para integrar gateway.</small></span></label>
+            <label class="payment-option"><input type="radio" name="payment" value="boleto"><span><b>Boleto</b><small>Gera referência de pedido.</small></span></label>
+          </fieldset>
+          <div class="payment-preview" data-payment-preview>
+            <div class="qr-placeholder">PIX</div>
+            <p>Ao confirmar, o sistema cria um pedido em modo demonstração. Para pagamento real, basta conectar Mercado Pago, Stripe ou Asaas.</p>
+          </div>
+          <button class="checkout-button" type="submit">Criar pedido</button>
+        </form>
+        <aside class="order-review">
+          <span class="eyebrow">Resumo</span>
+          <h3>Itens do pedido</h3>
+          <div data-checkout-items></div>
+          <div class="summary-total"><span>Total</span><strong data-checkout-total>R$0,00</strong></div>
+          <p class="order-note">Entrega digital automática após confirmação do pagamento real.</p>
+        </aside>
+      </div>
+    </div>
+  </section>
+
+  <script src="script.js"></script>
+  <script src="index2.js"></script>
+</body>
+</html>
