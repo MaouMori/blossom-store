@@ -6579,6 +6579,66 @@ select option:checked {
   border-color: var(--ed-line);
 }
 
+.home-editorial.editorial-light .spotlight-carousel b,
+.home-editorial.editorial-light .spotlight-carousel small {
+  color: var(--ed-text);
+}
+
+.home-editorial.editorial-light .spotlight-carousel small {
+  color: var(--ed-muted);
+}
+
+.home-editorial.editorial-light .spotlight-carousel .portrait,
+.home-editorial.editorial-light .spotlight-carousel .influencer-shot {
+  border-color: rgba(218, 74, 123, 0.3);
+  box-shadow: 0 12px 40px rgba(218, 74, 123, 0.12);
+}
+
+.home-editorial.editorial-light .spotlight-carousel .portrait.dark,
+.home-editorial.editorial-light .spotlight-carousel .influencer-shot.mono {
+  background: radial-gradient(circle at 50% 26%, #d48a9e 0 28px, transparent 29px), linear-gradient(180deg, #f0e0e6, #e8d5dc);
+}
+
+.home-editorial.editorial-light .spotlight-carousel .portrait.rose,
+.home-editorial.editorial-light .spotlight-carousel .influencer-shot.vivid {
+  background: radial-gradient(circle at 50% 26%, #f5a8bc 0 28px, transparent 29px), linear-gradient(180deg, #ffe0ea, #ffd0e0);
+}
+
+.home-editorial.editorial-light .spotlight-carousel .portrait.black,
+.home-editorial.editorial-light .spotlight-carousel .influencer-shot.soft {
+  background: radial-gradient(circle at 50% 26%, #c49aa6 0 28px, transparent 29px), linear-gradient(180deg, #e8d8de, #f0e4e8);
+}
+
+.home-editorial.editorial-light .spotlight-carousel .portrait.pink {
+  background: radial-gradient(circle at 50% 26%, #e890a8 0 28px, transparent 29px), linear-gradient(180deg, #ffd0e0, #ffc0d4);
+}
+
+.home-editorial.editorial-light .spotlight-carousel a::after {
+  background: linear-gradient(180deg, transparent 40%, rgba(255, 248, 251, 0.92));
+}
+
+.home-editorial.editorial-light .spotlight-carousel a:hover::after,
+.home-editorial.editorial-light .spotlight-carousel a:focus-visible::after {
+  background: linear-gradient(180deg, transparent 20%, rgba(255, 248, 251, 0.98));
+}
+
+.home-editorial.editorial-light .influencer-row b,
+.home-editorial.editorial-light .influencer-row small {
+  color: var(--ed-text);
+}
+
+.home-editorial.editorial-light .influencer-row small {
+  color: var(--ed-muted);
+}
+
+.home-editorial.editorial-light .spotlight-strip .see-all {
+  color: var(--ed-pink);
+}
+
+.home-editorial.editorial-light .home-scrolled .editorial-header {
+  background: rgba(255, 248, 251, 0.88);
+}
+
 @media (max-width: 1100px) {
   .editorial-header {
     padding: 0 24px;
