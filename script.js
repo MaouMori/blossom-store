@@ -102,7 +102,26 @@ function initHomeCarousels() {
   });
 }
 
+function initThemeToggle() {
+  const button = document.querySelector("[data-theme-toggle]");
+  if (!button || !document.body.classList.contains("home-editorial")) return;
+  const saved = localStorage.getItem("blossom-home-theme") || "dark";
+
+  function setTheme(theme) {
+    const light = theme === "light";
+    document.body.classList.toggle("editorial-light", light);
+    button.setAttribute("aria-pressed", String(light));
+    localStorage.setItem("blossom-home-theme", light ? "light" : "dark");
+  }
+
+  setTheme(saved);
+  button.addEventListener("click", () => {
+    setTheme(document.body.classList.contains("editorial-light") ? "dark" : "light");
+  });
+}
+
 document.addEventListener("DOMContentLoaded", initLazyImages);
+document.addEventListener("DOMContentLoaded", initThemeToggle);
 
 const defaultProductRows = [
   ["hoodie-black", "Blossom Hoodie Black", "Masculino", "Moletons", "Preto", 199.9, "hoodie-dark", true],
