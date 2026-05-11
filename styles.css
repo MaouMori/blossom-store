@@ -6522,11 +6522,20 @@ select option:checked {
 .home-editorial.editorial-light .editorial-nav a.active,
 .home-editorial.editorial-light .editorial-nav a:hover,
 .home-editorial.editorial-light .editorial-logo,
-.home-editorial.editorial-light .editorial-section-title,
 .home-editorial.editorial-light .see-all,
 .home-editorial.editorial-light .editorial-footer .footer-brand b,
 .home-editorial.editorial-light .editorial-footer .brand-mark {
   color: var(--ed-pink);
+}
+
+.home-editorial.editorial-light .editorial-section-title,
+.home-editorial.editorial-light .section-flower,
+.home-editorial.editorial-light .editorial-section-title i {
+  color: var(--ed-text);
+}
+
+.home-editorial.editorial-light .editorial-section-title i {
+  background: var(--ed-text);
 }
 
 .home-editorial.editorial-light .editorial-hero {
