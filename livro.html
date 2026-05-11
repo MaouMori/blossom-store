@@ -652,7 +652,7 @@
             <div class="cover-flower">&#10047;</div>
             <div class="cover-title">Blossom<br>Store</div>
             <div class="cover-subtitle">${subtitle}</div>
-            <div class="cover-hint">Clique ou arraste para abrir</div>
+            <div class="cover-hint">Use a ponta direita para abrir</div>
           </div>
         </section>
       `;
@@ -753,7 +753,6 @@
       state.pageFlip.loadFromHTML(flipTarget.querySelectorAll(".book-physical-page"));
       state.pageFlip.on("flip", updateControls);
       state.pageFlip.on("changeState", updateControls);
-      flipTarget.querySelector("[data-cover-page]")?.addEventListener("click", () => state.pageFlip?.flipNext());
       state.ready = true;
       updateControls();
     }
