@@ -6216,6 +6216,85 @@ select option:checked {
   letter-spacing: 0.2em;
 }
 
+.home-editorial.editorial-light .spotlight-carousel a::before {
+  background: linear-gradient(180deg, rgba(255, 248, 251, 0), rgba(255, 248, 251, 0.88) 58%, rgba(255, 248, 251, 0.98));
+}
+
+.home-editorial.editorial-light .spotlight-carousel b {
+  color: var(--ed-text);
+}
+
+.home-editorial.editorial-light .spotlight-carousel small {
+  color: var(--ed-muted);
+}
+
+.home-editorial.editorial-light .spotlight-carousel .portrait,
+.home-editorial.editorial-light .spotlight-carousel .influencer-shot {
+  border-color: rgba(218, 74, 123, 0.3);
+  box-shadow: none;
+}
+
+.home-editorial.editorial-light .spotlight-carousel .portrait.dark,
+.home-editorial.editorial-light .spotlight-carousel .influencer-shot.mono {
+  background: radial-gradient(circle at 48% 17%, rgba(255, 199, 210, 0.5) 0 28px, transparent 29px), radial-gradient(circle at 50% 42%, rgba(240, 111, 159, 0.18), transparent 36%), linear-gradient(180deg, #f5e0e8, #ffe8f0);
+}
+
+.home-editorial.editorial-light .spotlight-carousel .portrait.rose,
+.home-editorial.editorial-light .spotlight-carousel .influencer-shot.vivid {
+  background: radial-gradient(circle at 50% 17%, rgba(255, 139, 180, 0.55) 0 28px, transparent 29px), radial-gradient(circle at 48% 38%, rgba(232, 62, 123, 0.14), transparent 36%), linear-gradient(180deg, #ffd0e4, #ffe0ec);
+}
+
+.home-editorial.editorial-light .spotlight-carousel .portrait.black,
+.home-editorial.editorial-light .spotlight-carousel .influencer-shot.soft {
+  background: radial-gradient(circle at 50% 17%, rgba(237, 177, 194, 0.55) 0 28px, transparent 29px), radial-gradient(circle at 48% 38%, rgba(240, 111, 159, 0.1), transparent 35%), linear-gradient(180deg, #f0d8e2, #ffe8f2);
+}
+
+.home-editorial.editorial-light .spotlight-carousel .portrait.pink {
+  background: radial-gradient(circle at 50% 17%, rgba(255, 156, 188, 0.55) 0 28px, transparent 29px), radial-gradient(circle at 48% 38%, rgba(240, 111, 159, 0.14), transparent 36%), linear-gradient(180deg, #ffd8e6, #ffe8f2);
+}
+
+.home-editorial.editorial-light .spotlight-carousel .portrait::before,
+.home-editorial.editorial-light .spotlight-carousel .influencer-shot::before {
+  background: linear-gradient(90deg, rgba(255, 156, 188, 0.28), transparent 35%, rgba(255, 156, 188, 0.24)), linear-gradient(180deg, rgba(255, 112, 158, 0.62), rgba(255, 248, 251, 0.96));
+}
+
+.home-editorial.editorial-light .spotlight-carousel .portrait::after,
+.home-editorial.editorial-light .spotlight-carousel .influencer-shot::after {
+  background: linear-gradient(135deg, #ff9fbd, #ba657d);
+}
+
+.home-editorial.editorial-light .spotlight-carousel a {
+  background: #fff0f5;
+  border-color: rgba(218, 74, 123, 0.25);
+}
+
+.home-editorial.editorial-light .spotlight-carousel a:hover,
+.home-editorial.editorial-light .spotlight-carousel a:focus-visible {
+  border-color: rgba(218, 74, 123, 0.6);
+  box-shadow: 0 20px 60px rgba(218, 74, 123, 0.18);
+}
+
+.home-editorial.editorial-light .spotlight-carousel a::after {
+  color: var(--ed-pink);
+}
+
+.home-editorial.editorial-light .influencer-row b,
+.home-editorial.editorial-light .influencer-row small {
+  color: var(--ed-text);
+}
+
+.home-editorial.editorial-light .influencer-row small {
+  color: var(--ed-muted);
+}
+
+.home-editorial.editorial-light .spotlight-strip .see-all {
+  color: var(--ed-pink);
+}
+
+.home-editorial.editorial-light .home-scrolled .editorial-header {
+  background: rgba(255, 248, 251, 0.88);
+}
+
 .home-reveal {
   opacity: 0;
   transform: translateY(42px);
@@ -6577,66 +6656,6 @@ select option:checked {
 .home-editorial.editorial-light .mobile-menu-toggle {
   color: var(--ed-text);
   border-color: var(--ed-line);
-}
-
-.home-editorial.editorial-light .spotlight-carousel b,
-.home-editorial.editorial-light .spotlight-carousel small {
-  color: var(--ed-text);
-}
-
-.home-editorial.editorial-light .spotlight-carousel small {
-  color: var(--ed-muted);
-}
-
-.home-editorial.editorial-light .spotlight-carousel .portrait,
-.home-editorial.editorial-light .spotlight-carousel .influencer-shot {
-  border-color: rgba(218, 74, 123, 0.3);
-  box-shadow: 0 12px 40px rgba(218, 74, 123, 0.12);
-}
-
-.home-editorial.editorial-light .spotlight-carousel .portrait.dark,
-.home-editorial.editorial-light .spotlight-carousel .influencer-shot.mono {
-  background: radial-gradient(circle at 50% 26%, #d48a9e 0 28px, transparent 29px), linear-gradient(180deg, #f0e0e6, #e8d5dc);
-}
-
-.home-editorial.editorial-light .spotlight-carousel .portrait.rose,
-.home-editorial.editorial-light .spotlight-carousel .influencer-shot.vivid {
-  background: radial-gradient(circle at 50% 26%, #f5a8bc 0 28px, transparent 29px), linear-gradient(180deg, #ffe0ea, #ffd0e0);
-}
-
-.home-editorial.editorial-light .spotlight-carousel .portrait.black,
-.home-editorial.editorial-light .spotlight-carousel .influencer-shot.soft {
-  background: radial-gradient(circle at 50% 26%, #c49aa6 0 28px, transparent 29px), linear-gradient(180deg, #e8d8de, #f0e4e8);
-}
-
-.home-editorial.editorial-light .spotlight-carousel .portrait.pink {
-  background: radial-gradient(circle at 50% 26%, #e890a8 0 28px, transparent 29px), linear-gradient(180deg, #ffd0e0, #ffc0d4);
-}
-
-.home-editorial.editorial-light .spotlight-carousel a::after {
-  background: linear-gradient(180deg, transparent 40%, rgba(255, 248, 251, 0.92));
-}
-
-.home-editorial.editorial-light .spotlight-carousel a:hover::after,
-.home-editorial.editorial-light .spotlight-carousel a:focus-visible::after {
-  background: linear-gradient(180deg, transparent 20%, rgba(255, 248, 251, 0.98));
-}
-
-.home-editorial.editorial-light .influencer-row b,
-.home-editorial.editorial-light .influencer-row small {
-  color: var(--ed-text);
-}
-
-.home-editorial.editorial-light .influencer-row small {
-  color: var(--ed-muted);
-}
-
-.home-editorial.editorial-light .spotlight-strip .see-all {
-  color: var(--ed-pink);
-}
-
-.home-editorial.editorial-light .home-scrolled .editorial-header {
-  background: rgba(255, 248, 251, 0.88);
 }
 
 @media (max-width: 1100px) {
