@@ -5899,6 +5899,242 @@ select option:checked {
   font-size: 11px;
 }
 
+.spotlight-strip {
+  max-width: none;
+  padding: 58px 0 46px;
+  overflow: hidden;
+}
+
+.spotlight-strip::before,
+.spotlight-strip::after {
+  content: "";
+  position: absolute;
+  z-index: 3;
+  top: 132px;
+  bottom: 22px;
+  width: min(13vw, 190px);
+  pointer-events: none;
+}
+
+.spotlight-strip::before {
+  left: 0;
+  background: linear-gradient(90deg, var(--ed-bg), rgba(5, 3, 5, 0));
+}
+
+.spotlight-strip::after {
+  right: 0;
+  background: linear-gradient(270deg, var(--ed-bg), rgba(5, 3, 5, 0));
+}
+
+.spotlight-head {
+  width: min(1240px, calc(100% - 96px));
+  margin: 0 auto 34px;
+}
+
+.spotlight-head > span {
+  display: block;
+  margin-bottom: 10px;
+  color: rgba(232, 210, 219, 0.48);
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.34em;
+  text-transform: uppercase;
+}
+
+.spotlight-head h2 {
+  margin: 0;
+  color: #f8edf2;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-family: "Oswald", "Archivo", sans-serif;
+  font-size: clamp(30px, 4vw, 54px);
+  line-height: 0.92;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+}
+
+.spotlight-strip .see-all {
+  top: 72px;
+  right: max(48px, calc((100vw - 1240px) / 2));
+}
+
+.spotlight-carousel {
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+}
+
+.spotlight-track {
+  width: max-content;
+  display: flex;
+  gap: 22px;
+  animation: spotlight-marquee 34s linear infinite;
+  will-change: transform;
+}
+
+.spotlight-track.reverse {
+  animation-name: spotlight-marquee-reverse;
+  animation-duration: 38s;
+}
+
+.spotlight-carousel:hover .spotlight-track,
+.spotlight-carousel:focus-within .spotlight-track {
+  animation-play-state: paused;
+}
+
+.spotlight-carousel a {
+  position: relative;
+  width: clamp(190px, 15.7vw, 260px);
+  min-height: clamp(300px, 25vw, 390px);
+  padding: 0;
+  overflow: hidden;
+  isolation: isolate;
+  border: 1px solid rgba(255, 156, 188, 0.17);
+  border-radius: 16px;
+  background: #09070a;
+  display: block;
+  text-decoration: none;
+}
+
+.spotlight-carousel a::before {
+  content: "";
+  position: absolute;
+  inset: auto 0 0;
+  z-index: 2;
+  height: 48%;
+  background: linear-gradient(180deg, rgba(5, 3, 5, 0), rgba(5, 3, 5, 0.88) 58%, rgba(5, 3, 5, 0.98));
+}
+
+.spotlight-carousel a::after {
+  content: "Ver perfil";
+  position: absolute;
+  z-index: 4;
+  right: 16px;
+  bottom: 18px;
+  color: var(--ed-pink);
+  font-size: 10px;
+  font-weight: 900;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  opacity: 0;
+  transform: translateX(-8px);
+  transition: opacity 180ms ease, transform 180ms ease;
+}
+
+.spotlight-carousel a:hover,
+.spotlight-carousel a:focus-visible {
+  transform: translateY(-10px) scale(1.025);
+  border-color: rgba(255, 156, 188, 0.8);
+  box-shadow: 0 30px 75px rgba(240, 111, 159, 0.26), 0 0 0 1px rgba(255, 156, 188, 0.08);
+}
+
+.spotlight-carousel a:hover::after,
+.spotlight-carousel a:focus-visible::after {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+.spotlight-carousel .portrait,
+.spotlight-carousel .influencer-shot {
+  position: absolute;
+  inset: 0;
+  width: auto;
+  height: auto;
+  margin: 0;
+  border: 0;
+  border-radius: inherit;
+  background:
+    radial-gradient(circle at 50% 17%, rgba(255, 156, 188, 0.38) 0 28px, transparent 29px),
+    radial-gradient(circle at 48% 38%, rgba(240, 111, 159, 0.18), transparent 34%),
+    linear-gradient(180deg, rgba(35, 11, 20, 0.72), rgba(5, 3, 5, 0.98));
+  box-shadow: none;
+}
+
+.spotlight-carousel .portrait::before,
+.spotlight-carousel .influencer-shot::before {
+  left: 50%;
+  bottom: 28px;
+  width: 42%;
+  height: 62%;
+  transform: translateX(-50%);
+  border-radius: 999px 999px 28px 28px;
+  background:
+    linear-gradient(90deg, rgba(255, 156, 188, 0.22), transparent 35%, rgba(255, 156, 188, 0.2)),
+    linear-gradient(180deg, rgba(255, 112, 158, 0.52), rgba(12, 7, 11, 0.96));
+}
+
+.spotlight-carousel .portrait::after,
+.spotlight-carousel .influencer-shot::after {
+  left: 50%;
+  top: 17%;
+  width: clamp(52px, 5vw, 74px);
+  height: clamp(52px, 5vw, 74px);
+  transform: translateX(-50%);
+  background: linear-gradient(135deg, #ff9fbd, #ba657d);
+}
+
+.spotlight-carousel .portrait.dark,
+.spotlight-carousel .influencer-shot.mono {
+  background:
+    radial-gradient(circle at 48% 17%, rgba(255, 199, 210, 0.28) 0 28px, transparent 29px),
+    radial-gradient(circle at 50% 42%, rgba(74, 23, 39, 0.52), transparent 36%),
+    linear-gradient(180deg, rgba(13, 10, 13, 0.82), rgba(4, 3, 4, 0.98));
+}
+
+.spotlight-carousel .portrait.rose,
+.spotlight-carousel .influencer-shot.vivid {
+  background:
+    radial-gradient(circle at 50% 17%, rgba(255, 139, 180, 0.42) 0 28px, transparent 29px),
+    radial-gradient(circle at 48% 38%, rgba(232, 62, 123, 0.22), transparent 36%),
+    linear-gradient(180deg, rgba(83, 19, 45, 0.72), rgba(5, 3, 5, 0.98));
+}
+
+.spotlight-carousel .portrait.black,
+.spotlight-carousel .influencer-shot.soft {
+  background:
+    radial-gradient(circle at 50% 17%, rgba(237, 177, 194, 0.4) 0 28px, transparent 29px),
+    radial-gradient(circle at 48% 38%, rgba(240, 111, 159, 0.12), transparent 35%),
+    linear-gradient(180deg, rgba(25, 20, 24, 0.82), rgba(5, 3, 5, 0.98));
+}
+
+.spotlight-carousel b,
+.spotlight-carousel small {
+  position: relative;
+  z-index: 3;
+  display: block;
+  margin: 0;
+  padding: 0 18px;
+  text-transform: uppercase;
+}
+
+.spotlight-carousel b {
+  padding-top: calc(clamp(300px, 25vw, 390px) - 72px);
+  color: #f8edf2;
+  font-size: 14px;
+  font-weight: 900;
+  letter-spacing: 0.04em;
+}
+
+.spotlight-carousel small {
+  margin-top: 7px;
+  color: rgba(232, 210, 219, 0.45);
+  font-size: 10px;
+  font-weight: 900;
+  letter-spacing: 0.2em;
+}
+
+@keyframes spotlight-marquee {
+  from { transform: translateX(0); }
+  to { transform: translateX(calc(-50% - 11px)); }
+}
+
+@keyframes spotlight-marquee-reverse {
+  from { transform: translateX(calc(-50% - 11px)); }
+  to { transform: translateX(0); }
+}
+
 .collections-strip {
   padding-bottom: 14px;
 }
