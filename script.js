@@ -140,7 +140,6 @@ function initHomeMotion() {
 
   updateScrollMotion();
   window.addEventListener("scroll", requestScrollMotion, { passive: true });
-  window.addEventListener("resize", () => selectors.spotlightTracks.forEach(updateSpotlightDistance));
 
   const revealItems = document.querySelectorAll(".editorial-strip, .movement-banner, .editorial-footer");
   revealItems.forEach((item) => item.classList.add("home-reveal"));
@@ -561,13 +560,13 @@ function homeCollectionCard(collection) {
   `;
 }
 
-function spotlightCard(card, duplicate = false) {
+function spotlightCard(card) {
   const images = Array.isArray(card.images) && card.images.length ? card.images : (card.image ? [card.image] : []);
   const image = images[0] || "";
   const sectionClass = card.section === "influencers" ? "influencer-shot" : "portrait";
   const visual = card.visual || (card.section === "influencers" ? "soft" : "pink");
   return `
-    <a href="${card.href || "#"}" ${duplicate ? 'aria-hidden="true" tabindex="-1"' : ""}>
+    <a href="${card.href || "#"}">
       <div class="${sectionClass} ${visual} ${image ? "has-upload" : ""}" ${image ? `style="background-image:url('${image}')"` : ""}></div>
       <b>${card.name || "Blossom"}</b>
       <small>${card.role || (card.section === "influencers" ? "Creator" : "Embaixador")}</small>
@@ -584,15 +583,11 @@ function renderSpotlightTracks() {
     const fallback = defaultFeaturedCards.filter((card) => card.section === section);
     const visibleCards = cards.length ? cards : fallback;
     const content = visibleCards.map((card) => spotlightCard(card)).join("");
-    const duplicate = visibleCards.map((card) => spotlightCard(card, true)).join("");
-    track.innerHTML = `${content}${duplicate}`;
-    updateSpotlightDistance(track);
+    track.innerHTML = `
+      <div class="spotlight-group">${content}</div>
+      <div class="spotlight-group" aria-hidden="true">${content}</div>
+    `;
   });
-}
-
-function updateSpotlightDistance(track) {
-  if (!track) return;
-  track.style.setProperty("--spotlight-distance", `${track.scrollWidth / 2}px`);
 }
 
 function lookbookCard(product, index) {

@@ -5989,7 +5989,7 @@ select option:checked {
 .spotlight-track {
   width: max-content;
   display: flex;
-  gap: 22px;
+  gap: 0;
   animation: spotlight-marquee 34s linear infinite;
   transform: translate3d(0, 0, 0);
   will-change: transform;
@@ -6000,8 +6000,14 @@ select option:checked {
   animation-duration: 38s;
 }
 
-.spotlight-track:has(> a:hover) {
+.spotlight-track:has(.spotlight-group > a:hover) {
   animation-play-state: paused;
+}
+
+.spotlight-group {
+  display: flex;
+  gap: 22px;
+  padding-right: 22px;
 }
 
 .spotlight-carousel a {
@@ -6162,11 +6168,11 @@ select option:checked {
 
 @keyframes spotlight-marquee {
   from { transform: translateX(0); }
-  to { transform: translateX(calc(var(--spotlight-distance, 50%) * -1)); }
+  to { transform: translateX(-50%); }
 }
 
 @keyframes spotlight-marquee-reverse {
-  from { transform: translateX(calc(var(--spotlight-distance, 50%) * -1)); }
+  from { transform: translateX(-50%); }
   to { transform: translateX(0); }
 }
 
