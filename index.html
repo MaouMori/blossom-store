@@ -3,29 +3,22 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
-  <meta name="theme-color" content="#fff0f5">
+  <meta name="theme-color" content="#050305">
   <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <title>Blossom Store</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700;800&family=Playfair+Display:wght@500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700;800&family=Oswald:wght@500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles.css">
 </head>
-<body class="home-light">
-  <header class="site-header">
-    <a class="brand" href="index.html">
-      <span class="brand-mark">✿</span>
-      <span>
-        <b>BLOSSOM</b>
-        <small>STORE</small>
-      </span>
-    </a>
-
-    <nav class="main-nav" aria-label="Navegacao principal">
-      <a class="active" href="index.html">Home</a>
+<body class="home-editorial">
+  <header class="editorial-header">
+    <nav class="editorial-nav" aria-label="Navegacao principal">
+      <a class="active" href="index.html">Inicio</a>
+      <a href="#embaixadores">Embaixadores</a>
+      <a href="#influenciadores">Influenciadores</a>
       <a href="colecoes.html">Colecoes</a>
-      <a href="loja.html">Loja</a>
       <a href="sobre.html">Sobre nos</a>
       <a href="contato.html">Contato</a>
     </nav>
@@ -35,154 +28,99 @@
     <div class="mobile-nav-overlay" data-mobile-nav-overlay></div>
     <nav class="mobile-nav" aria-label="Navegacao mobile" data-mobile-nav>
       <button class="mobile-nav-close" type="button" aria-label="Fechar menu" data-mobile-nav-close>×</button>
-      <a class="active" href="index.html">Home</a>
+      <a class="active" href="index.html">Inicio</a>
+      <a href="#embaixadores">Embaixadores</a>
+      <a href="#influenciadores">Influenciadores</a>
       <a href="colecoes.html">Colecoes</a>
-      <a href="loja.html">Loja</a>
       <a href="sobre.html">Sobre nos</a>
       <a href="contato.html">Contato</a>
     </nav>
 
-    <div class="account">
-      <button class="account-toggle" type="button" data-account-toggle aria-expanded="false">
-        <span class="user-icon">♙</span>
-        <span>
-          <b data-account-name>visitante</b>
-          <small data-header-cart-total>R$0,00</small>
-        </span>
-        <span class="chevron">⌄</span>
-      </button>
-      <div class="account-menu" data-account-menu hidden>
-        <a href="#" data-account-config>⚙ Configuracoes</a>
-        <a href="login.html">✿ Painel Admin</a>
-        <button type="button" data-account-logout>Entrar</button>
+    <div class="editorial-utilities">
+      <span>Claro</span>
+      <button class="theme-pill" type="button" aria-label="Alternar tema"><i></i></button>
+      <span>Escuro</span>
+      <div class="account">
+        <button class="account-toggle" type="button" data-account-toggle aria-expanded="false">
+          <span class="user-icon">♙</span>
+          <span>
+            <b data-account-name>visitante</b>
+            <small data-header-cart-total>R$0,00</small>
+          </span>
+          <span class="chevron">⌄</span>
+        </button>
+        <div class="account-menu" data-account-menu hidden>
+          <a href="#" data-account-config>⚙ Configuracoes</a>
+          <a href="login.html">✿ Painel Admin</a>
+          <button type="button" data-account-logout>Entrar</button>
+        </div>
+        <a class="admin-shortcut" href="login.html" aria-label="Painel admin">⚙</a>
+        <button class="cart" type="button" aria-label="Abrir carrinho" data-cart-open>▱<small data-cart-count>0</small></button>
       </div>
-      <a class="admin-shortcut" href="login.html" aria-label="Painel admin">⚙</a>
-      <button class="cart" type="button" aria-label="Abrir carrinho" data-cart-open>▱<small data-cart-count>0</small></button>
     </div>
   </header>
 
-  <main class="home-new">
-    <section class="pink-hero container">
-      <button class="home-arrow left" type="button" data-hero-prev aria-label="Anterior">‹</button>
-      <div class="pink-hero-card">
-        <div class="home-petals" aria-hidden="true"></div>
-        <div class="pink-hero-copy">
-          <span class="home-kicker">Mais que roupas.</span>
-          <h1>Vista&nbsp;sua <strong>identidade</strong></h1>
-          <p>Cada peca e feita com atencao aos detalhes, unindo estilo, qualidade e exclusividade.</p>
-          <div class="home-actions">
-            <a class="home-primary" href="colecoes.html">Ver colecoes <span>↗</span></a>
-            <a class="home-link" href="sobre.html">Sobre nos <span>↗</span></a>
-          </div>
-        </div>
-        <div class="home-image-slot hero-slot">
-          <span></span>
-        </div>
-        <div class="home-dots" aria-hidden="true"><span class="active"></span><span></span><span></span></div>
-      </div>
-      <button class="home-arrow right" type="button" data-hero-next aria-label="Proxima">›</button>
-    </section>
-
-    <section class="home-benefits container" aria-label="Diferenciais da loja">
-      <article><span>◇</span><div><b>Qualidade premium</b><small>Tecidos e detalhes selecionados</small></div></article>
-      <article><span>✿</span><div><b>Estilo exclusivo</b><small>Pecas unicas feitas para se destacar</small></div></article>
-      <article><span>♧</span><div><b>Comunidade</b><small>Feito por players, para players</small></div></article>
-      <article><span>♡</span><div><b>Atendimento</b><small>Suporte humanizado e dedicado</small></div></article>
-    </section>
-
-    <section class="home-collections container" id="colecoes">
-      <div class="home-section-heading">
-        <span>Nossas</span>
-        <h2>Colecoes</h2>
-        <a href="colecoes.html">Ver todas <span>↗</span></a>
-      </div>
-      <div class="home-carousel-shell">
-        <button class="home-arrow small left" type="button" data-collection-prev aria-label="Colecao anterior">‹</button>
-        <div class="home-collection-track" data-home-collections></div>
-        <button class="home-arrow small right" type="button" data-collection-next aria-label="Proxima colecao">›</button>
-      </div>
-      <div class="home-dots below" aria-hidden="true"><span class="active"></span><span></span><span></span><span></span><span></span></div>
-    </section>
-
-    <section class="home-culture">
-      <div class="container culture-card">
-        <div>
-          <span>Blossom culture</span>
-          <h2>Feito por players,<br>para players.</h2>
-          <p>Mais que uma marca, somos uma comunidade que vive o roleplay e traduz isso em cada detalhe.</p>
-          <a class="home-primary dark" href="sobre.html">Conheca nossa historia <span>↗</span></a>
-        </div>
-        <div class="culture-gallery" aria-label="Espacos para fotos da cultura Blossom">
-          <div class="home-image-slot"></div>
-          <div class="home-image-slot"></div>
-          <div class="home-image-slot"></div>
-          <div class="home-image-slot"></div>
+  <main class="editorial-main">
+    <section class="editorial-hero">
+      <div class="editorial-hero-content">
+        <a class="editorial-logo" href="index.html">
+          <strong>Blossom✿</strong>
+          <span>Store</span>
+        </a>
+        <h1>Moda que expressa.<br>Atitude que floresce.</h1>
+        <p>BLOSSOM nasceu da fusao entre o drama e o desejo de se destacar. Criamos pecas digitais que representam forca, beleza e rebeldia.</p>
+        <div class="editorial-actions">
+          <a href="https://discord.gg/blossom" target="_blank" rel="noreferrer">Discord</a>
+          <a href="loja.html">Patreon</a>
         </div>
       </div>
-    </section>
 
-    <section class="home-essence container" id="sobre">
-      <div class="home-section-heading left">
-        <span>Sobre nos</span>
-        <h2>Nossa<br>essencia</h2>
+      <div class="editorial-hero-image" aria-label="Espaco para imagem principal">
+        <span>Imagem principal do grupo</span>
+        <i class="figure one"></i>
+        <i class="figure two"></i>
+        <i class="figure three"></i>
+        <i class="figure four"></i>
+        <i class="figure five"></i>
       </div>
-      <article>
-        <span>◎</span>
-        <h3>Nossa missao</h3>
-        <p>Entregamos roupas exclusivas para a comunidade de roleplay, valorizando criatividade, autenticidade e estilo.</p>
-        <a href="sobre.html">Saiba mais ↗</a>
-      </article>
-      <article>
-        <span>⊙</span>
-        <h3>Nossa visao</h3>
-        <p>Ser a marca de roupas mais reconhecida e desejada no universo do FiveM.</p>
-        <a href="sobre.html">Saiba mais ↗</a>
-      </article>
-      <article>
-        <span>◇</span>
-        <h3>Nossos valores</h3>
-        <ul><li>Autenticidade</li><li>Criatividade</li><li>Respeito</li><li>Inovacao</li></ul>
-      </article>
     </section>
 
-    <section class="home-stats container" aria-label="Numeros Blossom">
-      <article><span>♙</span><b>+10K</b><small>Players vestidos</small></article>
-      <article><span>♕</span><b>+150</b><small>Pecas exclusivas</small></article>
-      <article><span>☆</span><b>+5K</b><small>Clientes satisfeitos</small></article>
-      <article><span>▣</span><b>Desde<br>2023</b><small>No roleplay</small></article>
-    </section>
-
-    <section class="home-lookbook container" id="lookbook">
-      <div class="home-section-heading left">
-        <span>Lookbook</span>
-        <h2>Blossom<br>inspira</h2>
-        <a href="colecoes.html">Ver mais fotos <span>↗</span></a>
+    <section class="editorial-strip" id="embaixadores">
+      <div class="editorial-section-title"><span>✿ Embaixadores</span><i></i></div>
+      <div class="ambassador-row">
+        <article><div class="portrait pink"></div><b>Luna Vex</b><span>+</span></article>
+        <article><div class="portrait dark"></div><b>Kai Mori</b><span>+</span></article>
+        <article><div class="portrait rose"></div><b>Nikki Bloom</b><span>+</span></article>
+        <article><div class="portrait black"></div><b>Drey Saint</b><span>+</span></article>
+        <article><div class="portrait pink"></div><b>Mila Knox</b><span>+</span></article>
+        <article><div class="portrait dark"></div><b>Zion Park</b><span>+</span></article>
       </div>
-      <div class="home-carousel-shell">
-        <button class="home-arrow small left" type="button" data-lookbook-prev aria-label="Foto anterior">‹</button>
-        <div class="lookbook-track" data-lookbook-track></div>
-        <button class="home-arrow small right" type="button" data-lookbook-next aria-label="Proxima foto">›</button>
-      </div>
-      <div class="home-dots below" aria-hidden="true"><span class="active"></span><span></span><span></span><span></span><span></span></div>
+      <a class="see-all" href="sobre.html">Ver todos <span>↗</span></a>
     </section>
 
-    <section class="home-cta container">
-      <div class="cta-flower">✿</div>
-      <div>
-        <h2>Faca parte da <strong>nossa historia</strong></h2>
-        <p>Vista sua identidade. Vista Blossom.</p>
+    <section class="editorial-strip" id="influenciadores">
+      <div class="editorial-section-title"><span>✿ Influenciadores</span><i></i></div>
+      <div class="influencer-row">
+        <article><div class="influencer-shot"></div><b>@babyxgeon</b></article>
+        <article><div class="influencer-shot vivid"></div><b>@str4wb3rry</b></article>
+        <article><div class="influencer-shot soft"></div><b>@gobbimoon</b></article>
+        <article><div class="influencer-shot mono"></div><b>@otaviokim</b></article>
+        <article><div class="influencer-shot vivid"></div><b>@dudamills</b></article>
+        <article><div class="influencer-shot soft"></div><b>@heartzui</b></article>
       </div>
-      <form>
-        <input type="email" placeholder="Seu melhor e-mail" aria-label="Seu melhor e-mail">
-        <button type="button">Quero fazer parte <span>↗</span></button>
-      </form>
+      <a class="see-all" href="contato.html">Ver todos <span>↗</span></a>
     </section>
 
-    <section class="home-services container" id="contato" aria-label="Informacoes de compra">
-      <article><span>▱</span><div><b>Entrega digital</b><small>Receba na hora</small></div></article>
-      <article><span>◇</span><div><b>Compativel com FiveM</b><small>100% otimizado</small></div></article>
-      <article><span>☻</span><div><b>Suporte humanizado</b><small>Estamos aqui por voce</small></div></article>
-      <article><span>▣</span><div><b>Pagamento seguro</b><small>Seguranca garantida</small></div></article>
+    <section class="editorial-strip collections-strip" id="colecoes">
+      <div class="editorial-section-title"><span>✿ Colecoes</span><i></i></div>
+      <div class="editorial-collections" data-home-collections></div>
+      <a class="see-all" href="colecoes.html">Ver todas <span>↗</span></a>
+    </section>
+
+    <section class="movement-banner">
+      <h2>Join the movement</h2>
+      <p>Digital fashion isn't the future — it's now.</p>
+      <a href="colecoes.html">Explore now <span>↗</span></a>
     </section>
   </main>
 
@@ -216,25 +154,20 @@
         <form class="checkout-form" data-checkout-form>
           <span class="eyebrow">Pagamento</span>
           <h2>Finalizar compra</h2>
-
           <label>Nome no pedido<input type="text" name="customer" placeholder="Seu nome" required></label>
           <label>E-mail para entrega<input type="email" name="email" placeholder="seu@email.com" required></label>
-
           <fieldset>
             <legend>Forma de pagamento</legend>
             <label class="payment-option"><input type="radio" name="payment" value="pix" checked><span><b>PIX</b><small>Gera codigo e QR de demonstracao.</small></span></label>
             <label class="payment-option"><input type="radio" name="payment" value="card"><span><b>Cartao</b><small>Tela pronta para integrar gateway.</small></span></label>
             <label class="payment-option"><input type="radio" name="payment" value="boleto"><span><b>Boleto</b><small>Gera referencia de pedido.</small></span></label>
           </fieldset>
-
           <div class="payment-preview" data-payment-preview>
             <div class="qr-placeholder">PIX</div>
-            <p>Ao confirmar, o sistema cria um pedido em modo demonstracao. Para pagamento real, basta conectar Mercado Pago, Stripe ou Asaas.</p>
+            <p>Ao confirmar, o sistema cria um pedido em modo demonstracao.</p>
           </div>
-
           <button class="checkout-button" type="submit">Criar pedido</button>
         </form>
-
         <aside class="order-review">
           <span class="eyebrow">Resumo</span>
           <h3>Itens do pedido</h3>
@@ -246,25 +179,26 @@
     </div>
   </section>
 
-  <footer class="site-footer">
-    <div class="footer-inner container">
-      <a class="footer-brand" href="index.html">
-        <span class="brand-mark">✿</span>
-        <span><b>BLOSSOM</b><small>STORE</small></span>
-      </a>
-      <p>© 2025 Blossom Store. Todos os direitos reservados.</p>
-      <nav aria-label="Links legais">
-        <a href="#">Politica de privacidade</a>
-        <a href="#">Termos de uso</a>
-        <a href="#">Trocas e devolucoes</a>
-      </nav>
-      <div class="footer-socials">
-        <a href="#">IG</a>
-        <a href="#">DC</a>
-        <a href="#">TK</a>
-      </div>
+  <footer class="editorial-footer">
+    <div>
+      <a class="footer-brand" href="index.html"><span class="brand-mark">✿</span><span><b>BLOSSOM</b><small>STORE</small></span></a>
+      <p>Moda com atitude. Feito para destacar quem voce e.</p>
     </div>
+    <nav>
+      <a href="index.html">Inicio</a>
+      <a href="colecoes.html">Colecoes</a>
+      <a href="loja.html">Loja</a>
+      <a href="sobre.html">Sobre nos</a>
+    </nav>
+    <nav>
+      <a href="#">Discord</a>
+      <a href="#">Instagram</a>
+      <a href="#">TikTok</a>
+      <a href="#">Patreon</a>
+    </nav>
+    <p>© 2025 Blossom Store. Todos os direitos reservados.</p>
   </footer>
+
   <script src="script.js"></script>
 </body>
 </html>

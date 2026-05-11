@@ -457,13 +457,13 @@ function homeCollectionCard(collection) {
   const imageStyle = image ? `data-src="${image}"` : "";
   const shortName = String(collection.name || "Blossom Collection").replace(/^Blossom\s+/i, "");
   return `
-    <article class="home-collection-card">
-      <div class="home-image-slot ${image ? "has-upload" : ""}" ${imageStyle}>
-        <span>${image ? "" : "Imagem da coleção"}</span>
-      </div>
+    <article class="editorial-collection-card ${image ? "has-upload" : ""}" ${imageStyle}>
       <div>
         <h3>${shortName}</h3>
-        <a href="colecao.html?id=${collection.id}">Ver coleção <span>↗</span></a>
+        <a href="colecao.html?id=${collection.id}">↗</a>
+      </div>
+      <div>
+        <span>${image ? "" : "Imagem da coleção"}</span>
       </div>
     </article>
   `;
