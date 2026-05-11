@@ -409,7 +409,7 @@ function populateCollectionSelects(collection = null) {
 function navigateTo(section) {
   $$(".admin-section").forEach((s) => s.classList.toggle("active", s.dataset.section === section));
   $$(".admin-nav-link").forEach((l) => l.classList.toggle("active", l.dataset.nav === section));
-  const titles = { dashboard: "Painel Administrativo", products: "Produtos", collections: "Coleções", featured: "Destaques", users: "Usuários", taxonomies: "Categorias & Tipos", future: "Drop Futuro", settings: "Configurações" };
+  const titles = { dashboard: "Painel Administrativo", products: "Produtos", collections: "Coleções", featured: "Destaques", book: "Livro", users: "Usuários", taxonomies: "Categorias & Tipos", future: "Drop Futuro", settings: "Configurações" };
   const t = $("[data-page-title]");
   if (t) t.textContent = titles[section] || "Painel";
   renderAll();
@@ -429,6 +429,7 @@ function renderAll() {
   renderProducts();
   renderCollections();
   renderFeaturedCards();
+  renderBookPages();
   renderTaxonomies();
   renderFutureDropPreview();
   renderUsers();
@@ -621,6 +622,47 @@ function renderFeaturedCards() {
   ` : '<p class="admin-empty">Nenhum card cadastrado.</p>';
 }
 
+function renderBookPages() {
+  const list = $("[data-book-list]");
+  if (!list) return;
+  const sorted = [...adminFeaturedCards].sort((a, b) => String(a.section).localeCompare(String(b.section)) || Number(a.position || 0) - Number(b.position || 0));
+  list.innerHTML = sorted.length ? `
+    <table class="admin-table">
+      <thead>
+        <tr>
+          <th>Página</th>
+          <th>Livro</th>
+          <th>Desde</th>
+          <th>Influência</th>
+          <th style="width:100px;text-align:right;">Ações</th>
+        </tr>
+      </thead>
+      <tbody>
+        ${sorted.map((item) => `
+          <tr>
+            <td>
+              <div class="cell-product">
+                <div class="cell-thumb" ${primaryImage(item) ? `style="background-image:url('${primaryImage(item)}')"` : ""}></div>
+                <div class="cell-info">
+                  <b>${item.name}</b>
+                  <small>${item.role || "Sem cargo"}${item.quote ? ` • ${String(item.quote).slice(0, 48)}` : ""}</small>
+                </div>
+              </div>
+            </td>
+            <td>${item.section === "ambassadors" ? "Embaixadores" : "Influenciadores"}</td>
+            <td>${item.since || "2024"}</td>
+            <td>${item.influence || (item.section === "influencers" ? "Digital" : "Roleplay")}</td>
+            <td class="cell-actions" style="justify-content:flex-end;">
+              <button type="button" data-edit-book-page="${item.id}" title="Editar">✎</button>
+              <button type="button" data-delete-book-page="${item.id}" title="Remover">🗑</button>
+            </td>
+          </tr>
+        `).join("")}
+      </tbody>
+    </table>
+  ` : '<p class="admin-empty">Nenhuma página cadastrada.</p>';
+}
+
 function renderTaxonomies() {
   Object.entries(adminTaxonomies).forEach(([key, values]) => {
     const list = $(`[data-taxonomy-list="${key}"]`);
@@ -745,6 +787,26 @@ function openFeaturedForm(card = null) {
   dialog.showModal();
 }
 
+function openBookForm(card = null) {
+  const dialog = $("[data-book-dialog]");
+  const form = $("[data-book-form]");
+  if (!dialog || !form) return;
+  form.reset();
+  $("[data-book-form-title]").textContent = card ? "Editar página do livro" : "Nova página do livro";
+  field(form, "id").value = card?.id || "";
+  field(form, "section").value = card?.section || "ambassadors";
+  field(form, "name").value = card?.name || "";
+  field(form, "role").value = card?.role || "";
+  field(form, "quote").value = card?.quote || "";
+  field(form, "since").value = card?.since || "2024";
+  field(form, "influence").value = card?.influence || (card?.section === "influencers" ? "Digital" : "Roleplay");
+  field(form, "position").value = card?.position ?? adminFeaturedCards.length;
+  form.dataset.currentImages = JSON.stringify(itemImages(card));
+  const count = itemImages(card).length;
+  $("[data-book-image-note]").textContent = count ? `${count} imagem atual. Envie outra para substituir.` : "Nenhuma imagem anexada.";
+  dialog.showModal();
+}
+
 function openFutureForm() {
   const dialog = $("[data-future-dialog]");
   const form = $("[data-future-form]");
@@ -768,6 +830,7 @@ function openFutureForm() {
 $("[data-new-product]")?.addEventListener("click", () => openProductForm());
 $("[data-new-collection]")?.addEventListener("click", () => openCollectionForm());
 $("[data-new-featured-card]")?.addEventListener("click", () => openFeaturedForm());
+$("[data-new-book-page]")?.addEventListener("click", () => openBookForm());
 $("[data-edit-future-drop]")?.addEventListener("click", () => openFutureForm());
 $("[data-refresh-users]")?.addEventListener("click", loadUsers);
 
@@ -786,6 +849,11 @@ $("[data-featured-form] input[name='images']")?.addEventListener("change", (even
   $("[data-featured-image-note]").textContent = count ? `${count} imagem selecionada. Ela será otimizada ao salvar.` : "Nenhuma imagem anexada.";
 });
 
+$("[data-book-form] input[name='images']")?.addEventListener("change", (event) => {
+  const count = event.target.files.length;
+  $("[data-book-image-note]").textContent = count ? `${count} imagem selecionada. Ela será otimizada ao salvar.` : "Nenhuma imagem anexada.";
+});
+
 document.addEventListener("click", (event) => {
   const editProduct = event.target.closest("[data-edit-product]");
   const deleteProduct = event.target.closest("[data-delete-product]");
@@ -793,11 +861,14 @@ document.addEventListener("click", (event) => {
   const deleteCollection = event.target.closest("[data-delete-collection]");
   const editFeaturedCard = event.target.closest("[data-edit-featured-card]");
   const deleteFeaturedCard = event.target.closest("[data-delete-featured-card]");
+  const editBookPage = event.target.closest("[data-edit-book-page]");
+  const deleteBookPage = event.target.closest("[data-delete-book-page]");
   const closeDialog = event.target.closest("[data-close-dialog]");
 
   if (editProduct) openProductForm(adminProducts.find((item) => item.id === editProduct.dataset.editProduct));
   if (editCollection) openCollectionForm(adminCollections.find((item) => item.id === editCollection.dataset.editCollection));
   if (editFeaturedCard) openFeaturedForm(adminFeaturedCards.find((item) => item.id === editFeaturedCard.dataset.editFeaturedCard));
+  if (editBookPage) openBookForm(adminFeaturedCards.find((item) => item.id === editBookPage.dataset.editBookPage));
 
   if (deleteProduct) {
     adminProducts = adminProducts.filter((item) => item.id !== deleteProduct.dataset.deleteProduct);
@@ -816,6 +887,12 @@ document.addEventListener("click", (event) => {
     saveFeaturedCards().catch((error) => console.warn(error));
     renderAll();
     toast("Card removido.");
+  }
+  if (deleteBookPage) {
+    adminFeaturedCards = adminFeaturedCards.filter((item) => item.id !== deleteBookPage.dataset.deleteBookPage);
+    saveFeaturedCards().catch((error) => console.warn(error));
+    renderAll();
+    toast("Página removida.");
   }
 
   const removeTaxonomy = event.target.closest("[data-remove-taxonomy]");
@@ -957,12 +1034,14 @@ $("[data-featured-form]")?.addEventListener("submit", async (event) => {
     submitButton.textContent = originalText;
     return;
   }
+  const previousCard = adminFeaturedCards.find((item) => item.id === id) || {};
   const card = {
+    ...previousCard,
     id, section: data.get("section"), name: data.get("name"),
     role: data.get("role") || (data.get("section") === "influencers" ? "Creator" : "Embaixador"),
     href: data.get("href") || (data.get("section") === "influencers" ? "contato.html" : "sobre.html#time"),
     visual: data.get("visual"), position: Number(data.get("position") || 0),
-    image: images[0] || "", images, created: adminFeaturedCards.find((item) => item.id === id)?.created ?? Date.now(),
+    image: images[0] || "", images, created: previousCard.created ?? Date.now(),
   };
   adminFeaturedCards = adminFeaturedCards.some((item) => item.id === id) ? adminFeaturedCards.map((item) => item.id === id ? card : item) : [card, ...adminFeaturedCards];
   try {
@@ -973,6 +1052,58 @@ $("[data-featured-form]")?.addEventListener("submit", async (event) => {
   } catch (error) {
     console.error(error);
     $("[data-featured-image-note]").textContent = `Erro ao salvar: ${errorText(error)}`;
+  } finally {
+    submitButton.disabled = false;
+    submitButton.textContent = originalText;
+  }
+});
+
+$("[data-book-form]")?.addEventListener("submit", async (event) => {
+  event.preventDefault();
+  const form = event.currentTarget;
+  const data = new FormData(form);
+  const submitButton = form.querySelector("[type='submit']");
+  const originalText = submitButton.textContent;
+  submitButton.disabled = true;
+  submitButton.textContent = "Salvando...";
+  const section = data.get("section") || "ambassadors";
+  const id = data.get("id") || `${section}-${slugify(data.get("name"))}`;
+  let images = JSON.parse(form.dataset.currentImages || "[]");
+  try {
+    const uploadedImages = await filesToDataUrls(field(form, "images").files);
+    images = uploadedImages.length ? uploadedImages : images;
+  } catch (error) {
+    $("[data-book-image-note]").textContent = error.message;
+    submitButton.disabled = false;
+    submitButton.textContent = originalText;
+    return;
+  }
+  const previousCard = adminFeaturedCards.find((item) => item.id === id) || {};
+  const card = {
+    ...previousCard,
+    id,
+    section,
+    name: data.get("name"),
+    role: data.get("role") || (section === "influencers" ? "Creator" : "Embaixador"),
+    quote: data.get("quote"),
+    since: data.get("since"),
+    influence: data.get("influence"),
+    href: previousCard.href || `livro.html?aba=${section}`,
+    visual: previousCard.visual || (section === "influencers" ? "soft" : "pink"),
+    position: Number(data.get("position") || 0),
+    image: images[0] || "",
+    images,
+    created: previousCard.created ?? Date.now(),
+  };
+  adminFeaturedCards = adminFeaturedCards.some((item) => item.id === id) ? adminFeaturedCards.map((item) => item.id === id ? card : item) : [card, ...adminFeaturedCards];
+  try {
+    await saveFeaturedCards();
+    form.closest("dialog").close();
+    renderAll();
+    toast("Página salva.");
+  } catch (error) {
+    console.error(error);
+    $("[data-book-image-note]").textContent = `Erro ao salvar: ${errorText(error)}`;
   } finally {
     submitButton.disabled = false;
     submitButton.textContent = originalText;

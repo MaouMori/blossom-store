@@ -1,0 +1,776 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+  <meta name="theme-color" content="#050305">
+  <title>Blossom Store - Livro</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700;800&family=Oswald:wght@500;600;700&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    .book-page-body {
+      min-height: 100vh;
+      background:
+        radial-gradient(circle at 75% 8%, rgba(255, 114, 167, 0.18), transparent 32rem),
+        radial-gradient(circle at 18% 48%, rgba(122, 21, 54, 0.18), transparent 34rem),
+        #050305;
+      color: #fff;
+      font-family: "Archivo", sans-serif;
+      overflow-x: hidden;
+    }
+
+    .book-main {
+      width: min(1240px, calc(100% - 34px));
+      margin: 0 auto;
+      padding: 130px 0 70px;
+    }
+
+    .book-intro {
+      display: grid;
+      grid-template-columns: minmax(240px, 0.72fr) minmax(300px, 1.28fr);
+      gap: 34px;
+      align-items: end;
+      margin-bottom: 32px;
+    }
+
+    .book-kicker {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      color: #ff74aa;
+      font-size: 12px;
+      font-weight: 900;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+    }
+
+    .book-kicker::before,
+    .book-title-mark {
+      content: "";
+      width: 14px;
+      height: 14px;
+      background: currentColor;
+      clip-path: polygon(50% 0, 61% 34%, 98% 35%, 68% 56%, 79% 91%, 50% 70%, 21% 91%, 32% 56%, 2% 35%, 39% 34%);
+      filter: drop-shadow(0 0 12px rgba(255, 116, 170, 0.55));
+    }
+
+    .book-intro h1 {
+      margin: 16px 0 14px;
+      font-family: "Oswald", sans-serif;
+      font-size: clamp(50px, 8vw, 118px);
+      line-height: 0.9;
+      letter-spacing: 0.01em;
+      text-transform: uppercase;
+    }
+
+    .book-intro p {
+      max-width: 530px;
+      margin: 0;
+      color: rgba(255, 255, 255, 0.66);
+      line-height: 1.75;
+      font-size: 15px;
+    }
+
+    .book-tabs {
+      display: flex;
+      justify-content: flex-end;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .book-tab {
+      min-width: 180px;
+      padding: 14px 20px;
+      border: 1px solid rgba(255, 116, 170, 0.32);
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.035);
+      color: rgba(255, 255, 255, 0.74);
+      cursor: pointer;
+      font: 900 12px/1 "Archivo", sans-serif;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      transition: transform 180ms ease, background 180ms ease, color 180ms ease, box-shadow 180ms ease;
+    }
+
+    .book-tab:hover,
+    .book-tab.is-active {
+      transform: translateY(-2px);
+      background: #ff86b6;
+      color: #1a0810;
+      box-shadow: 0 14px 42px rgba(255, 116, 170, 0.22);
+    }
+
+    .book-stage {
+      position: relative;
+      padding: 28px;
+      border: 1px solid rgba(255, 116, 170, 0.18);
+      border-radius: 26px;
+      background: linear-gradient(135deg, rgba(255, 255, 255, 0.055), rgba(255, 255, 255, 0.012));
+      box-shadow: 0 40px 120px rgba(0, 0, 0, 0.5);
+      perspective: 2400px;
+    }
+
+    .book-shell {
+      position: relative;
+      width: 100%;
+      min-height: clamp(560px, 58vw, 720px);
+      transform-style: preserve-3d;
+    }
+
+    .book-shadow {
+      position: absolute;
+      left: 8%;
+      right: 8%;
+      bottom: 3%;
+      height: 44px;
+      border-radius: 50%;
+      background: rgba(0, 0, 0, 0.58);
+      filter: blur(22px);
+    }
+
+    .book-cover,
+    .book-spread {
+      position: absolute;
+      inset: 0;
+      border-radius: 18px;
+      overflow: hidden;
+      transition: opacity 420ms ease, transform 760ms cubic-bezier(.2,.75,.2,1);
+    }
+
+    .book-cover {
+      display: grid;
+      place-items: center;
+      cursor: pointer;
+      z-index: 4;
+      background:
+        linear-gradient(135deg, rgba(255, 116, 170, 0.16), transparent 42%),
+        linear-gradient(90deg, rgba(255, 116, 170, 0.18), transparent 11%),
+        linear-gradient(180deg, #1a0910, #070305 58%, #13060b);
+      border: 1px solid rgba(255, 178, 205, 0.32);
+      box-shadow: inset 18px 0 30px rgba(0, 0, 0, 0.45), 0 30px 80px rgba(0, 0, 0, 0.55);
+      transform-origin: left center;
+    }
+
+    .book-cover::before,
+    .book-cover::after,
+    .book-page::before {
+      content: "";
+      position: absolute;
+      inset: 22px;
+      border: 1px solid rgba(255, 178, 205, 0.24);
+      border-radius: 14px;
+      pointer-events: none;
+    }
+
+    .book-cover::after {
+      inset: 38px;
+      border-style: dashed;
+      opacity: 0.45;
+    }
+
+    .cover-inner {
+      position: relative;
+      z-index: 2;
+      text-align: center;
+      padding: 34px;
+    }
+
+    .cover-flower {
+      width: 94px;
+      height: 94px;
+      margin: 0 auto 24px;
+      display: grid;
+      place-items: center;
+      border-radius: 50%;
+      background: rgba(255, 116, 170, 0.1);
+      color: #ff86b6;
+      font-size: 50px;
+      box-shadow: 0 0 60px rgba(255, 116, 170, 0.18);
+    }
+
+    .cover-title {
+      font-family: "Playfair Display", serif;
+      font-size: clamp(44px, 7vw, 90px);
+      line-height: 0.92;
+      color: #fff2f7;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      text-shadow: 0 0 28px rgba(255, 116, 170, 0.26);
+    }
+
+    .cover-subtitle {
+      margin-top: 24px;
+      color: #ff86b6;
+      font-weight: 900;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      font-size: 13px;
+    }
+
+    .cover-hint {
+      margin-top: 36px;
+      color: rgba(255, 255, 255, 0.55);
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+    }
+
+    .book-spread {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      opacity: 0;
+      transform: translateY(18px) scale(0.985);
+      pointer-events: none;
+      z-index: 2;
+      background: #0d0709;
+      border: 1px solid rgba(255, 178, 205, 0.2);
+      box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.04), 0 26px 80px rgba(0, 0, 0, 0.48);
+    }
+
+    .book-shell.is-open .book-cover {
+      transform: rotateY(-118deg);
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .book-shell.is-open .book-spread {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+      pointer-events: auto;
+    }
+
+    .book-page {
+      position: relative;
+      min-height: 100%;
+      padding: clamp(26px, 4vw, 54px);
+      background:
+        radial-gradient(circle at 50% 12%, rgba(255, 116, 170, 0.12), transparent 24rem),
+        linear-gradient(90deg, #10090d, #191014 48%, #0c0608);
+    }
+
+    .book-page.left {
+      border-right: 1px solid rgba(255, 178, 205, 0.18);
+      box-shadow: inset -28px 0 36px rgba(0, 0, 0, 0.28);
+    }
+
+    .book-page.right {
+      box-shadow: inset 28px 0 36px rgba(0, 0, 0, 0.28);
+    }
+
+    .profile-photo {
+      position: relative;
+      z-index: 1;
+      width: min(100%, 440px);
+      height: 100%;
+      min-height: 420px;
+      margin: 0 auto;
+      border-radius: 14px;
+      overflow: hidden;
+      border: 1px solid rgba(255, 178, 205, 0.25);
+      background:
+        radial-gradient(circle at 50% 18%, rgba(255, 134, 182, 0.75) 0 7%, transparent 7.5%),
+        radial-gradient(circle at 50% 34%, rgba(255, 116, 170, 0.52) 0 13%, transparent 13.5%),
+        linear-gradient(180deg, rgba(255, 116, 170, 0.24), rgba(255, 116, 170, 0.02) 72%),
+        #080405;
+    }
+
+    .profile-photo img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .profile-empty {
+      position: absolute;
+      inset: auto 24px 28px;
+      color: rgba(255, 255, 255, 0.62);
+      font-size: 12px;
+      font-weight: 900;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+    }
+
+    .profile-panel {
+      position: relative;
+      z-index: 1;
+      display: grid;
+      gap: 26px;
+      height: 100%;
+      align-content: center;
+    }
+
+    .profile-role {
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+      color: #ff86b6;
+      font-weight: 900;
+      font-size: 12px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+    }
+
+    .profile-name {
+      margin: 0;
+      font-family: "Playfair Display", serif;
+      font-size: clamp(48px, 6vw, 88px);
+      line-height: 0.92;
+      color: #fff2f7;
+      text-transform: uppercase;
+    }
+
+    .profile-quote {
+      margin: 0;
+      max-width: 470px;
+      color: rgba(255, 255, 255, 0.72);
+      font: 600 clamp(18px, 2.4vw, 26px)/1.45 "Playfair Display", serif;
+    }
+
+    .profile-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 14px;
+      margin-top: 6px;
+    }
+
+    .profile-info {
+      min-height: 92px;
+      padding: 16px;
+      border: 1px solid rgba(255, 178, 205, 0.16);
+      border-radius: 12px;
+      background: rgba(255, 255, 255, 0.035);
+    }
+
+    .profile-info span {
+      display: block;
+      color: #ff86b6;
+      font-size: 10px;
+      font-weight: 900;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+    }
+
+    .profile-info b {
+      display: block;
+      margin-top: 8px;
+      color: #fff;
+      font-size: 15px;
+    }
+
+    .book-gallery {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 10px;
+    }
+
+    .book-gallery div {
+      aspect-ratio: 1;
+      border: 1px solid rgba(255, 178, 205, 0.18);
+      border-radius: 10px;
+      background:
+        radial-gradient(circle at 50% 28%, rgba(255, 134, 182, 0.58), transparent 18%),
+        linear-gradient(180deg, rgba(255, 116, 170, 0.15), transparent),
+        #080405;
+      background-size: cover;
+      background-position: center;
+      overflow: hidden;
+    }
+
+    .turn-sheet {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      width: 50%;
+      z-index: 5;
+      opacity: 0;
+      pointer-events: none;
+      transform-style: preserve-3d;
+      background:
+        radial-gradient(circle at 50% 18%, rgba(255, 116, 170, 0.16), transparent 20rem),
+        linear-gradient(90deg, #1b0f13, #090506);
+      border: 1px solid rgba(255, 178, 205, 0.16);
+    }
+
+    .turn-sheet.is-next {
+      right: 0;
+      transform-origin: left center;
+      animation: turnNext 720ms cubic-bezier(.2,.7,.15,1);
+    }
+
+    .turn-sheet.is-prev {
+      left: 0;
+      transform-origin: right center;
+      animation: turnPrev 720ms cubic-bezier(.2,.7,.15,1);
+    }
+
+    .turn-sheet.is-active {
+      opacity: 1;
+    }
+
+    @keyframes turnNext {
+      0% { transform: rotateY(0); }
+      50% { transform: rotateY(-88deg); }
+      100% { transform: rotateY(-180deg); }
+    }
+
+    @keyframes turnPrev {
+      0% { transform: rotateY(0); }
+      50% { transform: rotateY(88deg); }
+      100% { transform: rotateY(180deg); }
+    }
+
+    .book-corner {
+      position: absolute;
+      width: 86px;
+      height: 86px;
+      z-index: 7;
+      border: 0;
+      background: transparent;
+      cursor: pointer;
+    }
+
+    .book-corner::before {
+      content: "";
+      position: absolute;
+      width: 0;
+      height: 0;
+      opacity: 0.62;
+      filter: drop-shadow(0 0 18px rgba(255, 116, 170, 0.32));
+      transition: border-width 220ms ease, opacity 220ms ease, transform 220ms ease;
+    }
+
+    .book-corner:hover::before {
+      opacity: 1;
+      transform: scale(1.08);
+    }
+
+    .corner-tr { top: 0; right: 0; }
+    .corner-tr::before { top: 0; right: 0; border-top: 34px solid rgba(255, 160, 197, 0.42); border-left: 34px solid transparent; }
+    .corner-tr:hover::before { border-top-width: 58px; border-left-width: 58px; }
+
+    .corner-br { bottom: 0; right: 0; }
+    .corner-br::before { bottom: 0; right: 0; border-bottom: 34px solid rgba(255, 160, 197, 0.42); border-left: 34px solid transparent; }
+    .corner-br:hover::before { border-bottom-width: 58px; border-left-width: 58px; }
+
+    .corner-tl { top: 0; left: 0; }
+    .corner-tl::before { top: 0; left: 0; border-top: 34px solid rgba(255, 160, 197, 0.42); border-right: 34px solid transparent; }
+    .corner-tl:hover::before { border-top-width: 58px; border-right-width: 58px; }
+
+    .corner-bl { bottom: 0; left: 0; }
+    .corner-bl::before { bottom: 0; left: 0; border-bottom: 34px solid rgba(255, 160, 197, 0.42); border-right: 34px solid transparent; }
+    .corner-bl:hover::before { border-bottom-width: 58px; border-right-width: 58px; }
+
+    .book-controls {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 16px;
+      margin-top: 22px;
+    }
+
+    .book-controls button {
+      width: 46px;
+      height: 46px;
+      border-radius: 50%;
+      border: 1px solid rgba(255, 116, 170, 0.28);
+      background: rgba(255, 255, 255, 0.04);
+      color: #fff;
+      cursor: pointer;
+      transition: transform 180ms ease, background 180ms ease;
+    }
+
+    .book-controls button:hover:not(:disabled) {
+      transform: translateY(-2px);
+      background: #ff86b6;
+      color: #1a0810;
+    }
+
+    .book-controls button:disabled {
+      opacity: 0.34;
+      cursor: not-allowed;
+    }
+
+    .page-count {
+      color: rgba(255, 255, 255, 0.56);
+      font-size: 12px;
+      font-weight: 900;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+    }
+
+    @media (max-width: 920px) {
+      .book-main { padding-top: 110px; }
+      .book-intro { grid-template-columns: 1fr; }
+      .book-tabs { justify-content: flex-start; }
+      .book-stage { padding: 14px; }
+      .book-shell { min-height: auto; }
+      .book-cover,
+      .book-spread { position: relative; min-height: 640px; }
+      .book-spread { grid-template-columns: 1fr; }
+      .book-page.left { min-height: 420px; border-right: 0; border-bottom: 1px solid rgba(255, 178, 205, 0.18); }
+      .profile-photo { min-height: 360px; }
+    }
+
+    @media (max-width: 560px) {
+      .book-main { width: min(100% - 20px, 1240px); }
+      .book-tab { min-width: 100%; }
+      .book-cover,
+      .book-spread { min-height: 560px; }
+      .profile-grid { grid-template-columns: 1fr; }
+      .book-gallery { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    }
+  </style>
+</head>
+<body class="book-page-body home-editorial">
+  <header class="editorial-header">
+    <a class="editorial-corner-logo" href="index.html" aria-label="Blossom Store">&#10047;</a>
+    <nav class="editorial-nav" aria-label="Navegacao principal">
+      <a href="index.html">Inicio</a>
+      <a class="active" href="livro.html">Livro</a>
+      <a href="colecoes.html">Colecoes</a>
+      <a href="loja.html">Loja</a>
+      <a href="sobre.html">Sobre nos</a>
+      <a href="contato.html">Contato</a>
+    </nav>
+    <button class="mobile-menu-toggle" type="button" aria-label="Abrir menu" data-mobile-menu-toggle>&#9776;</button>
+    <div class="mobile-nav-overlay" data-mobile-nav-overlay></div>
+    <nav class="mobile-nav" aria-label="Navegacao mobile" data-mobile-nav>
+      <button class="mobile-nav-close" type="button" aria-label="Fechar menu" data-mobile-nav-close>&times;</button>
+      <a href="index.html">Inicio</a>
+      <a class="active" href="livro.html">Livro</a>
+      <a href="colecoes.html">Colecoes</a>
+      <a href="loja.html">Loja</a>
+      <a href="sobre.html">Sobre nos</a>
+      <a href="contato.html">Contato</a>
+    </nav>
+    <div class="editorial-utilities">
+      <span>Claro</span>
+      <button class="theme-pill" type="button" aria-label="Alternar tema" data-theme-toggle><i></i></button>
+      <span>Escuro</span>
+    </div>
+  </header>
+
+  <main class="book-main">
+    <section class="book-intro">
+      <div>
+        <span class="book-kicker">Arquivo Blossom</span>
+        <h1>Livro da<br>comunidade</h1>
+        <p>Abra o livro para conhecer os embaixadores e influenciadores da Blossom. Cada pagina pode ser criada, editada e removida pelo painel admin.</p>
+      </div>
+      <div class="book-tabs" role="tablist" aria-label="Escolha o livro">
+        <button class="book-tab is-active" type="button" data-book-tab="ambassadors">Embaixadores</button>
+        <button class="book-tab" type="button" data-book-tab="influencers">Influenciadores</button>
+      </div>
+    </section>
+
+    <section class="book-stage" aria-live="polite">
+      <div class="book-shell" data-book-shell>
+        <div class="book-shadow"></div>
+        <article class="book-cover" data-book-cover>
+          <div class="cover-inner">
+            <div class="cover-flower">&#10047;</div>
+            <div class="cover-title">Blossom<br>Store</div>
+            <div class="cover-subtitle" data-cover-subtitle>Conheca nossos embaixadores</div>
+            <div class="cover-hint">Clique para abrir</div>
+          </div>
+        </article>
+
+        <article class="book-spread">
+          <section class="book-page left">
+            <div class="profile-photo" data-book-photo>
+              <div class="profile-empty">Imagem preparada</div>
+            </div>
+          </section>
+          <section class="book-page right">
+            <button class="book-corner corner-tl" type="button" data-book-prev aria-label="Pagina anterior"></button>
+            <button class="book-corner corner-bl" type="button" data-book-prev aria-label="Pagina anterior"></button>
+            <button class="book-corner corner-tr" type="button" data-book-next aria-label="Proxima pagina"></button>
+            <button class="book-corner corner-br" type="button" data-book-next aria-label="Proxima pagina"></button>
+            <div class="profile-panel">
+              <span class="profile-role"><i class="book-title-mark"></i><span data-book-role>Embaixador</span></span>
+              <h2 class="profile-name" data-book-name>Blossom</h2>
+              <p class="profile-quote" data-book-quote>"Sua identidade tambem merece virar pagina."</p>
+              <div class="profile-grid">
+                <div class="profile-info"><span>Nome</span><b data-info-name>Blossom</b></div>
+                <div class="profile-info"><span>Cargo</span><b data-info-role>Embaixador</b></div>
+                <div class="profile-info"><span>Desde</span><b data-info-since>2024</b></div>
+                <div class="profile-info"><span>Influencia</span><b data-info-influence>Roleplay</b></div>
+              </div>
+              <div class="book-gallery" data-book-gallery></div>
+            </div>
+          </section>
+          <div class="turn-sheet" data-turn-sheet></div>
+        </article>
+      </div>
+    </section>
+
+    <div class="book-controls">
+      <button type="button" data-book-prev aria-label="Pagina anterior">&#8592;</button>
+      <span class="page-count" data-book-count>1 / 1</span>
+      <button type="button" data-book-next aria-label="Proxima pagina">&#8594;</button>
+    </div>
+  </main>
+
+  <script>
+    const fallbackBookCards = [
+      ["ambassadors", "Luna Vex", "Embaixadora", "Represento a Blossom com orgulho e autenticidade.", "2023", "Global"],
+      ["ambassadors", "Kai Mori", "Embaixador", "Moda e atitude andam juntas.", "2023", "Nacional"],
+      ["ambassadors", "Nikki Bloom", "Embaixadora", "Cada peca conta uma historia.", "2024", "Global"],
+      ["ambassadors", "Drey Saint", "Embaixador", "O estilo e uma extensao de quem somos.", "2024", "Nacional"],
+      ["ambassadors", "Mila Knox", "Embaixadora", "Destaque-se com naturalidade.", "2024", "Global"],
+      ["ambassadors", "Zion Park", "Embaixador", "Atitude em cada detalhe.", "2024", "Nacional"],
+      ["influencers", "@babyxgeon", "Creator", "Criando conteudo com estilo Blossom.", "2024", "Digital"],
+      ["influencers", "@str4wb3rry", "Creator", "Doce, forte e Blossom.", "2024", "Digital"],
+      ["influencers", "@gobbimoon", "Creator", "A lua ilumina, mas o estilo brilha.", "2024", "Nacional"],
+      ["influencers", "@otaviokim", "Creator", "Autenticidade em cada post.", "2024", "Nacional"],
+      ["influencers", "@dudamills", "Creator", "Viva sua melhor versao.", "2024", "Global"],
+      ["influencers", "@heartzui", "Creator", "Com o coracao na Blossom.", "2024", "Nacional"],
+    ].map(([section, name, role, quote, since, influence], position) => ({ id: `${section}-${position}`, section, name, role, quote, since, influence, images: [], image: "", position }));
+
+    const state = {
+      section: new URLSearchParams(location.search).get("aba") === "influencers" ? "influencers" : "ambassadors",
+      index: 0,
+      cards: fallbackBookCards,
+      open: false,
+      turning: false,
+    };
+
+    const shell = document.querySelector("[data-book-shell]");
+    const cover = document.querySelector("[data-book-cover]");
+    const turnSheet = document.querySelector("[data-turn-sheet]");
+
+    function itemImages(item) {
+      if (Array.isArray(item?.images) && item.images.length) return item.images.filter(Boolean);
+      return item?.image ? [item.image] : [];
+    }
+
+    function normalizeCard(card, position) {
+      const section = card.section === "influencers" ? "influencers" : "ambassadors";
+      return {
+        id: card.id || `${section}-${position}`,
+        section,
+        name: card.name || "Blossom",
+        role: card.role || (section === "influencers" ? "Creator" : "Embaixador"),
+        quote: card.quote || (section === "influencers" ? "Criando conteudo com estilo Blossom." : "Represento a Blossom com orgulho."),
+        since: card.since || "2024",
+        influence: card.influence || (section === "influencers" ? "Digital" : "Roleplay"),
+        images: itemImages(card),
+        image: itemImages(card)[0] || "",
+        position: Number(card.position ?? position),
+      };
+    }
+
+    async function loadBookCards() {
+      try {
+        if (location.protocol.startsWith("http")) {
+          const response = await fetch("/api/store");
+          if (response.ok) {
+            const store = await response.json();
+            const cards = store?.taxonomies?.featuredCards;
+            if (Array.isArray(cards) && cards.length) {
+              state.cards = cards.map(normalizeCard);
+              return;
+            }
+          }
+        }
+        const saved = JSON.parse(localStorage.getItem("blossom-featured-cards") || "[]");
+        if (Array.isArray(saved) && saved.length) state.cards = saved.map(normalizeCard);
+      } catch (error) {
+        console.warn("Nao foi possivel carregar o livro.", error);
+      }
+    }
+
+    function pages() {
+      return state.cards
+        .filter((card) => card.section === state.section)
+        .sort((a, b) => Number(a.position || 0) - Number(b.position || 0));
+    }
+
+    function activePage() {
+      return pages()[state.index] || pages()[0] || normalizeCard({}, 0);
+    }
+
+    function setCoverText() {
+      const label = state.section === "influencers" ? "Conheca nossos influenciadores" : "Conheca nossos embaixadores";
+      document.querySelector("[data-cover-subtitle]").textContent = label;
+    }
+
+    function renderBook() {
+      const list = pages();
+      if (state.index > list.length - 1) state.index = Math.max(0, list.length - 1);
+      const page = activePage();
+      const images = itemImages(page);
+      const photo = document.querySelector("[data-book-photo]");
+      photo.innerHTML = page.image
+        ? `<img src="${page.image}" alt="${page.name}">`
+        : '<div class="profile-empty">Imagem preparada</div>';
+      document.querySelector("[data-book-role]").textContent = page.role;
+      document.querySelector("[data-book-name]").textContent = page.name;
+      document.querySelector("[data-book-quote]").textContent = `"${page.quote}"`;
+      document.querySelector("[data-info-name]").textContent = page.name;
+      document.querySelector("[data-info-role]").textContent = page.role;
+      document.querySelector("[data-info-since]").textContent = page.since;
+      document.querySelector("[data-info-influence]").textContent = page.influence;
+      document.querySelector("[data-book-count]").textContent = `${list.length ? state.index + 1 : 0} / ${list.length}`;
+      document.querySelector("[data-book-gallery]").innerHTML = (images.length ? images : ["", "", ""]).slice(0, 6).map((image) => (
+        `<div ${image ? `style="background-image:url('${image}')"` : ""}></div>`
+      )).join("");
+      document.querySelectorAll("[data-book-prev]").forEach((button) => { button.disabled = state.index <= 0 || !state.open; });
+      document.querySelectorAll("[data-book-next]").forEach((button) => { button.disabled = state.index >= list.length - 1 || !state.open; });
+      setCoverText();
+    }
+
+    function openBook() {
+      state.open = true;
+      shell.classList.add("is-open");
+      renderBook();
+    }
+
+    function turn(direction) {
+      if (!state.open) {
+        openBook();
+        return;
+      }
+      const list = pages();
+      const nextIndex = direction === "next" ? state.index + 1 : state.index - 1;
+      if (state.turning || nextIndex < 0 || nextIndex > list.length - 1) return;
+      state.turning = true;
+      turnSheet.className = `turn-sheet is-active ${direction === "next" ? "is-next" : "is-prev"}`;
+      window.setTimeout(() => {
+        state.index = nextIndex;
+        renderBook();
+      }, 360);
+      window.setTimeout(() => {
+        turnSheet.className = "turn-sheet";
+        state.turning = false;
+      }, 760);
+    }
+
+    function setSection(section) {
+      state.section = section;
+      state.index = 0;
+      state.open = false;
+      shell.classList.remove("is-open");
+      document.querySelectorAll("[data-book-tab]").forEach((tab) => tab.classList.toggle("is-active", tab.dataset.bookTab === section));
+      history.replaceState(null, "", `livro.html?aba=${section}`);
+      renderBook();
+    }
+
+    cover.addEventListener("click", openBook);
+    document.querySelectorAll("[data-book-next]").forEach((button) => button.addEventListener("click", () => turn("next")));
+    document.querySelectorAll("[data-book-prev]").forEach((button) => button.addEventListener("click", () => turn("prev")));
+    document.querySelectorAll("[data-book-tab]").forEach((tab) => tab.addEventListener("click", () => setSection(tab.dataset.bookTab)));
+    document.addEventListener("keydown", (event) => {
+      if (event.key === "ArrowRight") turn("next");
+      if (event.key === "ArrowLeft") turn("prev");
+    });
+
+    loadBookCards().then(() => setSection(state.section));
+  </script>
+  <script src="script.js"></script>
+</body>
+</html>

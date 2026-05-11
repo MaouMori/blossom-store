@@ -645,6 +645,10 @@
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
             Drop Futuro
           </button>
+          <button class="admin-nav-link" data-nav="book" type="button">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 016.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15A2.5 2.5 0 016.5 2z"/></svg>
+            Livro
+          </button>
         </div>
 
         <div class="admin-nav-section">
@@ -835,6 +839,18 @@
           </div>
         </div>
       </section>
+
+      <!-- BOOK -->
+      <section class="admin-section" data-section="book">
+        <div class="admin-content-panel">
+          <div class="admin-panel-header">
+            <h2>Gerenciar Livro</h2>
+            <button class="btn-add" type="button" data-new-book-page>+ Nova página</button>
+          </div>
+          <p style="font-size:12px;color:var(--admin-muted);margin:-8px 0 14px;">As páginas do livro são sincronizadas com os cards de embaixadores e influenciadores.</p>
+          <div data-book-list></div>
+        </div>
+      </section>
     </main>
   </div>
 
@@ -948,6 +964,31 @@
       </label>
       <p class="admin-image-note" data-future-image-note>Nenhuma imagem anexada.</p>
       <button class="checkout-button" type="submit">Salvar drop futuro</button>
+    </form>
+  </dialog>
+
+  <dialog class="admin-dialog" data-book-dialog>
+    <form method="dialog" data-book-form>
+      <button class="icon-button dialog-close" type="button" data-close-dialog>×</button>
+      <h2 data-book-form-title>Página do Livro</h2>
+      <input type="hidden" name="id">
+      <label>Grupo
+        <select name="section" required>
+          <option value="ambassadors">Embaixadores</option>
+          <option value="influencers">Influenciadores</option>
+        </select>
+      </label>
+      <label>Nome<input name="name" required></label>
+      <label>Cargo<input name="role" required></label>
+      <label>Frase/Quote<textarea name="quote" rows="3"></textarea></label>
+      <label>Desde<input name="since" placeholder="2024"></label>
+      <label>Influência<input name="influence" placeholder="Global, Nacional..."></label>
+      <label>Posição<input name="position" type="number" min="0" step="1" value="0"></label>
+      <label>Imagens da página
+        <input name="images" type="file" accept="image/png,image/jpeg,image/gif,image/webp" multiple>
+      </label>
+      <p class="admin-image-note" data-book-image-note>Nenhuma imagem anexada.</p>
+      <button class="checkout-button" type="submit">Salvar página</button>
     </form>
   </dialog>
 
