@@ -46,7 +46,6 @@
           <span class="user-icon">♙</span>
           <span>
             <b data-account-name>visitante</b>
-            <small data-header-cart-total>R$0,00</small>
           </span>
           <span class="chevron">⌄</span>
         </button>
@@ -56,7 +55,6 @@
           <button type="button" data-account-logout>Entrar</button>
         </div>
         <a class="admin-shortcut" href="login.html" aria-label="Painel admin">⚙</a>
-        <button class="cart" type="button" aria-label="Abrir carrinho" data-cart-open>▱<small data-cart-count>0</small></button>
       </div>
     </div>
   </header>
@@ -72,7 +70,7 @@
         <p>BLOSSOM nasceu da fusao entre o drama e o desejo de se destacar. Criamos pecas digitais que representam forca, beleza e rebeldia.</p>
         <div class="editorial-actions">
           <a href="https://discord.gg/blossom" target="_blank" rel="noreferrer">Discord</a>
-          <a href="loja.html">Patreon</a>
+          <a href="https://www.patreon.com" target="_blank" rel="noreferrer">Patreon</a>
         </div>
       </div>
 
@@ -83,6 +81,21 @@
         <i class="figure three"></i>
         <i class="figure four"></i>
         <i class="figure five"></i>
+      </div>
+    </section>
+
+    <section class="future-drop" data-future-drop>
+      <div class="future-drop-copy">
+        <span data-future-eyebrow>Featured drop</span>
+        <h2 data-future-title>Blossom Future</h2>
+        <p data-future-description>Uma nova colecao esta sendo preparada para trazer uma identidade mais intensa, exclusiva e feita para quem quer se destacar no roleplay.</p>
+        <a href="colecoes.html" data-future-link>Lancamento em breve <span>↗</span></a>
+      </div>
+      <div class="future-drop-media">
+        <div class="future-drop-card" data-future-image>
+          <b data-future-badge>Soon</b>
+          <strong data-future-card-title>Blossom</strong>
+        </div>
       </div>
     </section>
 
@@ -147,61 +160,6 @@
     </section>
   </main>
 
-  <div class="overlay" data-overlay hidden></div>
-
-  <aside class="cart-drawer" data-cart-drawer aria-hidden="true" aria-label="Carrinho de compras">
-    <div class="drawer-head">
-      <div>
-        <span class="eyebrow">Seu pedido</span>
-        <h2>Carrinho</h2>
-      </div>
-      <button class="icon-button" type="button" aria-label="Fechar carrinho" data-cart-close>×</button>
-    </div>
-
-    <div class="cart-items" data-cart-items>
-      <p class="empty-cart">Seu carrinho esta vazio.</p>
-    </div>
-
-    <div class="cart-summary">
-      <div><span>Subtotal</span><strong data-subtotal>R$0,00</strong></div>
-      <div><span>Entrega digital</span><strong>Gratis</strong></div>
-      <div class="summary-total"><span>Total</span><strong data-total>R$0,00</strong></div>
-      <button class="checkout-button" type="button" data-checkout-open disabled>Finalizar compra</button>
-    </div>
-  </aside>
-
-  <section class="checkout-modal" data-checkout-modal hidden aria-label="Finalizar compra">
-    <div class="checkout-panel">
-      <button class="icon-button checkout-close" type="button" aria-label="Fechar checkout" data-checkout-close>×</button>
-      <div class="checkout-grid">
-        <form class="checkout-form" data-checkout-form>
-          <span class="eyebrow">Pagamento</span>
-          <h2>Finalizar compra</h2>
-          <label>Nome no pedido<input type="text" name="customer" placeholder="Seu nome" required></label>
-          <label>E-mail para entrega<input type="email" name="email" placeholder="seu@email.com" required></label>
-          <fieldset>
-            <legend>Forma de pagamento</legend>
-            <label class="payment-option"><input type="radio" name="payment" value="pix" checked><span><b>PIX</b><small>Gera codigo e QR de demonstracao.</small></span></label>
-            <label class="payment-option"><input type="radio" name="payment" value="card"><span><b>Cartao</b><small>Tela pronta para integrar gateway.</small></span></label>
-            <label class="payment-option"><input type="radio" name="payment" value="boleto"><span><b>Boleto</b><small>Gera referencia de pedido.</small></span></label>
-          </fieldset>
-          <div class="payment-preview" data-payment-preview>
-            <div class="qr-placeholder">PIX</div>
-            <p>Ao confirmar, o sistema cria um pedido em modo demonstracao.</p>
-          </div>
-          <button class="checkout-button" type="submit">Criar pedido</button>
-        </form>
-        <aside class="order-review">
-          <span class="eyebrow">Resumo</span>
-          <h3>Itens do pedido</h3>
-          <div data-checkout-items></div>
-          <div class="summary-total"><span>Total</span><strong data-checkout-total>R$0,00</strong></div>
-          <p class="order-note">Entrega digital automatica apos confirmacao do pagamento real.</p>
-        </aside>
-      </div>
-    </div>
-  </section>
-
   <footer class="editorial-footer">
     <div>
       <a class="footer-brand" href="index.html"><span class="brand-mark">✿</span><span><b>BLOSSOM</b><small>STORE</small></span></a>
@@ -210,7 +168,6 @@
     <nav>
       <a href="index.html">Inicio</a>
       <a href="colecoes.html">Colecoes</a>
-      <a href="loja.html">Loja</a>
       <a href="sobre.html">Sobre nos</a>
     </nav>
     <nav>

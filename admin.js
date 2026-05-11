@@ -101,6 +101,18 @@ const featuredSeed = [
   created: index,
 }));
 
+const futureDropSeed = {
+  eyebrow: "Featured drop",
+  title: "Blossom Future",
+  description: "Uma nova colecao esta sendo preparada para trazer uma identidade mais intensa, exclusiva e feita para quem quer se destacar no roleplay.",
+  button: "Lancamento em breve",
+  href: "colecoes.html",
+  badge: "Soon",
+  cardTitle: "Blossom",
+  image: "",
+  images: [],
+};
+
 const $ = (selector) => document.querySelector(selector);
 const $$ = (selector) => document.querySelectorAll(selector);
 const apiEnabled = location.protocol.startsWith("http");
@@ -200,16 +212,8 @@ function getObjectData(key, seed) {
 
 function fileToDataUrl(file) {
   return new Promise((resolve, reject) => {
-    if (!file) {
-      resolve("");
-      return;
-    }
-
-    if (file.size > 5 * 1024 * 1024) {
-      reject(new Error("Use uma imagem menor que 5MB."));
-      return;
-    }
-
+    if (!file) { resolve(""); return; }
+    if (file.size > 5 * 1024 * 1024) { reject(new Error("Use uma imagem menor que 5MB.")); return; }
     const reader = new FileReader();
     reader.onload = () => {
       const image = new Image();
@@ -234,9 +238,7 @@ function fileToDataUrl(file) {
 async function filesToDataUrls(files) {
   const selected = Array.from(files || []);
   const images = [];
-  for (const file of selected) {
-    images.push(await fileToDataUrl(file));
-  }
+  for (const file of selected) { images.push(await fileToDataUrl(file)); }
   return images.filter(Boolean);
 }
 
@@ -246,20 +248,16 @@ function toast(message) {
   const el = document.createElement("div");
   el.className = "toast";
   el.textContent = message;
+  el.style.cssText = "position:fixed;right:24px;bottom:24px;z-index:70;max-width:min(340px,calc(100% - 48px));padding:14px 16px;border:1px solid rgba(201,123,123,0.42);border-radius:7px;background:rgba(255,255,255,0.98);color:#2d1f1f;box-shadow:0 16px 46px rgba(0,0,0,0.1);font-size:13px;font-weight:800;";
   document.body.appendChild(el);
-  setTimeout(() => {
-    el.style.opacity = "0";
-    el.style.transform = "translateY(12px)";
-    setTimeout(() => el.remove(), 300);
-  }, 3000);
+  setTimeout(() => { el.style.opacity = "0"; el.style.transform = "translateY(12px)"; setTimeout(() => el.remove(), 300); }, 3000);
 }
 
+/* Auth forms on login page */
 $$("[data-auth-tab]").forEach((button) => {
   button.addEventListener("click", () => {
     $$("[data-auth-tab]").forEach((tab) => tab.classList.toggle("active", tab === button));
-    $$("[data-auth-form]").forEach((form) => {
-      form.hidden = form.dataset.authForm !== button.dataset.authTab;
-    });
+    $$("[data-auth-form]").forEach((form) => { form.hidden = form.dataset.authForm !== button.dataset.authTab; });
     authMessage("");
   });
 });
@@ -283,13 +281,8 @@ $$("[data-auth-form]").forEach((form) => {
     const originalText = label.textContent;
     submitButton.disabled = true;
     label.textContent = "Aguarde...";
-
     try {
-      const result = await apiPost("/api/auth", {
-        action,
-        username: data.get("username"),
-        password: data.get("password"),
-      });
+      const result = await apiPost("/api/auth", { action, username: data.get("username"), password: data.get("password") });
       writeSession(result.user);
       authMessage(action === "register" ? "Conta criada com sucesso." : "Login realizado.", "success");
       window.location.href = result.user.role === "admin" ? "admin.html" : "index.html";
@@ -321,22 +314,22 @@ if (loginForm) {
   });
 }
 
-if (document.body.classList.contains("admin-body") && location.pathname.endsWith("admin.html")) {
+/* Admin guard */
+if (document.body.classList.contains("admin-new-body") && location.pathname.endsWith("admin.html")) {
   const isAdmin = adminSession?.role === "admin";
-  if (!isAdmin) {
-    window.location.href = "login.html";
-  }
+  if (!isAdmin) { window.location.href = "login.html"; }
 }
 
 let adminProducts = apiEnabled ? [] : getData("blossom-products", productSeed);
 let adminCollections = apiEnabled ? [] : getData("blossom-collections", collectionSeed);
 let adminTaxonomies = apiEnabled ? { categories: [], types: [], colors: [], visuals: [] } : getObjectData("blossom-taxonomies", taxonomySeed);
 let adminFeaturedCards = apiEnabled ? featuredSeed : getData("blossom-featured-cards", featuredSeed);
+let adminFutureDrop = apiEnabled ? futureDropSeed : getObjectData("blossom-future-drop", futureDropSeed);
 let adminOrders = [];
 let adminUsers = [];
 
 async function loadApiStore() {
-  if (!apiEnabled || !$("[data-product-list]")) return;
+  if (!apiEnabled) return;
   try {
     const response = await fetch("/api/store");
     if (!response.ok) return;
@@ -345,56 +338,39 @@ async function loadApiStore() {
     adminCollections = Array.isArray(store.collections) ? store.collections : [];
     adminTaxonomies = store.taxonomies && Object.keys(store.taxonomies).length ? store.taxonomies : { categories: [], types: [], colors: [], visuals: [] };
     adminFeaturedCards = Array.isArray(adminTaxonomies.featuredCards) && adminTaxonomies.featuredCards.length ? adminTaxonomies.featuredCards : featuredSeed;
+    adminFutureDrop = adminTaxonomies.futureDrop && typeof adminTaxonomies.futureDrop === "object" ? { ...futureDropSeed, ...adminTaxonomies.futureDrop } : futureDropSeed;
     adminOrders = Array.isArray(store.orders) ? store.orders : [];
-    renderAdmin();
-  } catch {
-    renderAdmin();
-  }
+    renderAll();
+  } catch { renderAll(); }
 }
 
 async function saveApiStore() {
   if (!apiEnabled) return;
   adminTaxonomies.featuredCards = adminFeaturedCards;
+  adminTaxonomies.futureDrop = adminFutureDrop;
   const response = await fetch("/api/store", {
     method: "PUT",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      products: adminProducts,
-      collections: adminCollections,
-      taxonomies: adminTaxonomies,
-      orders: adminOrders,
-    }),
+    body: JSON.stringify({ products: adminProducts, collections: adminCollections, taxonomies: adminTaxonomies, orders: adminOrders }),
   });
-
-  if (!response.ok) {
-    const detail = await response.text();
-    throw new Error(detail || "Nao foi possivel salvar no servidor.");
-  }
+  if (!response.ok) { const detail = await response.text(); throw new Error(detail || "Nao foi possivel salvar no servidor."); }
 }
 
 async function loadUsers() {
-  const list = $("[data-users-list]");
-  if (!apiEnabled || !list) return;
+  if (!apiEnabled) return;
   try {
-    const response = await fetch("/api/users", {
-      headers: { "x-blossom-role": adminSession?.role || "admin" },
-    });
+    const response = await fetch("/api/users", { headers: { "x-blossom-role": adminSession?.role || "admin" } });
     const body = await response.json().catch(() => ({}));
     if (!response.ok) throw new Error(body.error || "Não foi possível carregar usuários.");
     adminUsers = Array.isArray(body.users) ? body.users : [];
     renderUsers();
-  } catch (error) {
-    $("[data-users-note]").textContent = error.message;
-  }
+  } catch (error) { toast(error.message); }
 }
 
 async function updateUserRole(username, role) {
   const response = await fetch("/api/users", {
     method: "PATCH",
-    headers: {
-      "Content-Type": "application/json",
-      "x-blossom-role": adminSession?.role || "admin",
-    },
+    headers: { "Content-Type": "application/json", "x-blossom-role": adminSession?.role || "admin" },
     body: JSON.stringify({ username, role }),
   });
   const body = await response.json().catch(() => ({}));
@@ -402,27 +378,11 @@ async function updateUserRole(username, role) {
   return body.user;
 }
 
-function saveProducts() {
-  setData("blossom-products", adminProducts);
-  return saveApiStore();
-}
-
-function saveCollections() {
-  setData("blossom-collections", adminCollections);
-  return saveApiStore();
-}
-
-function saveTaxonomies() {
-  adminTaxonomies.featuredCards = adminFeaturedCards;
-  setData("blossom-taxonomies", adminTaxonomies);
-  return saveApiStore();
-}
-
-function saveFeaturedCards() {
-  adminTaxonomies.featuredCards = adminFeaturedCards;
-  setData("blossom-featured-cards", adminFeaturedCards);
-  return saveApiStore();
-}
+function saveProducts() { setData("blossom-products", adminProducts); return saveApiStore(); }
+function saveCollections() { setData("blossom-collections", adminCollections); return saveApiStore(); }
+function saveTaxonomies() { adminTaxonomies.featuredCards = adminFeaturedCards; adminTaxonomies.futureDrop = adminFutureDrop; setData("blossom-taxonomies", adminTaxonomies); return saveApiStore(); }
+function saveFeaturedCards() { adminTaxonomies.featuredCards = adminFeaturedCards; adminTaxonomies.futureDrop = adminFutureDrop; setData("blossom-featured-cards", adminFeaturedCards); return saveApiStore(); }
+function saveFutureDrop() { adminTaxonomies.futureDrop = adminFutureDrop; setData("blossom-future-drop", adminFutureDrop); return saveApiStore(); }
 
 function optionMarkup(values, selected = "") {
   return [...new Set(values)].map((value) => `<option ${value === selected ? "selected" : ""}>${value}</option>`).join("");
@@ -445,71 +405,220 @@ function populateCollectionSelects(collection = null) {
   field(form, "visual").innerHTML = optionMarkup(adminTaxonomies.visuals, collection?.visual || "spring");
 }
 
-function renderAdmin() {
-  const productList = $("[data-product-list]");
-  const collectionList = $("[data-collection-list]");
-  if (!productList || !collectionList) return;
+/* Navigation */
+function navigateTo(section) {
+  $$(".admin-section").forEach((s) => s.classList.toggle("active", s.dataset.section === section));
+  $$(".admin-nav-link").forEach((l) => l.classList.toggle("active", l.dataset.nav === section));
+  const titles = { dashboard: "Painel Administrativo", products: "Produtos", collections: "Coleções", featured: "Destaques", users: "Usuários", taxonomies: "Categorias & Tipos", future: "Drop Futuro", settings: "Configurações" };
+  const t = $("[data-page-title]");
+  if (t) t.textContent = titles[section] || "Painel";
+  renderAll();
+}
 
-  const search = ($("[data-admin-product-search]")?.value || "").toLowerCase();
-  const visibleProducts = adminProducts.filter((item) => item.name.toLowerCase().includes(search));
+$$(".admin-nav-link").forEach((link) => {
+  link.addEventListener("click", () => navigateTo(link.dataset.nav));
+});
 
-  $("[data-product-total]").textContent = adminProducts.length;
-  $("[data-collection-total]").textContent = adminCollections.length;
-  $("[data-feature-total]").textContent = adminProducts.filter((item) => item.isNew).length;
+$$("[data-goto]").forEach((btn) => {
+  btn.addEventListener("click", () => navigateTo(btn.dataset.goto));
+});
 
-  productList.innerHTML = visibleProducts.map((item) => `
-    <article class="admin-row">
-      <div class="admin-thumb ${item.visual}" ${primaryImage(item) ? `style="background-image:url('${primaryImage(item)}')"` : ""}></div>
-      <div>
-        <h3>${item.name}</h3>
-        <p>${item.category} • ${item.type} • ${item.color}</p>
-        <strong>${item.visibility === "collection-only" ? "Sem preço individual" : adminMoney.format(Number(item.price))}${item.isNew ? " • Novo" : ""}${item.visibility === "collection-only" ? " • Somente coleção" : ""}${itemImages(item).length ? ` • ${itemImages(item).length} fotos` : ""}</strong>
-      </div>
-      <div>
-        <button type="button" data-edit-product="${item.id}">Editar</button>
-        <button type="button" data-delete-product="${item.id}">Remover</button>
-      </div>
-    </article>
-  `).join("") || '<p class="empty-cart">Nenhum produto encontrado.</p>';
-
-  collectionList.innerHTML = adminCollections.map((item) => `
-    <article class="admin-row">
-      <div class="admin-thumb ${item.visual}" ${primaryImage(item) ? `style="background-image:url('${primaryImage(item)}')"` : ""}></div>
-      <div>
-        <h3>${item.name}</h3>
-        <p>${item.label}</p>
-        <strong>${adminMoney.format(Number(item.price || 0))} • ${adminProducts.filter((product) => product.collection === item.id).length} peças${item.badge ? ` • ${item.badge}` : ""}${itemImages(item).length ? ` • ${itemImages(item).length} fotos` : ""}</strong>
-      </div>
-      <div>
-        <button type="button" data-edit-collection="${item.id}">Editar</button>
-        <button type="button" data-delete-collection="${item.id}">Remover</button>
-      </div>
-    </article>
-  `).join("") || '<p class="empty-cart">Nenhuma coleção cadastrada.</p>';
-
+/* Render functions */
+function renderAll() {
+  renderDashboard();
+  renderProducts();
+  renderCollections();
   renderFeaturedCards();
   renderTaxonomies();
+  renderFutureDropPreview();
+  renderUsers();
+  updateStats();
+}
+
+function updateStats() {
+  const sProducts = $("[data-stat-products]");
+  const sCollections = $("[data-stat-collections]");
+  const sFeatured = $("[data-stat-featured]");
+  const sUsers = $("[data-stat-users]");
+  if (sProducts) sProducts.textContent = adminProducts.length;
+  if (sCollections) sCollections.textContent = adminCollections.length;
+  if (sFeatured) sFeatured.textContent = adminFeaturedCards.length;
+  if (sUsers) sUsers.textContent = adminUsers.length;
+
+  const avatar = $("[data-admin-avatar]");
+  const username = $("[data-admin-username]");
+  if (avatar) avatar.textContent = (adminSession?.username || "A").slice(0, 1).toUpperCase();
+  if (username) username.textContent = adminSession?.username || "Admin";
+}
+
+function renderDashboard() {
+  const prodContainer = $("[data-dashboard-products]");
+  const collContainer = $("[data-dashboard-collections]");
+  if (!prodContainer || !collContainer) return;
+
+  const recentProducts = [...adminProducts].sort((a, b) => (b.created || 0) - (a.created || 0)).slice(0, 5);
+  const recentCollections = [...adminCollections].sort((a, b) => (b.created || 0) - (a.created || 0)).slice(0, 5);
+
+  prodContainer.innerHTML = recentProducts.length ? `
+    <table class="admin-table">
+      <tbody>
+        ${recentProducts.map((item) => `
+          <tr>
+            <td>
+              <div class="cell-product">
+                <div class="cell-thumb" ${primaryImage(item) ? `style="background-image:url('${primaryImage(item)}')"` : ""}></div>
+                <div class="cell-info">
+                  <b>${item.name}</b>
+                  <small>${item.category} • ${item.type}</small>
+                </div>
+              </div>
+            </td>
+            <td class="cell-price">${item.visibility === "collection-only" ? "—" : adminMoney.format(Number(item.price))}</td>
+            <td><span class="cell-status">${item.isNew ? "Novo" : "Ativo"}</span></td>
+          </tr>
+        `).join("")}
+      </tbody>
+    </table>
+  ` : '<p class="admin-empty">Nenhum produto cadastrado.</p>';
+
+  collContainer.innerHTML = recentCollections.length ? `
+    <table class="admin-table">
+      <tbody>
+        ${recentCollections.map((item) => `
+          <tr>
+            <td>
+              <div class="cell-product">
+                <div class="cell-thumb" ${primaryImage(item) ? `style="background-image:url('${primaryImage(item)}')"` : ""}></div>
+                <div class="cell-info">
+                  <b>${item.name}</b>
+                  <small>${item.label}</small>
+                </div>
+              </div>
+            </td>
+            <td class="cell-price">${adminMoney.format(Number(item.price || 0))}</td>
+            <td><span class="cell-status">${item.badge || "Ativo"}</span></td>
+          </tr>
+        `).join("")}
+      </tbody>
+    </table>
+  ` : '<p class="admin-empty">Nenhuma coleção cadastrada.</p>';
+}
+
+function renderProducts() {
+  const list = $("[data-product-list]");
+  if (!list) return;
+  list.innerHTML = adminProducts.length ? `
+    <table class="admin-table">
+      <thead>
+        <tr>
+          <th>Produto</th>
+          <th>Categoria</th>
+          <th>Preço</th>
+          <th>Status</th>
+          <th style="width:100px;text-align:right;">Ações</th>
+        </tr>
+      </thead>
+      <tbody>
+        ${adminProducts.map((item) => `
+          <tr>
+            <td>
+              <div class="cell-product">
+                <div class="cell-thumb" ${primaryImage(item) ? `style="background-image:url('${primaryImage(item)}')"` : ""}></div>
+                <div class="cell-info">
+                  <b>${item.name}</b>
+                  <small>${item.type} • ${item.color}</small>
+                </div>
+              </div>
+            </td>
+            <td>${item.category}</td>
+            <td class="cell-price">${item.visibility === "collection-only" ? "—" : adminMoney.format(Number(item.price))}</td>
+            <td><span class="cell-status">${item.isNew ? "Novo" : "Ativo"}</span></td>
+            <td class="cell-actions" style="justify-content:flex-end;">
+              <button type="button" data-edit-product="${item.id}" title="Editar">✎</button>
+              <button type="button" data-delete-product="${item.id}" title="Remover">🗑</button>
+            </td>
+          </tr>
+        `).join("")}
+      </tbody>
+    </table>
+  ` : '<p class="admin-empty">Nenhum produto cadastrado.</p>';
+}
+
+function renderCollections() {
+  const list = $("[data-collection-list]");
+  if (!list) return;
+  list.innerHTML = adminCollections.length ? `
+    <table class="admin-table">
+      <thead>
+        <tr>
+          <th>Coleção</th>
+          <th>Peças</th>
+          <th>Preço</th>
+          <th style="width:100px;text-align:right;">Ações</th>
+        </tr>
+      </thead>
+      <tbody>
+        ${adminCollections.map((item) => `
+          <tr>
+            <td>
+              <div class="cell-product">
+                <div class="cell-thumb" ${primaryImage(item) ? `style="background-image:url('${primaryImage(item)}')"` : ""}></div>
+                <div class="cell-info">
+                  <b>${item.name}</b>
+                  <small>${item.label}</small>
+                </div>
+              </div>
+            </td>
+            <td>${adminProducts.filter((p) => p.collection === item.id).length}</td>
+            <td class="cell-price">${adminMoney.format(Number(item.price || 0))}</td>
+            <td class="cell-actions" style="justify-content:flex-end;">
+              <button type="button" data-edit-collection="${item.id}" title="Editar">✎</button>
+              <button type="button" data-delete-collection="${item.id}" title="Remover">🗑</button>
+            </td>
+          </tr>
+        `).join("")}
+      </tbody>
+    </table>
+  ` : '<p class="admin-empty">Nenhuma coleção cadastrada.</p>';
 }
 
 function renderFeaturedCards() {
   const list = $("[data-featured-list]");
   if (!list) return;
-  list.innerHTML = [...adminFeaturedCards]
-    .sort((a, b) => String(a.section).localeCompare(String(b.section)) || Number(a.position || 0) - Number(b.position || 0))
-    .map((item) => `
-      <article class="admin-row">
-        <div class="admin-thumb ${item.visual}" ${primaryImage(item) ? `style="background-image:url('${primaryImage(item)}')"` : ""}></div>
-        <div>
-          <h3>${item.name}</h3>
-          <p>${item.section === "ambassadors" ? "Embaixadores" : "Influenciadores"} â€¢ ${item.role || "Sem subtÃ­tulo"}</p>
-          <strong>PosiÃ§Ã£o ${Number(item.position || 0)}${itemImages(item).length ? ` â€¢ ${itemImages(item).length} foto` : ""}</strong>
-        </div>
-        <div>
-          <button type="button" data-edit-featured-card="${item.id}">Editar</button>
-          <button type="button" data-delete-featured-card="${item.id}">Remover</button>
-        </div>
-      </article>
-    `).join("") || '<p class="empty-cart">Nenhum card cadastrado.</p>';
+  const sorted = [...adminFeaturedCards].sort((a, b) => String(a.section).localeCompare(String(b.section)) || Number(a.position || 0) - Number(b.position || 0));
+  list.innerHTML = sorted.length ? `
+    <table class="admin-table">
+      <thead>
+        <tr>
+          <th>Card</th>
+          <th>Grupo</th>
+          <th>Posição</th>
+          <th style="width:100px;text-align:right;">Ações</th>
+        </tr>
+      </thead>
+      <tbody>
+        ${sorted.map((item) => `
+          <tr>
+            <td>
+              <div class="cell-product">
+                <div class="cell-thumb" ${primaryImage(item) ? `style="background-image:url('${primaryImage(item)}')"` : ""}></div>
+                <div class="cell-info">
+                  <b>${item.name}</b>
+                  <small>${item.role || "Sem subtítulo"}</small>
+                </div>
+              </div>
+            </td>
+            <td>${item.section === "ambassadors" ? "Embaixadores" : "Influenciadores"}</td>
+            <td>${item.position || 0}</td>
+            <td class="cell-actions" style="justify-content:flex-end;">
+              <button type="button" data-edit-featured-card="${item.id}" title="Editar">✎</button>
+              <button type="button" data-delete-featured-card="${item.id}" title="Remover">🗑</button>
+            </td>
+          </tr>
+        `).join("")}
+      </tbody>
+    </table>
+  ` : '<p class="admin-empty">Nenhum card cadastrado.</p>';
 }
 
 function renderTaxonomies() {
@@ -517,32 +626,71 @@ function renderTaxonomies() {
     const list = $(`[data-taxonomy-list="${key}"]`);
     if (!list) return;
     list.innerHTML = values.map((value) => `
-      <span>${value}<button type="button" data-remove-taxonomy="${key}" data-value="${value}">×</button></span>
-    `).join("");
+      <span class="admin-tag">${value}<button type="button" data-remove-taxonomy="${key}" data-value="${value}">×</button></span>
+    `).join("") || '<span style="font-size:12px;color:var(--admin-muted);">Nenhum item cadastrado.</span>';
   });
+}
+
+function renderFutureDropPreview() {
+  const list = $("[data-future-drop-preview]");
+  if (!list) return;
+  const drop = { ...futureDropSeed, ...adminFutureDrop };
+  const images = Array.isArray(drop.images) && drop.images.length ? drop.images : (drop.image ? [drop.image] : []);
+  const image = images[0] || "";
+  list.innerHTML = `
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px;align-items:center;">
+      <div>
+        <p style="font-size:12px;color:var(--admin-muted);margin:0 0 8px;text-transform:uppercase;letter-spacing:1px;">${drop.eyebrow || "Featured drop"}</p>
+        <h3 style="margin:0 0 12px;font-size:22px;">${drop.title || "Blossom Future"}</h3>
+        <p style="margin:0 0 16px;font-size:13px;color:var(--admin-muted);line-height:1.6;">${drop.description || ""}</p>
+        <p style="margin:0;font-size:12px;"><strong>Botão:</strong> ${drop.button || ""} → ${drop.href || ""}</p>
+      </div>
+      <div style="border-radius:12px;overflow:hidden;border:1px solid var(--admin-line);min-height:180px;background:${image ? `url('${image}') center/cover` : 'linear-gradient(135deg,#f0e8e4,#e8ddd6)'};">
+        ${!image ? '<div style="padding:20px;color:var(--admin-muted);font-size:12px;text-align:center;">Sem imagem</div>' : ''}
+      </div>
+    </div>
+  `;
 }
 
 function renderUsers() {
   const list = $("[data-users-list]");
   if (!list) return;
-  list.innerHTML = adminUsers.map((user) => `
-    <article class="admin-row user-row">
-      <div class="admin-avatar">${user.username.slice(0, 1).toUpperCase()}</div>
-      <div>
-        <h3>${user.username}</h3>
-        <p>${user.createdAt ? new Date(user.createdAt).toLocaleDateString("pt-BR") : "Conta registrada"}</p>
-        <strong>${user.role || "cliente"}</strong>
-      </div>
-      <div>
-        <select data-user-role="${user.username}" ${user.username === adminSession?.username ? "disabled" : ""}>
-          <option value="cliente" ${user.role !== "admin" ? "selected" : ""}>Cliente</option>
-          <option value="admin" ${user.role === "admin" ? "selected" : ""}>Admin</option>
-        </select>
-      </div>
-    </article>
-  `).join("") || '<p class="empty-cart">Nenhuma conta cadastrada.</p>';
+  list.innerHTML = adminUsers.length ? `
+    <table class="admin-table">
+      <thead>
+        <tr>
+          <th>Usuário</th>
+          <th>Cargo</th>
+          <th style="width:140px;">Ação</th>
+        </tr>
+      </thead>
+      <tbody>
+        ${adminUsers.map((user) => `
+          <tr>
+            <td>
+              <div class="cell-product">
+                <div class="avatar" style="width:36px;height:36px;border-radius:50%;background:var(--admin-avatar);color:white;display:grid;place-items:center;font-size:14px;font-weight:800;flex-shrink:0;">${user.username.slice(0,1).toUpperCase()}</div>
+                <div class="cell-info">
+                  <b>${user.username}</b>
+                  <small>${user.createdAt ? new Date(user.createdAt).toLocaleDateString("pt-BR") : "Conta registrada"}</small>
+                </div>
+              </div>
+            </td>
+            <td><span class="cell-status">${user.role || "cliente"}</span></td>
+            <td>
+              <select data-user-role="${user.username}" ${user.username === adminSession?.username ? "disabled" : ""} style="height:34px;padding:0 8px;border:1px solid var(--admin-line);border-radius:6px;background:var(--admin-bg);color:var(--admin-text);font:inherit;font-size:12px;">
+                <option value="cliente" ${user.role !== "admin" ? "selected" : ""}>Cliente</option>
+                <option value="admin" ${user.role === "admin" ? "selected" : ""}>Admin</option>
+              </select>
+            </td>
+          </tr>
+        `).join("")}
+      </tbody>
+    </table>
+  ` : '<p class="admin-empty">Nenhuma conta cadastrada.</p>';
 }
 
+/* Forms */
 function openProductForm(product = null) {
   const dialog = $("[data-product-dialog]");
   const form = $("[data-product-form]");
@@ -597,24 +745,45 @@ function openFeaturedForm(card = null) {
   dialog.showModal();
 }
 
+function openFutureForm() {
+  const dialog = $("[data-future-dialog]");
+  const form = $("[data-future-form]");
+  if (!dialog || !form) return;
+  form.reset();
+  const drop = { ...futureDropSeed, ...adminFutureDrop };
+  field(form, "eyebrow").value = drop.eyebrow || "";
+  field(form, "title").value = drop.title || "";
+  field(form, "description").value = drop.description || "";
+  field(form, "button").value = drop.button || "";
+  field(form, "href").value = drop.href || "";
+  field(form, "badge").value = drop.badge || "";
+  field(form, "cardTitle").value = drop.cardTitle || "";
+  form.dataset.currentImages = JSON.stringify(itemImages(drop));
+  const count = itemImages(drop).length;
+  $("[data-future-image-note]").textContent = count ? `${count} imagem atual. Envie outra para substituir.` : "Nenhuma imagem anexada.";
+  dialog.showModal();
+}
+
+/* Event listeners */
 $("[data-new-product]")?.addEventListener("click", () => openProductForm());
 $("[data-new-collection]")?.addEventListener("click", () => openCollectionForm());
 $("[data-new-featured-card]")?.addEventListener("click", () => openFeaturedForm());
-$("[data-admin-product-search]")?.addEventListener("input", renderAdmin);
+$("[data-edit-future-drop]")?.addEventListener("click", () => openFutureForm());
 $("[data-refresh-users]")?.addEventListener("click", loadUsers);
 
 $("[data-product-form] input[name='images']")?.addEventListener("change", (event) => {
   const count = event.target.files.length;
-  $("[data-product-image-note]").textContent = count
-    ? `${count} imagem(ns) selecionada(s). Elas serão otimizadas ao salvar.`
-    : "Nenhuma imagem anexada.";
+  $("[data-product-image-note]").textContent = count ? `${count} imagem(ns) selecionada(s). Elas serão otimizadas ao salvar.` : "Nenhuma imagem anexada.";
 });
 
 $("[data-collection-form] input[name='images']")?.addEventListener("change", (event) => {
   const count = event.target.files.length;
-  $("[data-collection-image-note]").textContent = count
-    ? `${count} imagem(ns) selecionada(s). Elas serão otimizadas ao salvar.`
-    : "Nenhuma imagem anexada.";
+  $("[data-collection-image-note]").textContent = count ? `${count} imagem(ns) selecionada(s). Elas serão otimizadas ao salvar.` : "Nenhuma imagem anexada.";
+});
+
+$("[data-featured-form] input[name='images']")?.addEventListener("change", (event) => {
+  const count = event.target.files.length;
+  $("[data-featured-image-note]").textContent = count ? `${count} imagem selecionada. Ela será otimizada ao salvar.` : "Nenhuma imagem anexada.";
 });
 
 document.addEventListener("click", (event) => {
@@ -633,21 +802,19 @@ document.addEventListener("click", (event) => {
   if (deleteProduct) {
     adminProducts = adminProducts.filter((item) => item.id !== deleteProduct.dataset.deleteProduct);
     saveProducts().catch((error) => console.warn(error));
-    renderAdmin();
+    renderAll();
     toast("Produto removido.");
   }
-
   if (deleteCollection) {
     adminCollections = adminCollections.filter((item) => item.id !== deleteCollection.dataset.deleteCollection);
     saveCollections().catch((error) => console.warn(error));
-    renderAdmin();
+    renderAll();
     toast("Coleção removida.");
   }
-
   if (deleteFeaturedCard) {
     adminFeaturedCards = adminFeaturedCards.filter((item) => item.id !== deleteFeaturedCard.dataset.deleteFeaturedCard);
     saveFeaturedCards().catch((error) => console.warn(error));
-    renderAdmin();
+    renderAll();
     toast("Card removido.");
   }
 
@@ -657,7 +824,7 @@ document.addEventListener("click", (event) => {
     const value = removeTaxonomy.dataset.value;
     adminTaxonomies[key] = adminTaxonomies[key].filter((item) => item !== value);
     saveTaxonomies().catch((error) => console.warn(error));
-    renderAdmin();
+    renderAll();
     toast("Opção removida.");
   }
 
@@ -670,11 +837,11 @@ document.addEventListener("change", async (event) => {
   const previous = adminUsers.find((user) => user.username === roleSelect.dataset.userRole)?.role || "cliente";
   try {
     await updateUserRole(roleSelect.dataset.userRole, roleSelect.value);
-    $("[data-users-note]").textContent = "Cargo atualizado.";
+    toast("Cargo atualizado.");
     await loadUsers();
   } catch (error) {
     roleSelect.value = previous;
-    $("[data-users-note]").textContent = error.message;
+    toast(error.message);
   }
 });
 
@@ -697,7 +864,6 @@ $("[data-product-form]")?.addEventListener("submit", async (event) => {
     submitButton.textContent = originalText;
     return;
   }
-
   if (data.get("visibility") === "collection-only" && !data.get("collection")) {
     $("[data-product-image-note]").textContent = "Escolha uma coleção para produtos que aparecem somente na coleção.";
     submitButton.disabled = false;
@@ -710,31 +876,18 @@ $("[data-product-form]")?.addEventListener("submit", async (event) => {
     submitButton.textContent = originalText;
     return;
   }
-
   const product = {
-    id,
-    name: data.get("name"),
-    category: data.get("category"),
-    type: data.get("type"),
-    color: data.get("color"),
-    collection: data.get("collection"),
-    visibility: data.get("visibility"),
+    id, name: data.get("name"), category: data.get("category"), type: data.get("type"), color: data.get("color"),
+    collection: data.get("collection"), visibility: data.get("visibility"),
     price: data.get("visibility") === "collection-only" ? 0 : Number(data.get("price")),
-    visual: data.get("visual"),
-    image: images[0] || "",
-    images,
-    isNew: data.has("isNew"),
+    visual: data.get("visual"), image: images[0] || "", images, isNew: data.has("isNew"),
     created: adminProducts.find((item) => item.id === id)?.created ?? Date.now(),
   };
-
-  adminProducts = adminProducts.some((item) => item.id === id)
-    ? adminProducts.map((item) => item.id === id ? product : item)
-    : [product, ...adminProducts];
-
+  adminProducts = adminProducts.some((item) => item.id === id) ? adminProducts.map((item) => item.id === id ? product : item) : [product, ...adminProducts];
   try {
     await saveProducts();
     form.closest("dialog").close();
-    renderAdmin();
+    renderAll();
     toast("Produto salvo.");
   } catch (error) {
     console.error(error);
@@ -764,29 +917,18 @@ $("[data-collection-form]")?.addEventListener("submit", async (event) => {
     submitButton.textContent = originalText;
     return;
   }
-
   const collection = {
-    id,
-    name: data.get("name"),
-    label: data.get("label"),
-    description: data.get("description"),
+    id, name: data.get("name"), label: data.get("label"), description: data.get("description"),
     pieces: adminProducts.filter((product) => product.collection === id).length,
-    price: Number(data.get("price")),
-    visual: data.get("visual"),
-    badge: data.get("badge"),
-    image: images[0] || "",
-    images,
-    created: adminCollections.find((item) => item.id === id)?.created ?? Date.now(),
+    price: Number(data.get("price")), visual: data.get("visual"), badge: data.get("badge"),
+    image: images[0] || "", images, created: adminCollections.find((item) => item.id === id)?.created ?? Date.now(),
   };
-
-  adminCollections = adminCollections.some((item) => item.id === id)
-    ? adminCollections.map((item) => item.id === id ? collection : item)
-    : [collection, ...adminCollections];
-
+  adminCollections = adminCollections.some((item) => item.id === id) ? adminCollections.map((item) => item.id === id ? collection : item) : [collection, ...adminCollections];
   try {
     await saveCollections();
     form.closest("dialog").close();
-    renderAdmin();
+    renderAll();
+    toast("Coleção salva.");
   } catch (error) {
     console.error(error);
     $("[data-collection-image-note]").textContent = `Erro ao salvar: ${errorText(error)}`;
@@ -815,32 +957,59 @@ $("[data-featured-form]")?.addEventListener("submit", async (event) => {
     submitButton.textContent = originalText;
     return;
   }
-
   const card = {
-    id,
-    section: data.get("section"),
-    name: data.get("name"),
+    id, section: data.get("section"), name: data.get("name"),
     role: data.get("role") || (data.get("section") === "influencers" ? "Creator" : "Embaixador"),
     href: data.get("href") || (data.get("section") === "influencers" ? "contato.html" : "sobre.html#time"),
-    visual: data.get("visual"),
-    position: Number(data.get("position") || 0),
-    image: images[0] || "",
-    images,
-    created: adminFeaturedCards.find((item) => item.id === id)?.created ?? Date.now(),
+    visual: data.get("visual"), position: Number(data.get("position") || 0),
+    image: images[0] || "", images, created: adminFeaturedCards.find((item) => item.id === id)?.created ?? Date.now(),
   };
-
-  adminFeaturedCards = adminFeaturedCards.some((item) => item.id === id)
-    ? adminFeaturedCards.map((item) => item.id === id ? card : item)
-    : [card, ...adminFeaturedCards];
-
+  adminFeaturedCards = adminFeaturedCards.some((item) => item.id === id) ? adminFeaturedCards.map((item) => item.id === id ? card : item) : [card, ...adminFeaturedCards];
   try {
     await saveFeaturedCards();
     form.closest("dialog").close();
-    renderAdmin();
+    renderAll();
     toast("Card salvo.");
   } catch (error) {
     console.error(error);
     $("[data-featured-image-note]").textContent = `Erro ao salvar: ${errorText(error)}`;
+  } finally {
+    submitButton.disabled = false;
+    submitButton.textContent = originalText;
+  }
+});
+
+$("[data-future-form]")?.addEventListener("submit", async (event) => {
+  event.preventDefault();
+  const form = event.currentTarget;
+  const data = new FormData(form);
+  const submitButton = form.querySelector("[type='submit']");
+  const originalText = submitButton.textContent;
+  submitButton.disabled = true;
+  submitButton.textContent = "Salvando...";
+  let images = JSON.parse(form.dataset.currentImages || "[]");
+  try {
+    const uploadedImages = await filesToDataUrls(field(form, "images").files);
+    images = uploadedImages.length ? uploadedImages : images;
+  } catch (error) {
+    $("[data-future-image-note]").textContent = error.message;
+    submitButton.disabled = false;
+    submitButton.textContent = originalText;
+    return;
+  }
+  adminFutureDrop = {
+    eyebrow: data.get("eyebrow"), title: data.get("title"), description: data.get("description"),
+    button: data.get("button"), href: data.get("href"), badge: data.get("badge"), cardTitle: data.get("cardTitle"),
+    image: images[0] || "", images,
+  };
+  try {
+    await saveFutureDrop();
+    form.closest("dialog").close();
+    renderAll();
+    toast("Drop futuro salvo.");
+  } catch (error) {
+    console.error(error);
+    $("[data-future-image-note]").textContent = `Erro ao salvar: ${errorText(error)}`;
   } finally {
     submitButton.disabled = false;
     submitButton.textContent = originalText;
@@ -852,10 +1021,11 @@ $("[data-reset-data]")?.addEventListener("click", () => {
   adminCollections = collectionSeed;
   adminTaxonomies = taxonomySeed;
   adminFeaturedCards = featuredSeed;
+  adminFutureDrop = futureDropSeed;
   saveProducts().catch((error) => console.warn(error));
   saveCollections().catch((error) => console.warn(error));
   saveFeaturedCards().catch((error) => console.warn(error));
-  renderAdmin();
+  renderAll();
   toast("Dados padrão restaurados.");
 });
 
@@ -869,7 +1039,7 @@ $$("[data-taxonomy-form]").forEach((form) => {
     adminTaxonomies[key] = [...new Set([...adminTaxonomies[key], value])];
     input.value = "";
     saveTaxonomies().catch((error) => console.warn(error));
-    renderAdmin();
+    renderAll();
     toast("Opção adicionada.");
   });
 });
@@ -880,14 +1050,7 @@ $("[data-logout]")?.addEventListener("click", () => {
   window.location.href = "login.html";
 });
 
-$("[data-featured-form] input[name='images']")?.addEventListener("change", (event) => {
-  const count = event.target.files.length;
-  $("[data-featured-image-note]").textContent = count
-    ? `${count} imagem selecionada. Ela serÃ¡ otimizada ao salvar.`
-    : "Nenhuma imagem anexada.";
-});
-
-renderAdmin();
+/* Init */
+renderAll();
 loadApiStore();
 loadUsers();
-

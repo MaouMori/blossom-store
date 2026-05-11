@@ -1,7 +1,4 @@
-const money = new Intl.NumberFormat("pt-BR", {
-  style: "currency",
-  currency: "BRL",
-});
+const money = new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL" });
 
 function initMobileMenu() {
   const toggle = document.querySelector("[data-mobile-menu-toggle]");
@@ -9,26 +6,12 @@ function initMobileMenu() {
   const nav = document.querySelector("[data-mobile-nav]");
   const close = document.querySelector("[data-mobile-nav-close]");
   if (!toggle || !overlay || !nav) return;
-
-  function open() {
-    overlay.classList.add("active");
-    nav.classList.add("active");
-    document.body.style.overflow = "hidden";
-  }
-
-  function closeMenu() {
-    overlay.classList.remove("active");
-    nav.classList.remove("active");
-    document.body.style.overflow = "";
-  }
-
+  function open() { overlay.classList.add("active"); nav.classList.add("active"); document.body.style.overflow = "hidden"; }
+  function closeMenu() { overlay.classList.remove("active"); nav.classList.remove("active"); document.body.style.overflow = ""; }
   toggle.addEventListener("click", open);
   overlay.addEventListener("click", closeMenu);
   if (close) close.addEventListener("click", closeMenu);
-
-  nav.querySelectorAll("a").forEach((link) => {
-    link.addEventListener("click", closeMenu);
-  });
+  nav.querySelectorAll("a").forEach((link) => link.addEventListener("click", closeMenu));
 }
 
 document.addEventListener("DOMContentLoaded", initMobileMenu);
@@ -41,39 +24,25 @@ function initLazyImages() {
           const el = entry.target;
           const src = el.dataset.src;
           if (src) {
-            if (el.tagName === "IMG") {
-              el.src = src;
-            } else {
-              el.style.backgroundImage = `url('${src}')`;
-            }
+            if (el.tagName === "IMG") { el.src = src; } else { el.style.backgroundImage = `url('${src}')`; }
             el.removeAttribute("data-src");
             observer.unobserve(el);
           }
         }
       });
     }, { rootMargin: "200px 0px" });
-
     window._lazyObserver = observer;
     document.querySelectorAll("[data-src]").forEach((el) => observer.observe(el));
   } else {
     document.querySelectorAll("[data-src]").forEach((el) => {
       const src = el.dataset.src;
-      if (src) {
-        if (el.tagName === "IMG") {
-          el.src = src;
-        } else {
-          el.style.backgroundImage = `url('${src}')`;
-        }
-        el.removeAttribute("data-src");
-      }
+      if (src) { if (el.tagName === "IMG") { el.src = src; } else { el.style.backgroundImage = `url('${src}')`; } el.removeAttribute("data-src"); }
     });
   }
 }
 
 function refreshLazyImages() {
-  if (window._lazyObserver) {
-    document.querySelectorAll("[data-src]").forEach((el) => window._lazyObserver.observe(el));
-  }
+  if (window._lazyObserver) { document.querySelectorAll("[data-src]").forEach((el) => window._lazyObserver.observe(el)); }
 }
 
 function initHomeCarousels() {
@@ -81,7 +50,6 @@ function initHomeCarousels() {
     [document.querySelector("[data-home-collections]"), document.querySelector("[data-collection-prev]"), document.querySelector("[data-collection-next]")],
     [document.querySelector("[data-lookbook-track]"), document.querySelector("[data-lookbook-prev]"), document.querySelector("[data-lookbook-next]")],
   ];
-
   pairs.forEach(([track, prev, next]) => {
     if (!track || track.dataset.carouselReady) return;
     track.dataset.carouselReady = "true";
@@ -90,10 +58,7 @@ function initHomeCarousels() {
       if (!card) return;
       const step = card.getBoundingClientRect().width + 18;
       const end = track.scrollLeft + track.clientWidth >= track.scrollWidth - 8;
-      if (direction > 0 && end) {
-        track.scrollTo({ left: 0, behavior: "smooth" });
-        return;
-      }
+      if (direction > 0 && end) { track.scrollTo({ left: 0, behavior: "smooth" }); return; }
       track.scrollBy({ left: step * direction, behavior: "smooth" });
     };
     prev?.addEventListener("click", () => move(-1));
@@ -106,58 +71,35 @@ function initThemeToggle() {
   const button = document.querySelector("[data-theme-toggle]");
   if (!button || !document.body.classList.contains("home-editorial")) return;
   const saved = localStorage.getItem("blossom-home-theme") || "dark";
-
   function setTheme(theme) {
     const light = theme === "light";
     document.body.classList.toggle("editorial-light", light);
     button.setAttribute("aria-pressed", String(light));
     localStorage.setItem("blossom-home-theme", light ? "light" : "dark");
   }
-
   setTheme(saved);
-  button.addEventListener("click", () => {
-    setTheme(document.body.classList.contains("editorial-light") ? "dark" : "light");
-  });
+  button.addEventListener("click", () => { setTheme(document.body.classList.contains("editorial-light") ? "dark" : "light"); });
 }
 
 function initHomeMotion() {
   if (!document.body.classList.contains("home-editorial")) return;
   const root = document.documentElement;
   let ticking = false;
-
   const updateScrollMotion = () => {
     const progress = Math.min(window.scrollY / 460, 1);
     root.style.setProperty("--home-scroll", progress.toFixed(3));
     document.body.classList.toggle("home-scrolled", progress > 0.14);
     ticking = false;
   };
-
-  const requestScrollMotion = () => {
-    if (ticking) return;
-    ticking = true;
-    window.requestAnimationFrame(updateScrollMotion);
-  };
-
+  const requestScrollMotion = () => { if (ticking) return; ticking = true; window.requestAnimationFrame(updateScrollMotion); };
   updateScrollMotion();
   window.addEventListener("scroll", requestScrollMotion, { passive: true });
-
-  const revealItems = document.querySelectorAll(".editorial-strip, .movement-banner, .editorial-footer");
+  const revealItems = document.querySelectorAll(".future-drop, .editorial-strip, .movement-banner, .editorial-footer");
   revealItems.forEach((item) => item.classList.add("home-reveal"));
-
-  if (!("IntersectionObserver" in window)) {
-    revealItems.forEach((item) => item.classList.add("is-visible"));
-    return;
-  }
-
+  if (!("IntersectionObserver" in window)) { revealItems.forEach((item) => item.classList.add("is-visible")); return; }
   const revealObserver = new IntersectionObserver((entries) => {
-    entries.forEach((entry) => {
-      if (entry.isIntersecting) {
-        entry.target.classList.add("is-visible");
-        revealObserver.unobserve(entry.target);
-      }
-    });
+    entries.forEach((entry) => { if (entry.isIntersecting) { entry.target.classList.add("is-visible"); revealObserver.unobserve(entry.target); } });
   }, { threshold: 0.18 });
-
   revealItems.forEach((item) => revealObserver.observe(item));
 }
 
@@ -217,15 +159,7 @@ const defaultProductRows = [
 ];
 
 const defaultProducts = defaultProductRows.map(([id, name, category, type, color, price, visual, isNew], index) => ({
-  id,
-  name,
-  category,
-  type,
-  color,
-  price,
-  visual,
-  isNew,
-  created: index,
+  id, name, category, type, color, price, visual, isNew, created: index,
 }));
 
 const defaultCollections = [
@@ -247,12 +181,7 @@ const defaultTaxonomies = {
 };
 
 function readStore(key, fallback) {
-  try {
-    const saved = JSON.parse(localStorage.getItem(key));
-    return Array.isArray(saved) ? saved : fallback;
-  } catch {
-    return fallback;
-  }
+  try { const saved = JSON.parse(localStorage.getItem(key)); return Array.isArray(saved) ? saved : fallback; } catch { return fallback; }
 }
 
 const apiEnabled = location.protocol.startsWith("http");
@@ -272,25 +201,17 @@ const defaultFeaturedCards = [
   ["influencers", "@dudamills", "Creator", "vivid", "contato.html"],
   ["influencers", "@heartzui", "Creator", "soft", "contato.html"],
 ].map(([section, name, role, visual, href], index) => ({
-  id: `${section}-${index}`,
-  section,
-  name,
-  role,
-  visual,
-  href,
-  image: "",
-  images: [],
-  position: index,
-  created: index,
+  id: `${section}-${index}`, section, name, role, visual, href, image: "", images: [], position: index, created: index,
 }));
 
-function recentValue(item) {
-  return Number(item.createdAt || item.created || 0);
-}
+const defaultFutureDrop = {
+  eyebrow: "Featured drop", title: "Blossom Future",
+  description: "Uma nova colecao esta sendo preparada para trazer uma identidade mais intensa, exclusiva e feita para quem quer se destacar no roleplay.",
+  button: "Lancamento em breve", href: "colecoes.html", badge: "Soon", cardTitle: "Blossom", image: "", images: [],
+};
 
-function recentItems(items, limit) {
-  return [...items].sort((a, b) => recentValue(b) - recentValue(a)).slice(0, limit);
-}
+function recentValue(item) { return Number(item.createdAt || item.created || 0); }
+function recentItems(items, limit) { return [...items].sort((a, b) => recentValue(b) - recentValue(a)).slice(0, limit); }
 
 function ownItemImages(item) {
   if (Array.isArray(item?.images) && item.images.length) return item.images;
@@ -309,27 +230,15 @@ function itemImages(item) {
   return ownItemImages(item);
 }
 
-function primaryImage(item) {
-  return itemImages(item)[0] || "";
-}
-
-const couponRules = {
-  BLOSSOM10: { label: "BLOSSOM10", type: "percent", value: 10 },
-  RP15: { label: "RP15", type: "percent", value: 15 },
-  PINK20: { label: "PINK20", type: "fixed", value: 20 },
-};
+function primaryImage(item) { return itemImages(item)[0] || ""; }
 
 let products = apiEnabled ? [] : readStore("blossom-products", []);
 let collections = apiEnabled ? [] : readStore("blossom-collections", []);
 let featuredCards = apiEnabled ? defaultFeaturedCards : readStore("blossom-featured-cards", defaultFeaturedCards);
+let futureDrop = apiEnabled ? defaultFutureDrop : readStore("blossom-future-drop", defaultFutureDrop);
 let taxonomies = (() => {
   if (apiEnabled) return { categories: [], types: [], colors: [], visuals: [] };
-  try {
-    const saved = JSON.parse(localStorage.getItem("blossom-taxonomies"));
-    return saved && typeof saved === "object" ? { ...defaultTaxonomies, ...saved } : defaultTaxonomies;
-  } catch {
-    return defaultTaxonomies;
-  }
+  try { const saved = JSON.parse(localStorage.getItem("blossom-taxonomies")); return saved && typeof saved === "object" ? { ...defaultTaxonomies, ...saved } : defaultTaxonomies; } catch { return defaultTaxonomies; }
 })();
 
 const selectors = {
@@ -378,6 +287,7 @@ const selectors = {
   collectionGallery: document.querySelector("[data-collection-gallery]"),
   homeProducts: document.querySelector("[data-home-products]"),
   homeCollections: document.querySelector("[data-home-collections]"),
+  futureDrop: document.querySelector("[data-future-drop]"),
   spotlightTracks: document.querySelectorAll("[data-spotlight-track]"),
   lookbookTrack: document.querySelector("[data-lookbook-track]"),
   contactForm: document.querySelector("[data-contact-form]"),
@@ -389,23 +299,11 @@ const selectors = {
 };
 
 const state = {
-  category: "Todas as peças",
-  types: new Set(),
-  colors: new Set(),
-  search: "",
-  sort: "recent",
-  maxPrice: 9999,
-  page: 1,
-  perPage: 16,
-  collectionCategory: "Todas",
-  collectionType: "Todos",
-  collectionColor: "Todas",
-  collectionSort: "recent",
+  category: "Todas as peças", types: new Set(), colors: new Set(), search: "", sort: "recent", maxPrice: 9999, page: 1, perPage: 16,
+  collectionCategory: "Todas", collectionType: "Todos", collectionColor: "Todas", collectionSort: "recent",
 };
 
-let cart = loadCart();
 let account = loadAccount();
-let activeCoupon = loadCoupon();
 
 async function loadApiStore() {
   if (!apiEnabled) return;
@@ -417,20 +315,14 @@ async function loadApiStore() {
     collections = Array.isArray(store.collections) ? store.collections : [];
     taxonomies = store.taxonomies && Object.keys(store.taxonomies).length ? store.taxonomies : { categories: [], types: [], colors: [], visuals: [] };
     featuredCards = Array.isArray(taxonomies.featuredCards) && taxonomies.featuredCards.length ? taxonomies.featuredCards : defaultFeaturedCards;
-    if (hasShop) {
-      renderFilters();
-      renderCatalog();
-    }
+    futureDrop = taxonomies.futureDrop && typeof taxonomies.futureDrop === "object" ? { ...defaultFutureDrop, ...taxonomies.futureDrop } : defaultFutureDrop;
+    if (hasShop) { renderFilters(); renderCatalog(); }
     renderHomeSections();
     renderCollections();
     renderCollectionDetail();
   } catch {
-    products = [];
-    collections = [];
-    featuredCards = defaultFeaturedCards;
-    renderHomeSections();
-    renderCollections();
-    renderCollectionDetail();
+    products = []; collections = []; featuredCards = defaultFeaturedCards; futureDrop = defaultFutureDrop;
+    renderHomeSections(); renderCollections(); renderCollectionDetail();
   }
 }
 
@@ -443,8 +335,7 @@ const hasContact = Boolean(selectors.contactForm);
 
 function countBy(key) {
   return products.filter((product) => product.visibility !== "collection-only").reduce((acc, product) => {
-    acc[product[key]] = (acc[product[key]] || 0) + 1;
-    return acc;
+    acc[product[key]] = (acc[product[key]] || 0) + 1; return acc;
   }, {});
 }
 
@@ -456,7 +347,6 @@ function renderFilters() {
       <span>${category}</span><b>${count}</b>
     </button>
   `).join("");
-
   const typeCounts = countBy("type");
   selectors.typeList.innerHTML = taxonomies.types.map((type) => `
     <label>
@@ -464,16 +354,7 @@ function renderFilters() {
       <span>${type}</span><b>${typeCounts[type] || 0}</b>
     </label>
   `).join("");
-
-  const swatches = {
-    Preto: "#050608",
-    Branco: "#f2f0eb",
-    Rosa: "#ff9cbc",
-    Cinza: "#aeb3b8",
-    Bege: "#d9c6a5",
-    Azul: "#2f8cff",
-  };
-
+  const swatches = { Preto: "#050608", Branco: "#f2f0eb", Rosa: "#ff9cbc", Cinza: "#aeb3b8", Bege: "#d9c6a5", Azul: "#2f8cff" };
   const colorCounts = countBy("color");
   selectors.colorList.innerHTML = taxonomies.colors.map((color) => `
     <label>
@@ -494,14 +375,12 @@ function getFilteredProducts() {
     const matchesSearch = product.name.toLowerCase().includes(state.search.toLowerCase());
     return matchesCategory && matchesType && matchesColor && matchesPrice && matchesSearch;
   });
-
   filtered = [...filtered].sort((a, b) => {
     if (state.sort === "price-asc") return a.price - b.price;
     if (state.sort === "price-desc") return b.price - a.price;
     if (state.sort === "name") return a.name.localeCompare(b.name);
     return recentValue(b) - recentValue(a);
   });
-
   return filtered;
 }
 
@@ -510,18 +389,16 @@ function productCard(product, compact = false) {
   const image = primaryImage(product);
   const imageStyle = image ? `data-src="${image}"` : "";
   const label = String(product.type || product.category || "Peça").replace("Moletons", "Moleton").replace("Camisetas", "Camiseta").replace("Calças", "Calça");
-  const collectionOnly = product.visibility === "collection-only";
   return `
-    <article class="product-card ${compact ? "" : "shop-product"} ${collectionOnly ? "included-product" : ""}" data-product-id="${product.id}">
+    <article class="product-card ${compact ? "" : "shop-product"}" data-product-id="${product.id}">
       <div class="template-visual product-media ${visual} ${image ? "has-upload" : ""}" ${imageStyle}>
         ${product.isNew ? "<span>Novo</span>" : ""}
       </div>
       <div class="product-copy">
         <h3>${product.name}</h3>
         <p>${label}</p>
-        ${collectionOnly
-          ? '<strong class="included-label">Incluso na coleção</strong>'
-          : `<strong>${money.format(Number(product.price || 0))}</strong><button class="add-button" type="button" aria-label="Adicionar ${product.name}" data-add-to-cart="${product.id}">Adicionar</button>`}
+        <strong>${money.format(Number(product.price || 0))}</strong>
+        <a class="add-button" href="https://www.patreon.com" target="_blank" rel="noreferrer">Adquirir</a>
       </div>
     </article>
   `;
@@ -568,7 +445,7 @@ function spotlightCard(card) {
   const sectionClass = card.section === "influencers" ? "influencer-shot" : "portrait";
   const visual = card.visual || (card.section === "influencers" ? "soft" : "pink");
   return `
-    <a href="${card.href || "#"}">
+    <a href="#" data-spotlight-card="${card.id}" data-spotlight-name="${card.name || ""}" data-spotlight-role="${card.role || ""}" data-spotlight-image="${image}">
       <div class="${sectionClass} ${visual} ${image ? "has-upload" : ""}" ${image ? `style="background-image:url('${image}')"` : ""}></div>
       <b>${card.name || "Blossom"}</b>
       <small>${card.role || (card.section === "influencers" ? "Creator" : "Embaixador")}</small>
@@ -579,9 +456,7 @@ function spotlightCard(card) {
 function renderSpotlightTracks() {
   selectors.spotlightTracks.forEach((track) => {
     const section = track.dataset.spotlightTrack;
-    const cards = featuredCards
-      .filter((card) => card.section === section)
-      .sort((a, b) => Number(a.position || 0) - Number(b.position || 0));
+    const cards = featuredCards.filter((card) => card.section === section).sort((a, b) => Number(a.position || 0) - Number(b.position || 0));
     const fallback = defaultFeaturedCards.filter((card) => card.section === section);
     const visibleCards = cards.length ? cards : fallback;
     track.innerHTML = visibleCards.map((card) => spotlightCard(card)).join("");
@@ -589,14 +464,30 @@ function renderSpotlightTracks() {
   });
 }
 
+function renderFutureDrop() {
+  const section = selectors.futureDrop;
+  if (!section) return;
+  const drop = { ...defaultFutureDrop, ...futureDrop };
+  const images = Array.isArray(drop.images) && drop.images.length ? drop.images : (drop.image ? [drop.image] : []);
+  const image = images[0] || "";
+  const setText = (selector, value) => { const element = section.querySelector(selector); if (element) element.textContent = value; };
+  setText("[data-future-eyebrow]", drop.eyebrow || defaultFutureDrop.eyebrow);
+  setText("[data-future-title]", drop.title || defaultFutureDrop.title);
+  setText("[data-future-description]", drop.description || defaultFutureDrop.description);
+  setText("[data-future-badge]", drop.badge || defaultFutureDrop.badge);
+  setText("[data-future-card-title]", drop.cardTitle || drop.title || defaultFutureDrop.cardTitle);
+  const link = section.querySelector("[data-future-link]");
+  if (link) { link.href = drop.href || "colecoes.html"; link.innerHTML = `${drop.button || defaultFutureDrop.button} <span>↗</span>`; }
+  const media = section.querySelector("[data-future-image]");
+  if (media) { media.classList.toggle("has-upload", Boolean(image)); media.style.backgroundImage = image ? `url('${image}')` : ""; }
+}
+
 function sizeSpotlightCards(track) {
   const cards = [...track.querySelectorAll("a")];
   if (!cards.length) return 0;
   const gap = Number.parseFloat(getComputedStyle(track).columnGap || "22") || 22;
   const viewport = track.closest(".spotlight-carousel")?.clientWidth || window.innerWidth;
-  const minWidth = cards.length > 1
-    ? (viewport - Math.max(cards.length - 2, 0) * gap) / Math.max(cards.length - 1, 1)
-    : viewport;
+  const minWidth = cards.length > 1 ? (viewport - Math.max(cards.length - 2, 0) * gap) / Math.max(cards.length - 1, 1) : viewport;
   track.style.setProperty("--spotlight-card-width", `${Math.ceil(Math.max(190, minWidth))}px`);
   return gap;
 }
@@ -604,66 +495,39 @@ function sizeSpotlightCards(track) {
 function startSpotlightLoop(track) {
   const previous = spotlightLoops.get(track);
   if (previous) cancelAnimationFrame(previous.frame);
-
   const cards = [...track.querySelectorAll("a")];
   const reverse = track.classList.contains("reverse");
   if (cards.length < 2) return;
-
   let gap = sizeSpotlightCards(track);
   let offset = 0;
   let last = performance.now();
-
-  const stepSize = () => {
-    const card = track.querySelector("a");
-    return (card?.getBoundingClientRect().width || 0) + gap;
-  };
-
+  const stepSize = () => { const card = track.querySelector("a"); return (card?.getBoundingClientRect().width || 0) + gap; };
   if (reverse) offset = -stepSize();
   track.style.transform = `translate3d(${offset}px, 0, 0)`;
-
   const tick = (now) => {
     const controller = spotlightLoops.get(track);
     if (!controller) return;
     const elapsed = Math.min(now - last, 64);
     last = now;
-
     if (!track.matches(":has(a:hover)")) {
       const speed = 42;
       const distance = (elapsed / 1000) * speed;
       const step = stepSize();
-
       if (reverse) {
         offset += distance;
-        if (offset >= 0) {
-          const lastCard = track.lastElementChild;
-          if (lastCard) track.insertBefore(lastCard, track.firstElementChild);
-          offset -= step;
-        }
+        if (offset >= 0) { const lastCard = track.lastElementChild; if (lastCard) track.insertBefore(lastCard, track.firstElementChild); offset -= step; }
       } else {
         offset -= distance;
-        if (Math.abs(offset) >= step) {
-          const firstCard = track.firstElementChild;
-          if (firstCard) track.appendChild(firstCard);
-          offset += step;
-        }
+        if (Math.abs(offset) >= step) { const firstCard = track.firstElementChild; if (firstCard) track.appendChild(firstCard); offset += step; }
       }
-
       track.style.transform = `translate3d(${offset}px, 0, 0)`;
     }
-
     controller.frame = requestAnimationFrame(tick);
   };
-
-  const onResize = () => {
-    gap = sizeSpotlightCards(track);
-    offset = reverse ? -stepSize() : 0;
-    track.style.transform = `translate3d(${offset}px, 0, 0)`;
-  };
-
+  const onResize = () => { gap = sizeSpotlightCards(track); offset = reverse ? -stepSize() : 0; track.style.transform = `translate3d(${offset}px, 0, 0)`; };
   window.removeEventListener("resize", track._spotlightResize);
   track._spotlightResize = onResize;
   window.addEventListener("resize", onResize);
-
   spotlightLoops.set(track, { frame: requestAnimationFrame(tick) });
 }
 
@@ -681,25 +545,19 @@ function lookbookCard(product, index) {
 
 function renderCatalog() {
   if (!hasShop) return;
-
   const filtered = getFilteredProducts();
   const totalPages = Math.max(1, Math.ceil(filtered.length / state.perPage));
   state.page = Math.min(state.page, totalPages);
-
   const start = (state.page - 1) * state.perPage;
   const pageItems = filtered.slice(start, start + state.perPage);
-
   selectors.resultCount.textContent = filtered.length;
   selectors.priceLabel.textContent = money.format(state.maxPrice);
-
   if (!pageItems.length) {
     selectors.shopGrid.innerHTML = '<p class="empty-products">Nenhuma peça encontrada com esses filtros.</p>';
   } else {
     selectors.shopGrid.innerHTML = pageItems.map((product) => productCard(product)).join("");
   }
-
   refreshLazyImages();
-
   renderPagination(totalPages);
 }
 
@@ -715,47 +573,32 @@ function renderPagination(totalPages) {
 }
 
 function renderHomeSections() {
+  renderFutureDrop();
   renderSpotlightTracks();
-
   if (hasHomeProducts) {
     const saleProducts = recentItems(products.filter((product) => product.visibility !== "collection-only"), 8);
     selectors.homeProducts.innerHTML = saleProducts.map((product, index) => lookbookCard(product, index)).join("")
       || Array.from({ length: 5 }, (_, index) => lookbookCard({ name: `Foto ${index + 1}`, visual: "" }, index)).join("");
   }
-
   if (hasHomeCollections) {
     selectors.homeCollections.innerHTML = recentItems(collections, 8).map(homeCollectionCard).join("")
       || '<p class="empty-products">Nenhuma coleção cadastrada ainda.</p>';
   }
-
   if (selectors.lookbookTrack) {
     const looks = recentItems(products.filter((product) => product.visibility !== "collection-only"), 8);
     selectors.lookbookTrack.innerHTML = looks.map((product, index) => lookbookCard(product, index)).join("")
       || Array.from({ length: 5 }, (_, index) => lookbookCard({ name: `Foto ${index + 1}`, visual: "" }, index)).join("");
   }
-
   refreshLazyImages();
   initHomeCarousels();
 }
 
-function collectionProducts(collectionId) {
-  return products.filter((product) => product.collection === collectionId);
-}
-
-function collectionPieceCount(collection) {
-  return collectionProducts(collection.id).length;
-}
-
+function collectionProducts(collectionId) { return products.filter((product) => product.collection === collectionId); }
+function collectionPieceCount(collection) { return collectionProducts(collection.id).length; }
 function collectionPrice(collection) {
   const explicit = Number(collection.price || 0);
   if (explicit > 0) return explicit;
-  return collectionProducts(collection.id)
-    .filter((product) => product.visibility !== "collection-only")
-    .reduce((sum, product) => sum + Number(product.price || 0), 0);
-}
-
-function cartItemPrice(item) {
-  return Number(item.price || 0);
+  return collectionProducts(collection.id).filter((product) => product.visibility !== "collection-only").reduce((sum, product) => sum + Number(product.price || 0), 0);
 }
 
 function getFilteredCollections() {
@@ -766,13 +609,11 @@ function getFilteredCollections() {
     const matchesColor = state.collectionColor === "Todas" || related.some((product) => product.color === state.collectionColor);
     return matchesCategory && matchesType && matchesColor;
   });
-
   filtered = filtered.sort((a, b) => {
     if (state.collectionSort === "pieces") return collectionPieceCount(b) - collectionPieceCount(a);
     if (state.collectionSort === "name") return a.name.localeCompare(b.name);
     return recentValue(b) - recentValue(a);
   });
-
   return filtered;
 }
 
@@ -781,7 +622,6 @@ function renderCollectionControls() {
   const categoryOptions = ["Todas", ...new Set(products.map((product) => product.category).filter(Boolean))];
   const typeOptions = ["Todos", ...new Set(products.map((product) => product.type).filter(Boolean))];
   const colorOptions = ["Todas", ...new Set(products.map((product) => product.color).filter(Boolean))];
-
   if (selectors.collectionCategory) selectors.collectionCategory.innerHTML = categoryOptions.map((item) => `<option ${item === state.collectionCategory ? "selected" : ""}>${item}</option>`).join("");
   if (selectors.collectionType) selectors.collectionType.innerHTML = typeOptions.map((item) => `<option ${item === state.collectionType ? "selected" : ""}>${item}</option>`).join("");
   if (selectors.collectionColor) selectors.collectionColor.innerHTML = colorOptions.map((item) => `<option ${item === state.collectionColor ? "selected" : ""}>${item}</option>`).join("");
@@ -792,7 +632,6 @@ function renderCollectionControls() {
 
 function renderCollections() {
   if (!hasCollections) return;
-
   renderCollectionControls();
   const visibleCollections = getFilteredCollections();
   selectors.collectionsGrid.innerHTML = visibleCollections.map((collection) => `
@@ -804,11 +643,10 @@ function renderCollections() {
         <h2>${collection.name}</h2>
         <b>${collection.label}</b>
         <p>${collection.description}</p>
-        <footer><span>${String(collectionPieceCount(collection)).padStart(2, "0")} peças • ${money.format(collectionPrice(collection))}</span><a href="colecao.html?id=${collection.id}">Ver coleção</a></footer>
+        <footer><span>${String(collectionPieceCount(collection)).padStart(2, "0")} peças</span><a href="colecao.html?id=${collection.id}">Ver coleção</a></footer>
       </div>
     </article>
   `).join("") || '<p class="empty-products">Nenhuma coleção encontrada com esses filtros.</p>';
-
   refreshLazyImages();
 }
 
@@ -823,19 +661,15 @@ function renderCollectionDetail() {
     selectors.collectionGallery.innerHTML = "";
     return;
   }
-
   const related = collectionProducts(collection.id);
   const images = itemImages(collection);
-  const price = collectionPrice(collection);
   selectors.collectionDetail.innerHTML = `
     <span class="eyebrow">Coleção</span>
     <h1>${collection.name}</h1>
     <p>${collection.description || collection.label || ""}</p>
     <div class="collection-buy-panel">
-      <strong>${money.format(price)}</strong>
       <span>${String(related.length).padStart(2, "0")} peças inclusas</span>
-      <button class="button primary" type="button" data-add-collection="${collection.id}">Adicionar coleção</button>
-      <a class="button secondary" href="loja.html">Ver loja completa</a>
+      <a class="button primary" href="https://www.patreon.com" target="_blank" rel="noreferrer">Adquirir no Patreon</a>
     </div>
   `;
   selectors.collectionGallery.innerHTML = images.map((image) => `<div class="collection-photo" style="background-image:url('${image}')"></div>`).join("")
@@ -844,96 +678,24 @@ function renderCollectionDetail() {
     || '<p class="empty-products">Nenhuma peça vinculada a esta coleção ainda.</p>';
 }
 
-function loadCart() {
-  try {
-    return JSON.parse(localStorage.getItem("blossom-cart")) || [];
-  } catch {
-    return [];
-  }
-}
-
-function saveCart() {
-  localStorage.setItem("blossom-cart", JSON.stringify(cart));
-}
-
-function loadCoupon() {
-  const code = localStorage.getItem("blossom-coupon") || "";
-  return couponRules[code] ? code : "";
-}
-
-function saveCoupon() {
-  if (activeCoupon) {
-    localStorage.setItem("blossom-coupon", activeCoupon);
-  } else {
-    localStorage.removeItem("blossom-coupon");
-  }
-}
-
 function loadAccount() {
   try {
     const saved = JSON.parse(localStorage.getItem("blossom-user-account"));
     if (!saved || !saved.logged || saved.name === legacyDemoAccountName) {
       return { logged: false, name: "visitante", username: "", email: "", role: "cliente" };
     }
-    return {
-      logged: true,
-      id: saved.id || "",
-      name: saved.name || saved.username || "visitante",
-      username: saved.username || saved.name || "",
-      email: saved.email || "",
-      role: saved.role || "cliente",
-    };
-  } catch {
-    return { logged: false, name: "visitante", username: "", email: "", role: "cliente" };
-  }
+    return { logged: true, id: saved.id || "", name: saved.name || saved.username || "visitante", username: saved.username || saved.name || "", email: saved.email || "", role: saved.role || "cliente" };
+  } catch { return { logged: false, name: "visitante", username: "", email: "", role: "cliente" }; }
 }
 
 function saveAccount() {
   localStorage.setItem("blossom-user-account", JSON.stringify(account));
-  if (account.role === "admin") {
-    localStorage.setItem("blossom-admin-session", "active");
-  } else {
-    localStorage.removeItem("blossom-admin-session");
-  }
-}
-
-function ensureAccountMenuExtras() {
-  if (!selectors.accountMenu || selectors.accountMenu.querySelector("[data-order-history-open]")) return;
-  const history = document.createElement("a");
-  history.href = "#";
-  history.dataset.orderHistoryOpen = "";
-  history.textContent = "Histórico de compras";
-  const logout = selectors.accountLogout;
-  selectors.accountMenu.insertBefore(history, logout);
-}
-
-function ensureCartExtras() {
-  if (!selectors.cartSummary || selectors.cartSummary.querySelector("[data-coupon-form]")) return;
-  const couponBox = document.createElement("form");
-  couponBox.className = "coupon-form";
-  couponBox.dataset.couponForm = "";
-  couponBox.innerHTML = `
-    <label for="coupon-code">Cupom de desconto</label>
-    <div>
-      <input id="coupon-code" name="coupon" type="text" placeholder="BLOSSOM10" autocomplete="off">
-      <button type="submit">Aplicar</button>
-    </div>
-    <small data-coupon-feedback></small>
-  `;
-  const discountRow = document.createElement("div");
-  discountRow.className = "discount-row";
-  discountRow.dataset.discountRow = "";
-  discountRow.hidden = true;
-  discountRow.innerHTML = '<span>Desconto</span><strong data-discount-total>-R$0,00</strong>';
-  const totalRow = selectors.cartSummary.querySelector(".summary-total");
-  selectors.cartSummary.insertBefore(couponBox, totalRow);
-  selectors.cartSummary.insertBefore(discountRow, totalRow);
+  if (account.role === "admin") { localStorage.setItem("blossom-admin-session", "active"); } else { localStorage.removeItem("blossom-admin-session"); }
 }
 
 function createAccountSettingsDialog() {
   let dialog = document.querySelector("[data-account-settings]");
   if (dialog) return dialog;
-
   dialog = document.createElement("dialog");
   dialog.className = "admin-dialog account-settings-dialog";
   dialog.dataset.accountSettings = "";
@@ -949,18 +711,13 @@ function createAccountSettingsDialog() {
     </form>
   `;
   document.body.appendChild(dialog);
-
   dialog.querySelector("[data-account-settings-close]").addEventListener("click", () => dialog.close());
   dialog.querySelector("[data-account-settings-form]").addEventListener("submit", saveAccountSettings);
   return dialog;
 }
 
 function openAccountSettings() {
-  if (!account.logged) {
-    window.location.href = "login.html";
-    return;
-  }
-
+  if (!account.logged) { window.location.href = "login.html"; return; }
   const dialog = createAccountSettingsDialog();
   const form = dialog.querySelector("[data-account-settings-form]");
   form.username.value = account.username || account.name || "";
@@ -979,339 +736,21 @@ async function saveAccountSettings(event) {
   submitButton.disabled = true;
   message.dataset.type = "info";
   message.textContent = "Salvando...";
-
   try {
     const response = await fetch("/api/account", {
-      method: "PATCH",
-      headers: {
-        "Content-Type": "application/json",
-        "x-blossom-user-id": account.id || "",
-      },
-      body: JSON.stringify({
-        username: data.get("username"),
-        email: data.get("email"),
-        password: data.get("password"),
-      }),
+      method: "PATCH", headers: { "Content-Type": "application/json", "x-blossom-user-id": account.id || "" },
+      body: JSON.stringify({ username: data.get("username"), email: data.get("email"), password: data.get("password") }),
     });
     const body = await response.json().catch(() => ({}));
     if (!response.ok) throw new Error(body.error || "Não foi possível salvar as configurações.");
-
-    account = {
-      logged: true,
-      id: body.user.id,
-      name: body.user.username,
-      username: body.user.username,
-      email: body.user.email || "",
-      role: body.user.role || "cliente",
-    };
+    account = { logged: true, id: body.user.id, name: body.user.username, username: body.user.username, email: body.user.email || "", role: body.user.role || "cliente" };
     saveAccount();
-    renderCart();
     message.dataset.type = "success";
     message.textContent = "Conta atualizada.";
   } catch (error) {
     message.dataset.type = "error";
     message.textContent = error.message;
-  } finally {
-    submitButton.disabled = false;
-  }
-}
-
-function createOrderHistoryDialog() {
-  let dialog = document.querySelector("[data-order-history]");
-  if (dialog) return dialog;
-
-  dialog = document.createElement("dialog");
-  dialog.className = "admin-dialog order-history-dialog";
-  dialog.dataset.orderHistory = "";
-  dialog.innerHTML = `
-    <button class="icon-button dialog-close" type="button" data-order-history-close>×</button>
-    <span class="eyebrow">Conta Blossom</span>
-    <h2>Histórico de compras</h2>
-    <div class="order-history-list" data-order-history-list>
-      <p class="empty-cart">Carregando pedidos...</p>
-    </div>
-  `;
-  document.body.appendChild(dialog);
-  dialog.querySelector("[data-order-history-close]").addEventListener("click", () => dialog.close());
-  return dialog;
-}
-
-async function openOrderHistory() {
-  if (!account.logged) {
-    window.location.href = "login.html";
-    return;
-  }
-
-  const dialog = createOrderHistoryDialog();
-  const list = dialog.querySelector("[data-order-history-list]");
-  list.innerHTML = '<p class="empty-cart">Carregando pedidos...</p>';
-  dialog.showModal();
-
-  try {
-    const params = new URLSearchParams();
-    if (account.id) params.set("userId", account.id);
-    if (account.email) params.set("email", account.email);
-    const response = await fetch(`/api/orders?${params.toString()}`);
-    const body = await response.json().catch(() => ({}));
-    if (!response.ok) throw new Error(body.error || "Não foi possível carregar o histórico.");
-    const orders = Array.isArray(body.orders) ? body.orders : [];
-    list.innerHTML = orders.map((order) => `
-      <article class="history-order">
-        <div>
-          <h3>${order.id}</h3>
-          <p>${new Date(order.createdAt || Date.now()).toLocaleString("pt-BR")} • ${order.payment || "Pagamento"}</p>
-          <small>${(order.items || []).map((item) => `${item.quantity || 1}x ${item.name}`).join(", ")}</small>
-        </div>
-        <strong>${money.format(Number(order.total || 0))}</strong>
-      </article>
-    `).join("") || '<p class="empty-cart">Nenhuma compra encontrada para esta conta.</p>';
-  } catch (error) {
-    list.innerHTML = `<p class="empty-cart">${error.message}</p>`;
-  }
-}
-
-function addToCart(product) {
-  const current = cart.find((item) => item.id === product.id);
-  if (current) {
-    current.quantity += 1;
-  } else {
-    cart.push({ ...product, quantity: 1 });
-  }
-
-  saveCart();
-  renderCart();
-  openCart();
-}
-
-function collectionCartItem(collection) {
-  const related = collectionProducts(collection.id);
-  return {
-    id: `collection-${collection.id}`,
-    kind: "collection",
-    collectionId: collection.id,
-    name: collection.name,
-    category: "Coleção",
-    type: `${related.length} peças inclusas`,
-    price: collectionPrice(collection),
-    visual: collection.visual,
-    image: primaryImage(collection),
-    images: itemImages(collection),
-  };
-}
-
-function updateQuantity(id, direction) {
-  const item = cart.find((entry) => entry.id === id);
-  if (!item) return;
-  item.quantity += direction;
-
-  if (item.quantity <= 0) {
-    cart = cart.filter((entry) => entry.id !== id);
-  }
-
-  saveCart();
-  renderCart();
-}
-
-function removeFromCart(id) {
-  cart = cart.filter((entry) => entry.id !== id);
-  saveCart();
-  renderCart();
-}
-
-function cartTotal() {
-  return Math.max(0, cartSubtotal() - cartDiscount());
-}
-
-function cartSubtotal() {
-  return cart.reduce((sum, item) => sum + cartItemPrice(item) * item.quantity, 0);
-}
-
-function cartDiscount() {
-  const subtotal = cartSubtotal();
-  const coupon = couponRules[activeCoupon];
-  if (!coupon || !subtotal) return 0;
-  if (coupon.type === "percent") return subtotal * (coupon.value / 100);
-  return Math.min(subtotal, coupon.value);
-}
-
-function cartQuantity() {
-  return cart.reduce((sum, item) => sum + item.quantity, 0);
-}
-
-function renderCart() {
-  ensureCartExtras();
-  ensureAccountMenuExtras();
-  const subtotal = cartSubtotal();
-  const discount = cartDiscount();
-  const total = cartTotal();
-  const quantity = cartQuantity();
-
-  selectors.cartCount.textContent = quantity;
-  selectors.headerCartTotal.textContent = money.format(total);
-  selectors.accountName.textContent = account.logged ? (account.name || account.username || "visitante") : "visitante";
-  selectors.accountLogout.textContent = account.logged ? "Logout" : "Entrar";
-  selectors.accountAdminLinks.forEach((link) => {
-    link.href = account.logged && account.role === "admin" ? "admin.html" : "login.html";
-  });
-  selectors.subtotal.textContent = money.format(subtotal);
-  selectors.total.textContent = money.format(total);
-  selectors.checkoutTotal.textContent = money.format(total);
-  selectors.checkoutOpen.disabled = cart.length === 0;
-  const couponInput = selectors.cartSummary?.querySelector("[data-coupon-form] input");
-  const couponFeedback = selectors.cartSummary?.querySelector("[data-coupon-feedback]");
-  const discountRow = selectors.cartSummary?.querySelector("[data-discount-row]");
-  const discountTotal = selectors.cartSummary?.querySelector("[data-discount-total]");
-  if (couponInput) couponInput.value = activeCoupon;
-  if (couponFeedback) couponFeedback.textContent = activeCoupon ? `Cupom ${activeCoupon} aplicado.` : "";
-  if (discountRow && discountTotal) {
-    discountRow.hidden = discount <= 0;
-    discountTotal.textContent = `-${money.format(discount)}`;
-  }
-
-  if (!cart.length) {
-    selectors.cartItems.innerHTML = '<p class="empty-cart">Seu carrinho esta vazio.</p>';
-    selectors.checkoutItems.innerHTML = '<p class="empty-cart">Nenhum item selecionado.</p>';
-    return;
-  }
-
-  selectors.cartItems.innerHTML = cart.map((item) => `
-    <article class="cart-item">
-      <div class="cart-thumb" style="background-image: url('${itemImages(item)[0] || ''}'); background-size: cover; background-position: center;"></div>
-      <div>
-        <h3>${item.name}</h3>
-        <p>${item.type || item.category}</p>
-        <strong>${money.format(cartItemPrice(item))}</strong>
-      </div>
-      <div class="quantity-control" aria-label="Quantidade de ${item.name}">
-        <button type="button" data-qty-minus="${item.id}">-</button>
-        <span>${item.quantity}</span>
-        <button type="button" data-qty-plus="${item.id}">+</button>
-      </div>
-      <button class="remove-item" type="button" data-remove="${item.id}" aria-label="Remover ${item.name}">x</button>
-    </article>
-  `).join("");
-
-  selectors.checkoutItems.innerHTML = cart.map((item) => `
-    <article class="review-item">
-      <span>${item.quantity}x ${item.name}</span>
-      <strong>${money.format(cartItemPrice(item) * item.quantity)}</strong>
-    </article>
-  `).join("");
-}
-
-function applyCoupon(code) {
-  const normalized = String(code || "").trim().toUpperCase();
-  if (!normalized) {
-    activeCoupon = "";
-    saveCoupon();
-    renderCart();
-    return { ok: true, message: "" };
-  }
-  if (!couponRules[normalized]) {
-    activeCoupon = "";
-    saveCoupon();
-    renderCart();
-    return { ok: false, message: "Cupom inválido." };
-  }
-  activeCoupon = normalized;
-  saveCoupon();
-  renderCart();
-  return { ok: true, message: `Cupom ${normalized} aplicado.` };
-}
-
-function toggleAccountMenu(force) {
-  const shouldOpen = typeof force === "boolean" ? force : selectors.accountMenu.hidden;
-  selectors.accountMenu.hidden = !shouldOpen;
-  selectors.accountToggle.setAttribute("aria-expanded", String(shouldOpen));
-}
-
-function openCart() {
-  selectors.overlay.hidden = false;
-  selectors.cartDrawer.classList.add("open");
-  selectors.cartDrawer.setAttribute("aria-hidden", "false");
-}
-
-function closeCart() {
-  selectors.cartDrawer.classList.remove("open");
-  selectors.cartDrawer.setAttribute("aria-hidden", "true");
-  if (selectors.checkoutModal.hidden) {
-    selectors.overlay.hidden = true;
-  }
-}
-
-function openCheckout() {
-  if (!cart.length) return;
-  if (account.logged) {
-    selectors.checkoutForm.elements.customer.value = account.name || account.username || selectors.checkoutForm.elements.customer.value;
-    selectors.checkoutForm.elements.email.value = account.email || selectors.checkoutForm.elements.email.value;
-  }
-  selectors.overlay.hidden = false;
-  selectors.checkoutModal.hidden = false;
-  selectors.checkoutModal.classList.add("open");
-  selectors.checkoutForm.elements.customer.focus();
-}
-
-function closeCheckout() {
-  selectors.checkoutModal.classList.remove("open");
-  selectors.checkoutModal.hidden = true;
-  if (!selectors.cartDrawer.classList.contains("open")) {
-    selectors.overlay.hidden = true;
-  }
-}
-
-function updatePaymentPreview(method) {
-  const content = {
-    pix: '<div class="qr-placeholder">PIX</div><p>Use este espaco para exibir o QR Code e o codigo copia-e-cola do gateway.</p>',
-    card: '<div class="card-placeholder">**** **** **** 0000</div><p>Campos de cartao podem ser conectados via checkout transparente do seu gateway.</p>',
-    boleto: '<div class="boleto-placeholder">Boleto #BLS-2025</div><p>Depois da integracao, o cliente recebe o boleto por e-mail e pela tela do pedido.</p>',
-  };
-
-  selectors.paymentPreview.innerHTML = content[method];
-}
-
-function createOrder(event) {
-  event.preventDefault();
-  const data = new FormData(selectors.checkoutForm);
-  const orderId = `BLS-${Date.now().toString().slice(-6)}`;
-  const payment = data.get("payment");
-  const orderSubtotal = cartSubtotal();
-  const orderDiscount = cartDiscount();
-  const orderTotal = cartTotal();
-  const orderItems = cart.map((item) => ({
-    id: item.id,
-    name: item.name,
-    price: cartItemPrice(item),
-    quantity: item.quantity,
-  }));
-
-  selectors.paymentPreview.innerHTML = `
-    <div class="success-box">✓</div>
-    <p><b>Pedido ${orderId}</b> criado com pagamento via ${payment.toUpperCase()}. Integre um gateway para cobranca real.</p>
-  `;
-
-  cart = [];
-  saveCart();
-  renderCart();
-  closeCart();
-
-  if (apiEnabled) {
-    fetch("/api/orders", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        orderId,
-        userId: account.logged ? account.id : "",
-        payment,
-        customer: data.get("customer"),
-        email: data.get("email"),
-        subtotal: orderSubtotal,
-        discount: orderDiscount,
-        coupon: activeCoupon,
-        total: orderTotal,
-        items: orderItems,
-      }),
-    }).catch(() => {});
-  }
+  } finally { submitButton.disabled = false; }
 }
 
 function showToast(message) {
@@ -1321,29 +760,15 @@ function showToast(message) {
   el.className = "toast";
   el.textContent = message;
   document.body.appendChild(el);
-  setTimeout(() => {
-    el.style.opacity = "0";
-    el.style.transform = "translateY(12px)";
-    setTimeout(() => el.remove(), 300);
-  }, 3000);
+  setTimeout(() => { el.style.opacity = "0"; el.style.transform = "translateY(12px)"; setTimeout(() => el.remove(), 300); }, 3000);
 }
 
 function fileToDataUrl(file) {
   return new Promise((resolve, reject) => {
-    if (!file) {
-      resolve(null);
-      return;
-    }
-    if (file.size > 5 * 1024 * 1024) {
-      reject(new Error("A imagem precisa ter no máximo 5MB."));
-      return;
-    }
+    if (!file) { resolve(null); return; }
+    if (file.size > 5 * 1024 * 1024) { reject(new Error("A imagem precisa ter no máximo 5MB.")); return; }
     const reader = new FileReader();
-    reader.onload = () => resolve({
-      name: file.name,
-      type: file.type || "application/octet-stream",
-      dataUrl: reader.result,
-    });
+    reader.onload = () => resolve({ name: file.name, type: file.type || "application/octet-stream", dataUrl: reader.result });
     reader.onerror = () => reject(new Error("Não foi possível ler a imagem."));
     reader.readAsDataURL(file);
   });
@@ -1358,58 +783,28 @@ if (hasShop) {
     renderFilters();
     renderCatalog();
   });
-
   selectors.typeList.addEventListener("change", (event) => {
     if (!event.target.matches("[data-type]")) return;
     event.target.checked ? state.types.add(event.target.value) : state.types.delete(event.target.value);
-    state.page = 1;
-    renderCatalog();
+    state.page = 1; renderCatalog();
   });
-
   selectors.colorList.addEventListener("change", (event) => {
     if (!event.target.matches("[data-color]")) return;
     event.target.checked ? state.colors.add(event.target.value) : state.colors.delete(event.target.value);
-    state.page = 1;
-    renderCatalog();
+    state.page = 1; renderCatalog();
   });
-
-  selectors.search.addEventListener("input", () => {
-    state.search = selectors.search.value.trim();
-    state.page = 1;
-    renderCatalog();
-  });
-
-  selectors.sort.addEventListener("change", () => {
-    state.sort = selectors.sort.value;
-    renderCatalog();
-  });
-
-  selectors.priceRange.addEventListener("input", () => {
-    state.maxPrice = Number(selectors.priceRange.value);
-    state.page = 1;
-    renderCatalog();
-  });
-
+  selectors.search.addEventListener("input", () => { state.search = selectors.search.value.trim(); state.page = 1; renderCatalog(); });
+  selectors.sort.addEventListener("change", () => { state.sort = selectors.sort.value; renderCatalog(); });
+  selectors.priceRange.addEventListener("input", () => { state.maxPrice = Number(selectors.priceRange.value); state.page = 1; renderCatalog(); });
   selectors.clearFilters.addEventListener("click", () => {
-    state.category = "Todas as peças";
-    state.types.clear();
-    state.colors.clear();
-    state.search = "";
-    state.sort = "recent";
-    state.maxPrice = 9999;
-    state.page = 1;
-    selectors.search.value = "";
-    selectors.sort.value = "recent";
-    selectors.priceRange.value = "9999";
-    renderFilters();
-    renderCatalog();
+    state.category = "Todas as peças"; state.types.clear(); state.colors.clear(); state.search = ""; state.sort = "recent"; state.maxPrice = 9999; state.page = 1;
+    selectors.search.value = ""; selectors.sort.value = "recent"; selectors.priceRange.value = "9999";
+    renderFilters(); renderCatalog();
   });
-
   selectors.pagination.addEventListener("click", (event) => {
     const page = event.target.closest("[data-page]");
     const prev = event.target.closest("[data-page-prev]");
     const next = event.target.closest("[data-page-next]");
-
     if (page) state.page = Number(page.dataset.page);
     if (prev) state.page -= 1;
     if (next) state.page += 1;
@@ -1422,43 +817,21 @@ if (hasCollections) {
     const button = event.target.closest("[data-collection-category-tab]");
     if (!button) return;
     state.collectionCategory = button.dataset.collectionCategoryTab;
-    selectors.collectionTabs.querySelectorAll("[data-collection-category-tab]").forEach((tab) => {
-      tab.classList.toggle("active", tab === button);
-    });
+    selectors.collectionTabs.querySelectorAll("[data-collection-category-tab]").forEach((tab) => tab.classList.toggle("active", tab === button));
     renderCollections();
   });
-
-  selectors.collectionCategory?.addEventListener("change", () => {
-    state.collectionCategory = selectors.collectionCategory.value;
-    renderCollections();
-  });
-
-  selectors.collectionType?.addEventListener("change", () => {
-    state.collectionType = selectors.collectionType.value;
-    renderCollections();
-  });
-
-  selectors.collectionColor?.addEventListener("change", () => {
-    state.collectionColor = selectors.collectionColor.value;
-    renderCollections();
-  });
-
-  selectors.collectionSort?.addEventListener("change", () => {
-    state.collectionSort = selectors.collectionSort.value;
-    renderCollections();
-  });
+  selectors.collectionCategory?.addEventListener("change", () => { state.collectionCategory = selectors.collectionCategory.value; renderCollections(); });
+  selectors.collectionType?.addEventListener("change", () => { state.collectionType = selectors.collectionType.value; renderCollections(); });
+  selectors.collectionColor?.addEventListener("change", () => { state.collectionColor = selectors.collectionColor.value; renderCollections(); });
+  selectors.collectionSort?.addEventListener("change", () => { state.collectionSort = selectors.collectionSort.value; renderCollections(); });
 }
 
 if (hasContact) {
-  selectors.contactMessage.addEventListener("input", () => {
-    selectors.contactMessageCount.textContent = selectors.contactMessage.value.length;
-  });
-
+  selectors.contactMessage.addEventListener("input", () => { selectors.contactMessageCount.textContent = selectors.contactMessage.value.length; });
   selectors.contactFile.addEventListener("change", () => {
     const file = selectors.contactFile.files[0];
     selectors.contactFileLabel.textContent = file ? file.name : "Clique ou arraste arquivos para enviar";
   });
-
   selectors.contactForm.addEventListener("submit", async (event) => {
     event.preventDefault();
     const submitButton = selectors.contactForm.querySelector("[type='submit']");
@@ -1466,133 +839,114 @@ if (hasContact) {
     const data = new FormData(selectors.contactForm);
     submitButton.disabled = true;
     if (submitButton.querySelector("span")) submitButton.querySelector("span").textContent = "Enviando...";
-
     try {
       const attachment = await fileToDataUrl(selectors.contactFile.files[0]);
       const response = await fetch("/api/contact", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          name: data.get("name"),
-          email: data.get("email"),
-          discord: data.get("discord"),
-          category: data.get("category"),
-          type: data.get("type"),
-          message: data.get("message"),
-          attachment,
-        }),
+        method: "POST", headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name: data.get("name"), email: data.get("email"), discord: data.get("discord"), category: data.get("category"), type: data.get("type"), message: data.get("message"), attachment }),
       });
       const body = await response.json().catch(() => ({}));
       if (!response.ok) throw new Error(body.error || "Não foi possível enviar para o Discord.");
-      selectors.contactForm.reset();
-      selectors.contactMessageCount.textContent = "0";
+      selectors.contactForm.reset(); selectors.contactMessageCount.textContent = "0";
       selectors.contactFileLabel.textContent = "Clique ou arraste arquivos para enviar";
-    } catch (error) {
-      selectors.contactFileLabel.textContent = error.message;
-    } finally {
-      submitButton.disabled = false;
-      if (submitButton.querySelector("span")) submitButton.querySelector("span").textContent = originalText;
-    }
+    } catch (error) { selectors.contactFileLabel.textContent = error.message; }
+    finally { submitButton.disabled = false; if (submitButton.querySelector("span")) submitButton.querySelector("span").textContent = originalText; }
   });
 }
 
-document.addEventListener("click", (event) => {
-  const productButton = event.target.closest("[data-add-to-cart]");
-  if (productButton) {
-    const product = products.find((item) => item.id === productButton.dataset.addToCart);
-    if (product && product.visibility !== "collection-only") addToCart(product);
-    return;
-  }
-
-  const collectionButton = event.target.closest("[data-add-collection]");
-  if (collectionButton) {
-    const collection = collections.find((item) => item.id === collectionButton.dataset.addCollection);
-    if (collection) addToCart(collectionCartItem(collection));
-  }
-});
-
-selectors.cartOpen.addEventListener("click", openCart);
-selectors.cartClose.addEventListener("click", closeCart);
-selectors.accountToggle.addEventListener("click", (event) => {
-  event.stopPropagation();
-  toggleAccountMenu();
-});
-selectors.accountLogout.addEventListener("click", () => {
-  if (account.logged) {
-    account = { logged: false, name: "visitante", username: "", email: "", role: "cliente" };
-    localStorage.removeItem("blossom-user-account");
-    localStorage.removeItem("blossom-admin-session");
-    toggleAccountMenu(false);
-    renderCart();
-    return;
-  }
-  window.location.href = "login.html";
-});
-selectors.accountConfig.addEventListener("click", (event) => {
-  event.preventDefault();
-  toggleAccountMenu(false);
-  openAccountSettings();
-});
-selectors.accountMenu.addEventListener("click", (event) => {
-  const history = event.target.closest("[data-order-history-open]");
-  if (!history) return;
-  event.preventDefault();
-  toggleAccountMenu(false);
-  openOrderHistory();
-});
-selectors.checkoutOpen.addEventListener("click", openCheckout);
-selectors.checkoutClose.addEventListener("click", closeCheckout);
-selectors.checkoutForm.addEventListener("submit", createOrder);
-
-selectors.overlay.addEventListener("click", () => {
-  closeCheckout();
-  closeCart();
-});
-
-selectors.cartItems.addEventListener("click", (event) => {
-  const minus = event.target.closest("[data-qty-minus]");
-  const plus = event.target.closest("[data-qty-plus]");
-  const remove = event.target.closest("[data-remove]");
-
-  if (minus) updateQuantity(minus.dataset.qtyMinus, -1);
-  if (plus) updateQuantity(plus.dataset.qtyPlus, 1);
-  if (remove) removeFromCart(remove.dataset.remove);
-});
-
-selectors.cartSummary?.addEventListener("submit", (event) => {
-  const form = event.target.closest("[data-coupon-form]");
-  if (!form) return;
-  event.preventDefault();
-  const result = applyCoupon(new FormData(form).get("coupon"));
-  const feedback = form.querySelector("[data-coupon-feedback]");
-  feedback.textContent = result.message;
-  feedback.dataset.type = result.ok ? "success" : "error";
-});
-
-selectors.paymentInputs.forEach((input) => {
-  input.addEventListener("change", () => updatePaymentPreview(input.value));
-});
-
-document.addEventListener("keydown", (event) => {
-  if (event.key !== "Escape") return;
-  toggleAccountMenu(false);
-  closeCheckout();
-  closeCart();
-});
-
-document.addEventListener("click", (event) => {
-  if (!event.target.closest(".account")) {
-    toggleAccountMenu(false);
-  }
-});
-
-if (hasShop) {
-  renderFilters();
-  renderCatalog();
+/* Spotlight card popup */
+function createSpotlightPopup() {
+  let popup = document.querySelector("[data-spotlight-popup]");
+  if (popup) return popup;
+  popup = document.createElement("div");
+  popup.dataset.spotlightPopup = "";
+  popup.style.cssText = "position:fixed;inset:0;z-index:100;display:none;align-items:center;justify-content:center;background:rgba(5,3,5,0.85);backdrop-filter:blur(8px);padding:24px;cursor:pointer;";
+  popup.innerHTML = `
+    <div style="position:relative;max-width:900px;width:100%;display:grid;grid-template-columns:1fr 1fr;gap:32px;align-items:center;background:#0b080b;border:1px solid rgba(255,112,158,0.25);border-radius:16px;padding:32px;cursor:default;">
+      <div data-popup-image style="aspect-ratio:1;border-radius:12px;background-size:cover;background-position:center;background:linear-gradient(135deg,rgba(255,156,188,0.2),transparent),linear-gradient(150deg,#161c22,#070a0d);"></div>
+      <div style="display:grid;gap:12px;">
+        <h2 data-popup-name style="margin:0;font-size:clamp(28px,4vw,48px);font-family:'Oswald',sans-serif;text-transform:uppercase;color:#fff5f8;"></h2>
+        <p data-popup-role style="margin:0;font-size:14px;color:rgba(232,210,219,0.6);text-transform:uppercase;letter-spacing:0.2em;font-weight:800;"></p>
+        <button type="button" data-popup-close style="justify-self:start;margin-top:12px;min-height:38px;padding:0 22px;border:1px solid rgba(255,112,158,0.48);border-radius:4px;background:transparent;color:var(--ed-pink);font-size:11px;font-weight:800;letter-spacing:0.14em;text-transform:uppercase;cursor:pointer;">Fechar</button>
+      </div>
+    </div>
+  `;
+  document.body.appendChild(popup);
+  popup.addEventListener("click", (e) => { if (e.target === popup) popup.style.display = "none"; });
+  popup.querySelector("[data-popup-close]").addEventListener("click", () => popup.style.display = "none");
+  return popup;
 }
+
+document.addEventListener("click", (event) => {
+  const cardLink = event.target.closest("[data-spotlight-card]");
+  if (cardLink) {
+    event.preventDefault();
+    const popup = createSpotlightPopup();
+    const name = cardLink.dataset.spotlightName || "Blossom";
+    const role = cardLink.dataset.spotlightRole || "";
+    const image = cardLink.dataset.spotlightImage || "";
+    popup.querySelector("[data-popup-name]").textContent = name;
+    popup.querySelector("[data-popup-role]").textContent = role;
+    const imgDiv = popup.querySelector("[data-popup-image]");
+    if (image) { imgDiv.style.backgroundImage = `url('${image}')`; } else { imgDiv.style.backgroundImage = ""; }
+    popup.style.display = "flex";
+    return;
+  }
+});
+
+/* Account */
+function toggleAccountMenu(force) {
+  const shouldOpen = typeof force === "boolean" ? force : selectors.accountMenu.hidden;
+  selectors.accountMenu.hidden = !shouldOpen;
+  selectors.accountToggle.setAttribute("aria-expanded", String(shouldOpen));
+}
+
+if (selectors.accountToggle) {
+  selectors.accountToggle.addEventListener("click", (event) => { event.stopPropagation(); toggleAccountMenu(); });
+}
+
+if (selectors.accountLogout) {
+  selectors.accountLogout.addEventListener("click", () => {
+    if (account.logged) {
+      account = { logged: false, name: "visitante", username: "", email: "", role: "cliente" };
+      localStorage.removeItem("blossom-user-account");
+      localStorage.removeItem("blossom-admin-session");
+      toggleAccountMenu(false);
+      renderAccountUI();
+      return;
+    }
+    window.location.href = "login.html";
+  });
+}
+
+if (selectors.accountConfig) {
+  selectors.accountConfig.addEventListener("click", (event) => { event.preventDefault(); toggleAccountMenu(false); openAccountSettings(); });
+}
+
+if (selectors.accountMenu) {
+  selectors.accountMenu.addEventListener("click", (event) => {
+    const history = event.target.closest("[data-order-history-open]");
+    if (!history) return;
+    event.preventDefault();
+    toggleAccountMenu(false);
+  });
+}
+
+document.addEventListener("keydown", (event) => { if (event.key === "Escape") { toggleAccountMenu(false); } });
+document.addEventListener("click", (event) => { if (!event.target.closest(".account")) { toggleAccountMenu(false); } });
+
+function renderAccountUI() {
+  if (selectors.accountName) selectors.accountName.textContent = account.logged ? (account.name || account.username || "visitante") : "visitante";
+  if (selectors.accountLogout) selectors.accountLogout.textContent = account.logged ? "Logout" : "Entrar";
+  if (selectors.accountAdminLinks) {
+    selectors.accountAdminLinks.forEach((link) => { link.href = account.logged && account.role === "admin" ? "admin.html" : "login.html"; });
+  }
+}
+
+renderAccountUI();
+
+if (hasShop) { renderFilters(); renderCatalog(); }
 renderHomeSections();
 renderCollections();
 renderCollectionDetail();
-renderCart();
 loadApiStore();
-

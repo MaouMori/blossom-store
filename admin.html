@@ -4,129 +4,841 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
   <meta name="theme-color" content="#1a0b12">
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <title>Admin - Blossom Store</title>
+  <title>Painel Administrativo - Blossom Store</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles.css">
+  <style>
+    :root {
+      --admin-bg: #faf6f3;
+      --admin-sidebar: #fff;
+      --admin-panel: #fff;
+      --admin-text: #2d1f1f;
+      --admin-muted: #8a7a72;
+      --admin-line: rgba(139, 115, 105, 0.18);
+      --admin-line-soft: rgba(139, 115, 105, 0.10);
+      --admin-pink: #c97b7b;
+      --admin-pink-soft: #e8a8a8;
+      --admin-pink-bg: rgba(201, 123, 123, 0.08);
+      --admin-green: #7bc9a3;
+      --admin-green-bg: rgba(123, 201, 163, 0.12);
+      --admin-avatar: #d4a5a5;
+    }
+
+    .admin-new-body {
+      margin: 0;
+      background: var(--admin-bg);
+      color: var(--admin-text);
+      font-family: "Archivo", Arial, sans-serif;
+      min-height: 100vh;
+    }
+
+    .admin-layout {
+      display: grid;
+      grid-template-columns: 260px 1fr;
+      min-height: 100vh;
+    }
+
+    /* Sidebar */
+    .admin-sidebar {
+      background: var(--admin-sidebar);
+      border-right: 1px solid var(--admin-line);
+      display: flex;
+      flex-direction: column;
+      padding: 24px 0;
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      overflow-y: auto;
+    }
+
+    .admin-sidebar-brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 0 24px 24px;
+      border-bottom: 1px solid var(--admin-line-soft);
+      margin-bottom: 16px;
+    }
+
+    .admin-sidebar-brand .brand-mark {
+      color: var(--admin-pink);
+      font-size: 28px;
+    }
+
+    .admin-sidebar-brand b {
+      display: block;
+      font-size: 18px;
+      font-weight: 800;
+      color: var(--admin-text);
+      line-height: 1;
+    }
+
+    .admin-sidebar-brand small {
+      display: block;
+      font-size: 10px;
+      font-weight: 700;
+      color: var(--admin-muted);
+      letter-spacing: 2px;
+      text-transform: uppercase;
+    }
+
+    .admin-nav-section {
+      padding: 8px 16px;
+    }
+
+    .admin-nav-label {
+      font-size: 10px;
+      font-weight: 800;
+      color: var(--admin-muted);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      padding: 8px 8px;
+    }
+
+    .admin-nav-link {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 12px;
+      border-radius: 8px;
+      color: var(--admin-muted);
+      font-size: 13px;
+      font-weight: 600;
+      text-decoration: none;
+      cursor: pointer;
+      border: 0;
+      background: transparent;
+      width: 100%;
+      text-align: left;
+      transition: all 160ms ease;
+    }
+
+    .admin-nav-link:hover,
+    .admin-nav-link.active {
+      background: var(--admin-pink-bg);
+      color: var(--admin-pink);
+    }
+
+    .admin-nav-link svg {
+      width: 18px;
+      height: 18px;
+      flex-shrink: 0;
+    }
+
+    .admin-sidebar-footer {
+      margin-top: auto;
+      padding: 16px 24px 0;
+      border-top: 1px solid var(--admin-line-soft);
+    }
+
+    .admin-user-mini {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .admin-user-mini .avatar {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: var(--admin-avatar);
+      color: white;
+      display: grid;
+      place-items: center;
+      font-size: 14px;
+      font-weight: 800;
+    }
+
+    .admin-user-mini b {
+      font-size: 13px;
+      color: var(--admin-text);
+    }
+
+    .admin-user-mini small {
+      font-size: 11px;
+      color: var(--admin-muted);
+    }
+
+    /* Main Content */
+    .admin-main {
+      padding: 24px 32px 40px;
+      overflow-y: auto;
+    }
+
+    .admin-topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 28px;
+    }
+
+    .admin-topbar h1 {
+      margin: 0;
+      font-size: 20px;
+      font-weight: 800;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .admin-topbar h1 span {
+      color: var(--admin-pink);
+      font-size: 14px;
+    }
+
+    .admin-topbar-actions {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .admin-topbar-actions a,
+    .admin-topbar-actions button {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 14px;
+      border-radius: 8px;
+      font-size: 12px;
+      font-weight: 700;
+      text-decoration: none;
+      cursor: pointer;
+      border: 1px solid var(--admin-line);
+      background: var(--admin-panel);
+      color: var(--admin-muted);
+      transition: all 160ms ease;
+    }
+
+    .admin-topbar-actions a:hover,
+    .admin-topbar-actions button:hover {
+      border-color: var(--admin-pink);
+      color: var(--admin-pink);
+    }
+
+    .admin-topbar-actions .btn-primary {
+      background: var(--admin-pink);
+      color: white;
+      border-color: var(--admin-pink);
+    }
+
+    .admin-topbar-actions .btn-primary:hover {
+      background: #b86a6a;
+      color: white;
+    }
+
+    /* Stats Cards */
+    .admin-stats-row {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 18px;
+      margin-bottom: 28px;
+    }
+
+    .admin-stat-card {
+      background: var(--admin-panel);
+      border: 1px solid var(--admin-line);
+      border-radius: 12px;
+      padding: 20px;
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+    }
+
+    .admin-stat-card > div:first-child {
+      display: grid;
+      gap: 6px;
+    }
+
+    .admin-stat-card small {
+      font-size: 12px;
+      color: var(--admin-muted);
+      font-weight: 600;
+    }
+
+    .admin-stat-card b {
+      font-size: 24px;
+      font-weight: 800;
+      color: var(--admin-text);
+    }
+
+    .admin-stat-card .stat-delta {
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--admin-green);
+    }
+
+    .admin-stat-card .stat-delta.negative {
+      color: var(--admin-pink);
+    }
+
+    .admin-stat-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: 10px;
+      background: var(--admin-pink-bg);
+      color: var(--admin-pink);
+      display: grid;
+      place-items: center;
+      font-size: 18px;
+    }
+
+    /* Panels Grid */
+    .admin-panels-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 18px;
+      margin-bottom: 18px;
+    }
+
+    .admin-panels-grid.three-col {
+      grid-template-columns: repeat(3, 1fr);
+    }
+
+    .admin-panels-grid.full-width {
+      grid-template-columns: 1fr;
+    }
+
+    .admin-content-panel {
+      background: var(--admin-panel);
+      border: 1px solid var(--admin-line);
+      border-radius: 12px;
+      padding: 22px;
+    }
+
+    .admin-panel-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 18px;
+    }
+
+    .admin-panel-header h2 {
+      margin: 0;
+      font-size: 15px;
+      font-weight: 800;
+      color: var(--admin-text);
+    }
+
+    .admin-panel-header a,
+    .admin-panel-header button {
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--admin-pink);
+      text-decoration: none;
+      background: transparent;
+      border: 0;
+      cursor: pointer;
+    }
+
+    .admin-panel-header .btn-add {
+      padding: 6px 14px;
+      border-radius: 6px;
+      background: var(--admin-pink);
+      color: white;
+      font-size: 11px;
+      font-weight: 800;
+      text-transform: uppercase;
+      border: 0;
+      cursor: pointer;
+      transition: background 160ms ease;
+    }
+
+    .admin-panel-header .btn-add:hover {
+      background: #b86a6a;
+    }
+
+    /* Table styles */
+    .admin-table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    .admin-table th {
+      text-align: left;
+      padding: 10px 8px;
+      font-size: 11px;
+      font-weight: 800;
+      color: var(--admin-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      border-bottom: 1px solid var(--admin-line-soft);
+    }
+
+    .admin-table td {
+      padding: 12px 8px;
+      border-bottom: 1px solid var(--admin-line-soft);
+      font-size: 13px;
+      vertical-align: middle;
+    }
+
+    .admin-table tr:last-child td {
+      border-bottom: 0;
+    }
+
+    .admin-table .cell-product {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .admin-table .cell-thumb {
+      width: 44px;
+      height: 44px;
+      border-radius: 8px;
+      background-size: cover;
+      background-position: center;
+      background:
+        linear-gradient(135deg, rgba(201, 123, 123, 0.2), transparent),
+        linear-gradient(150deg, #f0e8e4, #e8ddd6);
+      flex-shrink: 0;
+    }
+
+    .admin-table .cell-thumb[style] {
+      background-size: cover;
+      background-position: center;
+    }
+
+    .admin-table .cell-info b {
+      display: block;
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--admin-text);
+    }
+
+    .admin-table .cell-info small {
+      font-size: 11px;
+      color: var(--admin-muted);
+    }
+
+    .admin-table .cell-price {
+      font-weight: 800;
+      color: var(--admin-pink);
+    }
+
+    .admin-table .cell-status {
+      display: inline-block;
+      padding: 4px 10px;
+      border-radius: 999px;
+      font-size: 11px;
+      font-weight: 700;
+      background: var(--admin-green-bg);
+      color: #5a9e7e;
+    }
+
+    .admin-table .cell-actions {
+      display: flex;
+      gap: 6px;
+    }
+
+    .admin-table .cell-actions button {
+      width: 28px;
+      height: 28px;
+      border-radius: 6px;
+      border: 1px solid var(--admin-line);
+      background: transparent;
+      color: var(--admin-muted);
+      cursor: pointer;
+      display: grid;
+      place-items: center;
+      font-size: 14px;
+      transition: all 160ms ease;
+    }
+
+    .admin-table .cell-actions button:hover {
+      border-color: var(--admin-pink);
+      color: var(--admin-pink);
+      background: var(--admin-pink-bg);
+    }
+
+    .admin-empty {
+      text-align: center;
+      padding: 32px;
+      color: var(--admin-muted);
+      font-size: 13px;
+    }
+
+    /* Section hidden */
+    .admin-section {
+      display: none;
+    }
+
+    .admin-section.active {
+      display: block;
+    }
+
+    /* Dialog overrides for admin */
+    .admin-new-body .admin-dialog {
+      background: var(--admin-panel);
+      color: var(--admin-text);
+      border-color: var(--admin-line);
+    }
+
+    .admin-new-body .admin-dialog label {
+      color: var(--admin-text);
+    }
+
+    .admin-new-body .admin-dialog input,
+    .admin-new-body .admin-dialog select,
+    .admin-new-body .admin-dialog textarea {
+      background: var(--admin-bg);
+      border-color: var(--admin-line);
+      color: var(--admin-text);
+    }
+
+    .admin-new-body .admin-dialog input:focus,
+    .admin-new-body .admin-dialog select:focus,
+    .admin-new-body .admin-dialog textarea:focus {
+      border-color: var(--admin-pink);
+    }
+
+    .admin-new-body .checkout-button {
+      background: var(--admin-pink);
+      border-color: var(--admin-pink);
+      color: white;
+    }
+
+    .admin-new-body .checkout-button:hover {
+      background: #b86a6a;
+    }
+
+    /* Taxonomy tags */
+    .admin-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .admin-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 12px;
+      border-radius: 999px;
+      background: var(--admin-bg);
+      border: 1px solid var(--admin-line);
+      font-size: 12px;
+      color: var(--admin-text);
+    }
+
+    .admin-tag button {
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      border: 0;
+      background: var(--admin-line);
+      color: var(--admin-muted);
+      cursor: pointer;
+      display: grid;
+      place-items: center;
+      font-size: 10px;
+      line-height: 1;
+    }
+
+    .admin-tag button:hover {
+      background: var(--admin-pink);
+      color: white;
+    }
+
+    .admin-tag-form {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 14px;
+    }
+
+    .admin-tag-form input {
+      flex: 1;
+      height: 38px;
+      padding: 0 12px;
+      border: 1px solid var(--admin-line);
+      border-radius: 8px;
+      background: var(--admin-bg);
+      color: var(--admin-text);
+      font: inherit;
+      font-size: 13px;
+    }
+
+    .admin-tag-form button {
+      height: 38px;
+      padding: 0 16px;
+      border-radius: 8px;
+      background: var(--admin-pink);
+      color: white;
+      border: 0;
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    /* Responsive */
+    @media (max-width: 1100px) {
+      .admin-layout {
+        grid-template-columns: 1fr;
+      }
+      .admin-sidebar {
+        display: none;
+      }
+      .admin-stats-row {
+        grid-template-columns: repeat(2, 1fr);
+      }
+      .admin-panels-grid,
+      .admin-panels-grid.three-col {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 600px) {
+      .admin-stats-row {
+        grid-template-columns: 1fr;
+      }
+      .admin-main {
+        padding: 16px;
+      }
+    }
+  </style>
 </head>
-<body class="admin-body">
-  <header class="admin-header">
-    <a class="brand" href="index.html">
-      <span class="brand-mark">✿</span>
-      <span>
-        <b>BLOSSOM</b>
-        <small>ADMIN</small>
-      </span>
-    </a>
-    <nav>
-      <a href="index.html">Site</a>
-      <a href="loja.html">Loja</a>
-      <a href="colecoes.html">Coleções</a>
-      <button type="button" data-logout>Sair</button>
-    </nav>
-  </header>
-
-  <main class="admin-shell">
-    <section class="admin-hero">
-      <span class="eyebrow">Painel Blossom</span>
-      <h1>Gerencie a loja inteira</h1>
-      <p>Cadastre, edite e remova produtos e coleções. Tudo fica salvo neste navegador e aparece automaticamente nas páginas públicas.</p>
-      <div class="admin-actions">
-        <button class="button primary" type="button" data-new-product>Novo produto</button>
-        <button class="button secondary" type="button" data-new-collection>Nova coleção</button>
-        <button class="button secondary" type="button" data-new-featured-card>Novo card destaque</button>
-        <button class="button ghost" type="button" data-reset-data>Restaurar padrão</button>
+<body class="admin-new-body">
+  <div class="admin-layout">
+    <!-- Sidebar -->
+    <aside class="admin-sidebar">
+      <div class="admin-sidebar-brand">
+        <span class="brand-mark">✿</span>
+        <div>
+          <b>BLOSSOM</b>
+          <small>ADMIN</small>
+        </div>
       </div>
-    </section>
 
-    <section class="admin-stats">
-      <article><span>▱</span><b data-product-total>0</b><small>Produtos</small></article>
-      <article><span>✿</span><b data-collection-total>0</b><small>Coleções</small></article>
-      <article><span>◇</span><b data-feature-total>0</b><small>Novidades</small></article>
-      <article><span>▣</span><b>Local</b><small>Armazenamento</small></article>
-    </section>
+      <nav>
+        <div class="admin-nav-section">
+          <div class="admin-nav-label">Gerenciamento</div>
+          <button class="admin-nav-link active" data-nav="dashboard" type="button">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/></svg>
+            Dashboard
+          </button>
+          <button class="admin-nav-link" data-nav="products" type="button">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
+            Produtos
+          </button>
+          <button class="admin-nav-link" data-nav="collections" type="button">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
+            Coleções
+          </button>
+          <button class="admin-nav-link" data-nav="featured" type="button">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg>
+            Destaques
+          </button>
+          <button class="admin-nav-link" data-nav="users" type="button">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg>
+            Usuários
+          </button>
+        </div>
 
-    <section class="admin-grid">
-      <article class="admin-panel">
-        <div class="admin-panel-head">
+        <div class="admin-nav-section">
+          <div class="admin-nav-label">Conteúdo</div>
+          <button class="admin-nav-link" data-nav="taxonomies" type="button">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 19a2 2 0 01-2 2H4a2 2 0 01-2-2V5a2 2 0 012-2h5l2 3h9a2 2 0 012 2z"/></svg>
+            Categorias & Tipos
+          </button>
+          <button class="admin-nav-link" data-nav="future" type="button">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+            Drop Futuro
+          </button>
+        </div>
+
+        <div class="admin-nav-section">
+          <div class="admin-nav-label">Configurações</div>
+          <button class="admin-nav-link" data-nav="settings" type="button">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-2 2 2 2 0 01-2-2v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83 0 2 2 0 010-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 01-2-2 2 2 0 012-2h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 010-2.83 2 2 0 012.83 0l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 012-2 2 2 0 012 2v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 0 2 2 0 010 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 012 2 2 2 0 01-2 2h-.09a1.65 1.65 0 00-1.51 1z"/></svg>
+            Configurações
+          </button>
+        </div>
+      </nav>
+
+      <div class="admin-sidebar-footer">
+        <div class="admin-user-mini">
+          <div class="avatar" data-admin-avatar>A</div>
           <div>
-            <span class="eyebrow">Produtos</span>
-            <h2>Itens da loja</h2>
-          </div>
-          <input type="search" placeholder="Buscar produto..." data-admin-product-search>
-        </div>
-        <div class="admin-list" data-product-list></div>
-      </article>
-
-      <article class="admin-panel">
-        <div class="admin-panel-head">
-          <div>
-            <span class="eyebrow">Coleções</span>
-            <h2>Vitrines</h2>
+            <b data-admin-username>Admin</b>
+            <small>Administrador</small>
           </div>
         </div>
-        <div class="admin-list" data-collection-list></div>
-      </article>
-    </section>
+      </div>
+    </aside>
 
-    <section class="admin-panel taxonomy-panel">
-      <div class="admin-panel-head">
-        <div>
-          <span class="eyebrow">Opções da loja</span>
-          <h2>Categorias, tipos, cores e visuais</h2>
+    <!-- Main -->
+    <main class="admin-main">
+      <!-- Topbar -->
+      <div class="admin-topbar">
+        <h1>
+          <button type="button" style="background:transparent;border:0;font-size:20px;cursor:pointer;color:var(--admin-muted);display:none;" data-mobile-menu>☰</button>
+          <span data-page-title>Painel Administrativo</span>
+          <span>✿</span>
+        </h1>
+        <div class="admin-topbar-actions">
+          <a href="index.html" target="_blank">Ver Loja</a>
+          <button type="button" data-logout>Sair</button>
         </div>
       </div>
-      <div class="taxonomy-grid">
-        <article>
-          <h3>Categorias</h3>
-          <form data-taxonomy-form="categories"><input placeholder="Nova categoria"><button type="submit">Adicionar</button></form>
-          <div data-taxonomy-list="categories"></div>
-        </article>
-        <article>
-          <h3>Tipos</h3>
-          <form data-taxonomy-form="types"><input placeholder="Novo tipo"><button type="submit">Adicionar</button></form>
-          <div data-taxonomy-list="types"></div>
-        </article>
-        <article>
-          <h3>Cores</h3>
-          <form data-taxonomy-form="colors"><input placeholder="Nova cor"><button type="submit">Adicionar</button></form>
-          <div data-taxonomy-list="colors"></div>
-        </article>
-        <article>
-          <h3>Visuais</h3>
-          <form data-taxonomy-form="visuals"><input placeholder="Novo visual"><button type="submit">Adicionar</button></form>
-          <div data-taxonomy-list="visuals"></div>
-        </article>
-      </div>
-    </section>
 
-    <section class="admin-panel featured-panel">
-      <div class="admin-panel-head">
-        <div>
-          <span class="eyebrow">Home</span>
-          <h2>Embaixadores e influenciadores</h2>
+      <!-- DASHBOARD -->
+      <section class="admin-section active" data-section="dashboard">
+        <div class="admin-stats-row">
+          <div class="admin-stat-card">
+            <div>
+              <small>Produtos</small>
+              <b data-stat-products>0</b>
+              <span class="stat-delta">Total cadastrado</span>
+            </div>
+            <div class="stat-icon">▱</div>
+          </div>
+          <div class="admin-stat-card">
+            <div>
+              <small>Coleções</small>
+              <b data-stat-collections>0</b>
+              <span class="stat-delta">Total cadastrado</span>
+            </div>
+            <div class="stat-icon">✿</div>
+          </div>
+          <div class="admin-stat-card">
+            <div>
+              <small>Cards Destaque</small>
+              <b data-stat-featured>0</b>
+              <span class="stat-delta">Embaixadores + Influenciadores</span>
+            </div>
+            <div class="stat-icon">◇</div>
+          </div>
+          <div class="admin-stat-card">
+            <div>
+              <small>Usuários</small>
+              <b data-stat-users>0</b>
+              <span class="stat-delta">Contas registradas</span>
+            </div>
+            <div class="stat-icon">☻</div>
+          </div>
         </div>
-      </div>
-      <p class="admin-image-note">Esses cards aparecem nos carrosséis automáticos da página inicial.</p>
-      <div class="admin-list" data-featured-list></div>
-    </section>
 
-    <section class="admin-panel users-panel">
-      <div class="admin-panel-head">
-        <div>
-          <span class="eyebrow">Contas</span>
-          <h2>Usuários registrados</h2>
+        <div class="admin-panels-grid">
+          <div class="admin-content-panel">
+            <div class="admin-panel-header">
+              <h2>Produtos Recentes</h2>
+              <button type="button" data-goto="products">Ver todos</button>
+            </div>
+            <div data-dashboard-products>
+              <p class="admin-empty">Nenhum produto cadastrado.</p>
+            </div>
+          </div>
+          <div class="admin-content-panel">
+            <div class="admin-panel-header">
+              <h2>Coleções Recentes</h2>
+              <button type="button" data-goto="collections">Ver todas</button>
+            </div>
+            <div data-dashboard-collections>
+              <p class="admin-empty">Nenhuma coleção cadastrada.</p>
+            </div>
+          </div>
         </div>
-        <button class="button ghost" type="button" data-refresh-users>Atualizar contas</button>
-      </div>
-      <p class="admin-image-note" data-users-note>Somente contas admin podem alterar cargos.</p>
-      <div class="admin-list users-list" data-users-list></div>
-    </section>
-  </main>
+      </section>
 
+      <!-- PRODUCTS -->
+      <section class="admin-section" data-section="products">
+        <div class="admin-content-panel">
+          <div class="admin-panel-header">
+            <h2>Gerenciar Produtos</h2>
+            <button class="btn-add" type="button" data-new-product>+ Novo produto</button>
+          </div>
+          <div data-product-list></div>
+        </div>
+      </section>
+
+      <!-- COLLECTIONS -->
+      <section class="admin-section" data-section="collections">
+        <div class="admin-content-panel">
+          <div class="admin-panel-header">
+            <h2>Gerenciar Coleções</h2>
+            <button class="btn-add" type="button" data-new-collection>+ Nova coleção</button>
+          </div>
+          <div data-collection-list></div>
+        </div>
+      </section>
+
+      <!-- FEATURED -->
+      <section class="admin-section" data-section="featured">
+        <div class="admin-content-panel">
+          <div class="admin-panel-header">
+            <h2>Embaixadores e Influenciadores</h2>
+            <button class="btn-add" type="button" data-new-featured-card>+ Novo card</button>
+          </div>
+          <div data-featured-list></div>
+        </div>
+      </section>
+
+      <!-- USERS -->
+      <section class="admin-section" data-section="users">
+        <div class="admin-content-panel">
+          <div class="admin-panel-header">
+            <h2>Usuários Registrados</h2>
+            <button class="btn-add" type="button" data-refresh-users style="background:transparent;color:var(--admin-pink);">↻ Atualizar</button>
+          </div>
+          <p style="font-size:12px;color:var(--admin-muted);margin:-8px 0 14px;">Somente contas admin podem alterar cargos.</p>
+          <div data-users-list></div>
+        </div>
+      </section>
+
+      <!-- TAXONOMIES -->
+      <section class="admin-section" data-section="taxonomies">
+        <div class="admin-panels-grid three-col">
+          <div class="admin-content-panel">
+            <div class="admin-panel-header"><h2>Categorias</h2></div>
+            <form class="admin-tag-form" data-taxonomy-form="categories"><input placeholder="Nova categoria"><button type="submit">+</button></form>
+            <div class="admin-tags" data-taxonomy-list="categories"></div>
+          </div>
+          <div class="admin-content-panel">
+            <div class="admin-panel-header"><h2>Tipos</h2></div>
+            <form class="admin-tag-form" data-taxonomy-form="types"><input placeholder="Novo tipo"><button type="submit">+</button></form>
+            <div class="admin-tags" data-taxonomy-list="types"></div>
+          </div>
+          <div class="admin-content-panel">
+            <div class="admin-panel-header"><h2>Cores</h2></div>
+            <form class="admin-tag-form" data-taxonomy-form="colors"><input placeholder="Nova cor"><button type="submit">+</button></form>
+            <div class="admin-tags" data-taxonomy-list="colors"></div>
+          </div>
+        </div>
+        <div class="admin-panels-grid full-width" style="margin-top:18px;">
+          <div class="admin-content-panel">
+            <div class="admin-panel-header"><h2>Visuais</h2></div>
+            <form class="admin-tag-form" data-taxonomy-form="visuals"><input placeholder="Novo visual"><button type="submit">+</button></form>
+            <div class="admin-tags" data-taxonomy-list="visuals"></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- FUTURE DROP -->
+      <section class="admin-section" data-section="future">
+        <div class="admin-content-panel">
+          <div class="admin-panel-header">
+            <h2>Drop Futuro</h2>
+            <button class="btn-add" type="button" data-edit-future-drop>Editar anúncio</button>
+          </div>
+          <div data-future-drop-preview></div>
+        </div>
+      </section>
+
+      <!-- SETTINGS -->
+      <section class="admin-section" data-section="settings">
+        <div class="admin-content-panel">
+          <div class="admin-panel-header"><h2>Configurações do Site</h2></div>
+          <div style="display:grid;gap:16px;max-width:500px;">
+            <button class="btn-add" type="button" data-reset-data style="width:fit-content;">Restaurar dados padrão</button>
+            <p style="font-size:12px;color:var(--admin-muted);">Isso irá resetar todos os produtos, coleções, cards e taxonomias para os valores iniciais.</p>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <!-- Dialogs -->
   <dialog class="admin-dialog" data-product-dialog>
     <form method="dialog" data-product-form>
       <button class="icon-button dialog-close" type="button" data-close-dialog>×</button>
@@ -134,28 +846,16 @@
       <input type="hidden" name="id">
       <label>Nome<input name="name" required></label>
       <label>Categoria
-        <select name="category" required>
-          <option>Masculino</option><option>Feminino</option><option>Acessórios</option>
-          <option>Drops Exclusivos</option><option>Conjuntos</option>
-        </select>
+        <select name="category" required></select>
       </label>
       <label>Tipo
-        <select name="type" required>
-          <option>Camisetas</option><option>Moletons</option><option>Jaquetas</option>
-          <option>Calças</option><option>Shorts</option><option>Bonés</option>
-          <option>Outros</option><option>Conjuntos</option>
-        </select>
+        <select name="type" required></select>
       </label>
       <label>Cor
-        <select name="color" required>
-          <option>Preto</option><option>Branco</option><option>Rosa</option>
-          <option>Cinza</option><option>Bege</option><option>Azul</option>
-        </select>
+        <select name="color" required></select>
       </label>
       <label>Coleção
-        <select name="collection">
-          <option value="">Sem coleção</option>
-        </select>
+        <select name="collection"><option value="">Sem coleção</option></select>
       </label>
       <label>Onde aparece
         <select name="visibility">
@@ -229,6 +929,25 @@
       </label>
       <p class="admin-image-note" data-featured-image-note>Nenhuma imagem anexada.</p>
       <button class="checkout-button" type="submit">Salvar card</button>
+    </form>
+  </dialog>
+
+  <dialog class="admin-dialog" data-future-dialog>
+    <form method="dialog" data-future-form>
+      <button class="icon-button dialog-close" type="button" data-close-dialog>×</button>
+      <h2>Drop futuro</h2>
+      <label>Etiqueta<input name="eyebrow" required></label>
+      <label>Título<input name="title" required></label>
+      <label>Descrição<textarea name="description" required></textarea></label>
+      <label>Texto do botão<input name="button" required></label>
+      <label>Link do botão<input name="href" required></label>
+      <label>Selo da imagem<input name="badge" placeholder="Soon"></label>
+      <label>Título na imagem<input name="cardTitle" required></label>
+      <label>Imagem do anúncio
+        <input name="images" type="file" accept="image/png,image/jpeg,image/gif,image/webp">
+      </label>
+      <p class="admin-image-note" data-future-image-note>Nenhuma imagem anexada.</p>
+      <button class="checkout-button" type="submit">Salvar drop futuro</button>
     </form>
   </dialog>
 

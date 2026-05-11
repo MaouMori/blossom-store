@@ -47,7 +47,6 @@
         <span class="user-icon">♙</span>
         <span>
           <b data-account-name>visitante</b>
-          <small data-header-cart-total>R$0,00</small>
         </span>
         <span class="chevron">⌄</span>
       </button>
@@ -57,7 +56,6 @@
         <button type="button" data-account-logout>Entrar</button>
       </div>
       <a class="admin-shortcut" href="login.html" aria-label="Painel admin">⚙</a>
-      <button class="cart" type="button" aria-label="Abrir carrinho" data-cart-open>▱<small data-cart-count>0</small></button>
     </div>
   </header>
 
@@ -197,82 +195,6 @@
       <article><span>⬟</span><b>Pagamento seguro</b><small>Segurança garantida</small></article>
     </section>
   </main>
-
-  <div class="overlay" data-overlay hidden></div>
-
-  <aside class="cart-drawer" data-cart-drawer aria-hidden="true" aria-label="Carrinho de compras">
-    <div class="drawer-head">
-      <div>
-        <span class="eyebrow">Seu pedido</span>
-        <h2>Carrinho</h2>
-      </div>
-      <button class="icon-button" type="button" aria-label="Fechar carrinho" data-cart-close>×</button>
-    </div>
-
-    <div class="cart-items" data-cart-items>
-      <p class="empty-cart">Seu carrinho está vazio.</p>
-    </div>
-
-    <div class="cart-summary">
-      <div><span>Subtotal</span><strong data-subtotal>R$0,00</strong></div>
-      <div><span>Entrega digital</span><strong>Grátis</strong></div>
-      <div class="summary-total"><span>Total</span><strong data-total>R$0,00</strong></div>
-      <button class="checkout-button" type="button" data-checkout-open disabled>Finalizar compra</button>
-    </div>
-  </aside>
-
-  <section class="checkout-modal" data-checkout-modal hidden aria-label="Finalizar compra">
-    <div class="checkout-panel">
-      <button class="icon-button checkout-close" type="button" aria-label="Fechar checkout" data-checkout-close>×</button>
-      <div class="checkout-grid">
-        <form class="checkout-form" data-checkout-form>
-          <span class="eyebrow">Pagamento</span>
-          <h2>Finalizar compra</h2>
-
-          <label>
-            Nome no pedido
-            <input type="text" name="customer" placeholder="Seu nome" required>
-          </label>
-
-          <label>
-            E-mail para entrega
-            <input type="email" name="email" placeholder="seu@email.com" required>
-          </label>
-
-          <fieldset>
-            <legend>Forma de pagamento</legend>
-            <label class="payment-option">
-              <input type="radio" name="payment" value="pix" checked>
-              <span><b>PIX</b><small>Gera código e QR de demonstração.</small></span>
-            </label>
-            <label class="payment-option">
-              <input type="radio" name="payment" value="card">
-              <span><b>Cartão</b><small>Tela pronta para integrar gateway.</small></span>
-            </label>
-            <label class="payment-option">
-              <input type="radio" name="payment" value="boleto">
-              <span><b>Boleto</b><small>Gera referência de pedido.</small></span>
-            </label>
-          </fieldset>
-
-          <div class="payment-preview" data-payment-preview>
-            <div class="qr-placeholder">PIX</div>
-            <p>Ao confirmar, o sistema cria um pedido em modo demonstração. Para pagamento real, basta conectar Mercado Pago, Stripe ou Asaas.</p>
-          </div>
-
-          <button class="checkout-button" type="submit">Criar pedido</button>
-        </form>
-
-        <aside class="order-review">
-          <span class="eyebrow">Resumo</span>
-          <h3>Itens do pedido</h3>
-          <div data-checkout-items></div>
-          <div class="summary-total"><span>Total</span><strong data-checkout-total>R$0,00</strong></div>
-          <p class="order-note">Entrega digital automática após confirmação do pagamento real.</p>
-        </aside>
-      </div>
-    </div>
-  </section>
 
   <footer class="site-footer">
     <div class="footer-inner container">
