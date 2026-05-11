@@ -5982,7 +5982,7 @@ select option:checked {
 .spotlight-carousel {
   width: 100%;
   margin: 0;
-  padding: 0;
+  padding: 28px 0 42px;
   overflow: hidden;
 }
 
@@ -5991,6 +5991,7 @@ select option:checked {
   display: flex;
   gap: 22px;
   animation: spotlight-marquee 34s linear infinite;
+  transform: translate3d(0, 0, 0);
   will-change: transform;
 }
 
@@ -6069,6 +6070,21 @@ select option:checked {
     radial-gradient(circle at 48% 38%, rgba(240, 111, 159, 0.18), transparent 34%),
     linear-gradient(180deg, rgba(35, 11, 20, 0.72), rgba(5, 3, 5, 0.98));
   box-shadow: none;
+  background-size: cover;
+  background-position: center;
+}
+
+.spotlight-carousel .portrait.has-upload,
+.spotlight-carousel .influencer-shot.has-upload {
+  background-size: cover;
+  background-position: center;
+}
+
+.spotlight-carousel .portrait.has-upload::before,
+.spotlight-carousel .portrait.has-upload::after,
+.spotlight-carousel .influencer-shot.has-upload::before,
+.spotlight-carousel .influencer-shot.has-upload::after {
+  display: none;
 }
 
 .spotlight-carousel .portrait::before,
@@ -6146,11 +6162,11 @@ select option:checked {
 
 @keyframes spotlight-marquee {
   from { transform: translateX(0); }
-  to { transform: translateX(calc(-50% - 11px)); }
+  to { transform: translateX(calc(var(--spotlight-distance, 50%) * -1)); }
 }
 
 @keyframes spotlight-marquee-reverse {
-  from { transform: translateX(calc(-50% - 11px)); }
+  from { transform: translateX(calc(var(--spotlight-distance, 50%) * -1)); }
   to { transform: translateX(0); }
 }
 
@@ -6527,4 +6543,11 @@ select option:checked {
   .editorial-collection-card:nth-child(n) {
     grid-column: auto;
   }
+}
+
+.spotlight-carousel.ambassador-row,
+.spotlight-carousel.influencer-row {
+  display: block;
+  grid-template-columns: none;
+  gap: 0;
 }

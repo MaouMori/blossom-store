@@ -75,6 +75,32 @@ const taxonomySeed = {
   ],
 };
 
+const featuredSeed = [
+  ["ambassadors", "Luna Vex", "Embaixadora", "pink", "sobre.html#time"],
+  ["ambassadors", "Kai Mori", "Embaixador", "dark", "sobre.html#time"],
+  ["ambassadors", "Nikki Bloom", "Embaixadora", "rose", "sobre.html#time"],
+  ["ambassadors", "Drey Saint", "Embaixador", "black", "sobre.html#time"],
+  ["ambassadors", "Mila Knox", "Embaixadora", "pink", "sobre.html#time"],
+  ["ambassadors", "Zion Park", "Embaixador", "dark", "sobre.html#time"],
+  ["influencers", "@babyxgeon", "Creator", "soft", "contato.html"],
+  ["influencers", "@str4wb3rry", "Creator", "vivid", "contato.html"],
+  ["influencers", "@gobbimoon", "Creator", "soft", "contato.html"],
+  ["influencers", "@otaviokim", "Creator", "mono", "contato.html"],
+  ["influencers", "@dudamills", "Creator", "vivid", "contato.html"],
+  ["influencers", "@heartzui", "Creator", "soft", "contato.html"],
+].map(([section, name, role, visual, href], index) => ({
+  id: `${section}-${index}`,
+  section,
+  name,
+  role,
+  visual,
+  href,
+  image: "",
+  images: [],
+  position: index,
+  created: index,
+}));
+
 const $ = (selector) => document.querySelector(selector);
 const $$ = (selector) => document.querySelectorAll(selector);
 const apiEnabled = location.protocol.startsWith("http");
@@ -305,6 +331,7 @@ if (document.body.classList.contains("admin-body") && location.pathname.endsWith
 let adminProducts = apiEnabled ? [] : getData("blossom-products", productSeed);
 let adminCollections = apiEnabled ? [] : getData("blossom-collections", collectionSeed);
 let adminTaxonomies = apiEnabled ? { categories: [], types: [], colors: [], visuals: [] } : getObjectData("blossom-taxonomies", taxonomySeed);
+let adminFeaturedCards = apiEnabled ? featuredSeed : getData("blossom-featured-cards", featuredSeed);
 let adminOrders = [];
 let adminUsers = [];
 
@@ -317,6 +344,7 @@ async function loadApiStore() {
     adminProducts = Array.isArray(store.products) ? store.products : [];
     adminCollections = Array.isArray(store.collections) ? store.collections : [];
     adminTaxonomies = store.taxonomies && Object.keys(store.taxonomies).length ? store.taxonomies : { categories: [], types: [], colors: [], visuals: [] };
+    adminFeaturedCards = Array.isArray(adminTaxonomies.featuredCards) && adminTaxonomies.featuredCards.length ? adminTaxonomies.featuredCards : featuredSeed;
     adminOrders = Array.isArray(store.orders) ? store.orders : [];
     renderAdmin();
   } catch {
@@ -326,6 +354,7 @@ async function loadApiStore() {
 
 async function saveApiStore() {
   if (!apiEnabled) return;
+  adminTaxonomies.featuredCards = adminFeaturedCards;
   const response = await fetch("/api/store", {
     method: "PUT",
     headers: { "Content-Type": "application/json" },
@@ -384,7 +413,14 @@ function saveCollections() {
 }
 
 function saveTaxonomies() {
+  adminTaxonomies.featuredCards = adminFeaturedCards;
   setData("blossom-taxonomies", adminTaxonomies);
+  return saveApiStore();
+}
+
+function saveFeaturedCards() {
+  adminTaxonomies.featuredCards = adminFeaturedCards;
+  setData("blossom-featured-cards", adminFeaturedCards);
   return saveApiStore();
 }
 
@@ -451,7 +487,29 @@ function renderAdmin() {
     </article>
   `).join("") || '<p class="empty-cart">Nenhuma coleção cadastrada.</p>';
 
+  renderFeaturedCards();
   renderTaxonomies();
+}
+
+function renderFeaturedCards() {
+  const list = $("[data-featured-list]");
+  if (!list) return;
+  list.innerHTML = [...adminFeaturedCards]
+    .sort((a, b) => String(a.section).localeCompare(String(b.section)) || Number(a.position || 0) - Number(b.position || 0))
+    .map((item) => `
+      <article class="admin-row">
+        <div class="admin-thumb ${item.visual}" ${primaryImage(item) ? `style="background-image:url('${primaryImage(item)}')"` : ""}></div>
+        <div>
+          <h3>${item.name}</h3>
+          <p>${item.section === "ambassadors" ? "Embaixadores" : "Influenciadores"} â€¢ ${item.role || "Sem subtÃ­tulo"}</p>
+          <strong>PosiÃ§Ã£o ${Number(item.position || 0)}${itemImages(item).length ? ` â€¢ ${itemImages(item).length} foto` : ""}</strong>
+        </div>
+        <div>
+          <button type="button" data-edit-featured-card="${item.id}">Editar</button>
+          <button type="button" data-delete-featured-card="${item.id}">Remover</button>
+        </div>
+      </article>
+    `).join("") || '<p class="empty-cart">Nenhum card cadastrado.</p>';
 }
 
 function renderTaxonomies() {
@@ -520,8 +578,28 @@ function openCollectionForm(collection = null) {
   dialog.showModal();
 }
 
+function openFeaturedForm(card = null) {
+  const dialog = $("[data-featured-dialog]");
+  const form = $("[data-featured-form]");
+  if (!dialog || !form) return;
+  form.reset();
+  $("[data-featured-form-title]").textContent = card ? "Editar card destaque" : "Novo card destaque";
+  field(form, "id").value = card?.id || "";
+  field(form, "section").value = card?.section || "ambassadors";
+  field(form, "name").value = card?.name || "";
+  field(form, "role").value = card?.role || "";
+  field(form, "href").value = card?.href || (card?.section === "influencers" ? "contato.html" : "sobre.html#time");
+  field(form, "visual").value = card?.visual || "pink";
+  field(form, "position").value = card?.position ?? adminFeaturedCards.length;
+  form.dataset.currentImages = JSON.stringify(itemImages(card));
+  const count = itemImages(card).length;
+  $("[data-featured-image-note]").textContent = count ? `${count} imagem atual. Envie outra para substituir.` : "Nenhuma imagem anexada.";
+  dialog.showModal();
+}
+
 $("[data-new-product]")?.addEventListener("click", () => openProductForm());
 $("[data-new-collection]")?.addEventListener("click", () => openCollectionForm());
+$("[data-new-featured-card]")?.addEventListener("click", () => openFeaturedForm());
 $("[data-admin-product-search]")?.addEventListener("input", renderAdmin);
 $("[data-refresh-users]")?.addEventListener("click", loadUsers);
 
@@ -544,10 +622,13 @@ document.addEventListener("click", (event) => {
   const deleteProduct = event.target.closest("[data-delete-product]");
   const editCollection = event.target.closest("[data-edit-collection]");
   const deleteCollection = event.target.closest("[data-delete-collection]");
+  const editFeaturedCard = event.target.closest("[data-edit-featured-card]");
+  const deleteFeaturedCard = event.target.closest("[data-delete-featured-card]");
   const closeDialog = event.target.closest("[data-close-dialog]");
 
   if (editProduct) openProductForm(adminProducts.find((item) => item.id === editProduct.dataset.editProduct));
   if (editCollection) openCollectionForm(adminCollections.find((item) => item.id === editCollection.dataset.editCollection));
+  if (editFeaturedCard) openFeaturedForm(adminFeaturedCards.find((item) => item.id === editFeaturedCard.dataset.editFeaturedCard));
 
   if (deleteProduct) {
     adminProducts = adminProducts.filter((item) => item.id !== deleteProduct.dataset.deleteProduct);
@@ -561,6 +642,13 @@ document.addEventListener("click", (event) => {
     saveCollections().catch((error) => console.warn(error));
     renderAdmin();
     toast("Coleção removida.");
+  }
+
+  if (deleteFeaturedCard) {
+    adminFeaturedCards = adminFeaturedCards.filter((item) => item.id !== deleteFeaturedCard.dataset.deleteFeaturedCard);
+    saveFeaturedCards().catch((error) => console.warn(error));
+    renderAdmin();
+    toast("Card removido.");
   }
 
   const removeTaxonomy = event.target.closest("[data-remove-taxonomy]");
@@ -708,13 +796,65 @@ $("[data-collection-form]")?.addEventListener("submit", async (event) => {
   }
 });
 
+$("[data-featured-form]")?.addEventListener("submit", async (event) => {
+  event.preventDefault();
+  const form = event.currentTarget;
+  const data = new FormData(form);
+  const submitButton = form.querySelector("[type='submit']");
+  const originalText = submitButton.textContent;
+  submitButton.disabled = true;
+  submitButton.textContent = "Salvando...";
+  const id = data.get("id") || `${data.get("section")}-${slugify(data.get("name"))}`;
+  let images = JSON.parse(form.dataset.currentImages || "[]");
+  try {
+    const uploadedImages = await filesToDataUrls(field(form, "images").files);
+    images = uploadedImages.length ? uploadedImages : images;
+  } catch (error) {
+    $("[data-featured-image-note]").textContent = error.message;
+    submitButton.disabled = false;
+    submitButton.textContent = originalText;
+    return;
+  }
+
+  const card = {
+    id,
+    section: data.get("section"),
+    name: data.get("name"),
+    role: data.get("role") || (data.get("section") === "influencers" ? "Creator" : "Embaixador"),
+    href: data.get("href") || (data.get("section") === "influencers" ? "contato.html" : "sobre.html#time"),
+    visual: data.get("visual"),
+    position: Number(data.get("position") || 0),
+    image: images[0] || "",
+    images,
+    created: adminFeaturedCards.find((item) => item.id === id)?.created ?? Date.now(),
+  };
+
+  adminFeaturedCards = adminFeaturedCards.some((item) => item.id === id)
+    ? adminFeaturedCards.map((item) => item.id === id ? card : item)
+    : [card, ...adminFeaturedCards];
+
+  try {
+    await saveFeaturedCards();
+    form.closest("dialog").close();
+    renderAdmin();
+    toast("Card salvo.");
+  } catch (error) {
+    console.error(error);
+    $("[data-featured-image-note]").textContent = `Erro ao salvar: ${errorText(error)}`;
+  } finally {
+    submitButton.disabled = false;
+    submitButton.textContent = originalText;
+  }
+});
+
 $("[data-reset-data]")?.addEventListener("click", () => {
   adminProducts = productSeed;
   adminCollections = collectionSeed;
   adminTaxonomies = taxonomySeed;
+  adminFeaturedCards = featuredSeed;
   saveProducts().catch((error) => console.warn(error));
   saveCollections().catch((error) => console.warn(error));
-  saveTaxonomies().catch((error) => console.warn(error));
+  saveFeaturedCards().catch((error) => console.warn(error));
   renderAdmin();
   toast("Dados padrão restaurados.");
 });
@@ -738,6 +878,13 @@ $("[data-logout]")?.addEventListener("click", () => {
   localStorage.removeItem("blossom-user-account");
   localStorage.removeItem("blossom-admin-session");
   window.location.href = "login.html";
+});
+
+$("[data-featured-form] input[name='images']")?.addEventListener("change", (event) => {
+  const count = event.target.files.length;
+  $("[data-featured-image-note]").textContent = count
+    ? `${count} imagem selecionada. Ela serÃ¡ otimizada ao salvar.`
+    : "Nenhuma imagem anexada.";
 });
 
 renderAdmin();

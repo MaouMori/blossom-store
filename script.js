@@ -140,6 +140,7 @@ function initHomeMotion() {
 
   updateScrollMotion();
   window.addEventListener("scroll", requestScrollMotion, { passive: true });
+  window.addEventListener("resize", () => selectors.spotlightTracks.forEach(updateSpotlightDistance));
 
   const revealItems = document.querySelectorAll(".editorial-strip, .movement-banner, .editorial-footer");
   revealItems.forEach((item) => item.classList.add("home-reveal"));
@@ -258,6 +259,32 @@ function readStore(key, fallback) {
 const apiEnabled = location.protocol.startsWith("http");
 const legacyDemoAccountName = ["vinicius", "silv-33afab"].join("_");
 
+const defaultFeaturedCards = [
+  ["ambassadors", "Luna Vex", "Embaixadora", "pink", "sobre.html#time"],
+  ["ambassadors", "Kai Mori", "Embaixador", "dark", "sobre.html#time"],
+  ["ambassadors", "Nikki Bloom", "Embaixadora", "rose", "sobre.html#time"],
+  ["ambassadors", "Drey Saint", "Embaixador", "black", "sobre.html#time"],
+  ["ambassadors", "Mila Knox", "Embaixadora", "pink", "sobre.html#time"],
+  ["ambassadors", "Zion Park", "Embaixador", "dark", "sobre.html#time"],
+  ["influencers", "@babyxgeon", "Creator", "soft", "contato.html"],
+  ["influencers", "@str4wb3rry", "Creator", "vivid", "contato.html"],
+  ["influencers", "@gobbimoon", "Creator", "soft", "contato.html"],
+  ["influencers", "@otaviokim", "Creator", "mono", "contato.html"],
+  ["influencers", "@dudamills", "Creator", "vivid", "contato.html"],
+  ["influencers", "@heartzui", "Creator", "soft", "contato.html"],
+].map(([section, name, role, visual, href], index) => ({
+  id: `${section}-${index}`,
+  section,
+  name,
+  role,
+  visual,
+  href,
+  image: "",
+  images: [],
+  position: index,
+  created: index,
+}));
+
 function recentValue(item) {
   return Number(item.createdAt || item.created || 0);
 }
@@ -295,6 +322,7 @@ const couponRules = {
 
 let products = apiEnabled ? [] : readStore("blossom-products", []);
 let collections = apiEnabled ? [] : readStore("blossom-collections", []);
+let featuredCards = apiEnabled ? defaultFeaturedCards : readStore("blossom-featured-cards", defaultFeaturedCards);
 let taxonomies = (() => {
   if (apiEnabled) return { categories: [], types: [], colors: [], visuals: [] };
   try {
@@ -351,6 +379,7 @@ const selectors = {
   collectionGallery: document.querySelector("[data-collection-gallery]"),
   homeProducts: document.querySelector("[data-home-products]"),
   homeCollections: document.querySelector("[data-home-collections]"),
+  spotlightTracks: document.querySelectorAll("[data-spotlight-track]"),
   lookbookTrack: document.querySelector("[data-lookbook-track]"),
   contactForm: document.querySelector("[data-contact-form]"),
   contactMessage: document.querySelector("[data-message]"),
@@ -388,6 +417,7 @@ async function loadApiStore() {
     products = Array.isArray(store.products) ? store.products : [];
     collections = Array.isArray(store.collections) ? store.collections : [];
     taxonomies = store.taxonomies && Object.keys(store.taxonomies).length ? store.taxonomies : { categories: [], types: [], colors: [], visuals: [] };
+    featuredCards = Array.isArray(taxonomies.featuredCards) && taxonomies.featuredCards.length ? taxonomies.featuredCards : defaultFeaturedCards;
     if (hasShop) {
       renderFilters();
       renderCatalog();
@@ -398,6 +428,7 @@ async function loadApiStore() {
   } catch {
     products = [];
     collections = [];
+    featuredCards = defaultFeaturedCards;
     renderHomeSections();
     renderCollections();
     renderCollectionDetail();
@@ -530,6 +561,40 @@ function homeCollectionCard(collection) {
   `;
 }
 
+function spotlightCard(card, duplicate = false) {
+  const images = Array.isArray(card.images) && card.images.length ? card.images : (card.image ? [card.image] : []);
+  const image = images[0] || "";
+  const sectionClass = card.section === "influencers" ? "influencer-shot" : "portrait";
+  const visual = card.visual || (card.section === "influencers" ? "soft" : "pink");
+  return `
+    <a href="${card.href || "#"}" ${duplicate ? 'aria-hidden="true" tabindex="-1"' : ""}>
+      <div class="${sectionClass} ${visual} ${image ? "has-upload" : ""}" ${image ? `style="background-image:url('${image}')"` : ""}></div>
+      <b>${card.name || "Blossom"}</b>
+      <small>${card.role || (card.section === "influencers" ? "Creator" : "Embaixador")}</small>
+    </a>
+  `;
+}
+
+function renderSpotlightTracks() {
+  selectors.spotlightTracks.forEach((track) => {
+    const section = track.dataset.spotlightTrack;
+    const cards = featuredCards
+      .filter((card) => card.section === section)
+      .sort((a, b) => Number(a.position || 0) - Number(b.position || 0));
+    const fallback = defaultFeaturedCards.filter((card) => card.section === section);
+    const visibleCards = cards.length ? cards : fallback;
+    const content = visibleCards.map((card) => spotlightCard(card)).join("");
+    const duplicate = visibleCards.map((card) => spotlightCard(card, true)).join("");
+    track.innerHTML = `${content}${duplicate}`;
+    updateSpotlightDistance(track);
+  });
+}
+
+function updateSpotlightDistance(track) {
+  if (!track) return;
+  track.style.setProperty("--spotlight-distance", `${track.scrollWidth / 2}px`);
+}
+
 function lookbookCard(product, index) {
   const image = primaryImage(product);
   const imageStyle = image ? `data-src="${image}"` : "";
@@ -578,6 +643,8 @@ function renderPagination(totalPages) {
 }
 
 function renderHomeSections() {
+  renderSpotlightTracks();
+
   if (hasHomeProducts) {
     const saleProducts = recentItems(products.filter((product) => product.visibility !== "collection-only"), 8);
     selectors.homeProducts.innerHTML = saleProducts.map((product, index) => lookbookCard(product, index)).join("")
