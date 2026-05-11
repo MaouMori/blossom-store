@@ -120,8 +120,50 @@ function initThemeToggle() {
   });
 }
 
+function initHomeMotion() {
+  if (!document.body.classList.contains("home-editorial")) return;
+  const root = document.documentElement;
+  let ticking = false;
+
+  const updateScrollMotion = () => {
+    const progress = Math.min(window.scrollY / 460, 1);
+    root.style.setProperty("--home-scroll", progress.toFixed(3));
+    document.body.classList.toggle("home-scrolled", progress > 0.14);
+    ticking = false;
+  };
+
+  const requestScrollMotion = () => {
+    if (ticking) return;
+    ticking = true;
+    window.requestAnimationFrame(updateScrollMotion);
+  };
+
+  updateScrollMotion();
+  window.addEventListener("scroll", requestScrollMotion, { passive: true });
+
+  const revealItems = document.querySelectorAll(".editorial-strip, .movement-banner, .editorial-footer");
+  revealItems.forEach((item) => item.classList.add("home-reveal"));
+
+  if (!("IntersectionObserver" in window)) {
+    revealItems.forEach((item) => item.classList.add("is-visible"));
+    return;
+  }
+
+  const revealObserver = new IntersectionObserver((entries) => {
+    entries.forEach((entry) => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add("is-visible");
+        revealObserver.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.18 });
+
+  revealItems.forEach((item) => revealObserver.observe(item));
+}
+
 document.addEventListener("DOMContentLoaded", initLazyImages);
 document.addEventListener("DOMContentLoaded", initThemeToggle);
+document.addEventListener("DOMContentLoaded", initHomeMotion);
 
 const defaultProductRows = [
   ["hoodie-black", "Blossom Hoodie Black", "Masculino", "Moletons", "Preto", 199.9, "hoodie-dark", true],

@@ -5489,6 +5489,20 @@ select option:checked {
     linear-gradient(90deg, rgba(5, 3, 5, 0.98) 0%, rgba(5, 3, 5, 0.62) 40%, rgba(5, 3, 5, 0.1) 72%, rgba(5, 3, 5, 0.84) 100%),
     radial-gradient(circle at 70% 44%, rgba(226, 54, 104, 0.45), transparent 34%),
     linear-gradient(180deg, #10070b, #050305);
+  transform: translateY(calc(var(--home-scroll, 0) * -34px));
+}
+
+.editorial-hero::before {
+  content: "";
+  position: absolute;
+  z-index: 3;
+  left: 0;
+  right: 0;
+  bottom: -1px;
+  height: clamp(90px, 18vh, 190px);
+  pointer-events: none;
+  background: linear-gradient(180deg, rgba(5, 3, 5, 0), rgba(45, 6, 18, calc(0.58 + (var(--home-scroll, 0) * 0.26))) 48%, var(--ed-bg));
+  opacity: calc(0.42 + (var(--home-scroll, 0) * 0.58));
 }
 
 .editorial-hero::after,
@@ -5504,12 +5518,15 @@ select option:checked {
     radial-gradient(4px 2px at 60% 80%, rgba(255, 112, 158, 0.44), transparent);
   background-size: 240px 160px;
   opacity: 0.8;
+  animation: blossom-drift 18s linear infinite;
 }
 
 .editorial-hero-content {
   position: relative;
   z-index: 2;
   padding: 170px 0 72px 72px;
+  transform: translateY(calc(var(--home-scroll, 0) * -22px));
+  opacity: calc(1 - (var(--home-scroll, 0) * 0.22));
 }
 
 .editorial-logo {
@@ -5621,6 +5638,8 @@ select option:checked {
   position: relative;
   min-height: 660px;
   overflow: hidden;
+  transform: translateX(calc(var(--home-scroll, 0) * 24px)) scale(calc(1 + (var(--home-scroll, 0) * 0.035)));
+  filter: saturate(calc(1 + (var(--home-scroll, 0) * 0.15)));
 }
 
 .editorial-hero-image::before {
@@ -5654,6 +5673,7 @@ select option:checked {
     radial-gradient(circle at 50% 44px, #d489a1 0 38px, transparent 39px),
     linear-gradient(180deg, #2a0d16 0 28%, #0b080b 28% 100%);
   box-shadow: inset 0 -80px 90px rgba(0, 0, 0, 0.58), 0 0 42px rgba(232, 77, 128, 0.22);
+  animation: figure-float 6s ease-in-out infinite;
 }
 
 .editorial-hero-image .figure::after {
@@ -5667,11 +5687,11 @@ select option:checked {
   font-weight: 800;
 }
 
-.editorial-hero-image .one { left: 11%; transform: scale(0.92); opacity: 0.8; }
-.editorial-hero-image .two { left: 26%; transform: scale(0.84); opacity: 0.78; }
-.editorial-hero-image .three { left: 42%; transform: scale(1.08); opacity: 1; }
-.editorial-hero-image .four { left: 58%; transform: scale(0.95); opacity: 0.92; }
-.editorial-hero-image .five { left: 73%; transform: scale(0.94); opacity: 0.82; }
+.editorial-hero-image .one { left: 11%; --figure-scale: 0.92; --float-offset: 0px; opacity: 0.8; }
+.editorial-hero-image .two { left: 26%; --figure-scale: 0.84; --float-offset: 10px; opacity: 0.78; animation-delay: -1.2s; }
+.editorial-hero-image .three { left: 42%; --figure-scale: 1.08; --float-offset: -8px; opacity: 1; animation-delay: -2.4s; }
+.editorial-hero-image .four { left: 58%; --figure-scale: 0.95; --float-offset: 8px; opacity: 0.92; animation-delay: -3.1s; }
+.editorial-hero-image .five { left: 73%; --figure-scale: 0.94; --float-offset: -4px; opacity: 0.82; animation-delay: -4.2s; }
 
 .editorial-strip {
   position: relative;
@@ -5979,8 +5999,7 @@ select option:checked {
   animation-duration: 38s;
 }
 
-.spotlight-carousel:hover .spotlight-track,
-.spotlight-carousel:focus-within .spotlight-track {
+.spotlight-track:has(> a:hover) {
   animation-play-state: paused;
 }
 
@@ -6133,6 +6152,54 @@ select option:checked {
 @keyframes spotlight-marquee-reverse {
   from { transform: translateX(calc(-50% - 11px)); }
   to { transform: translateX(0); }
+}
+
+.home-reveal {
+  opacity: 0;
+  transform: translateY(42px);
+  filter: blur(10px);
+  transition:
+    opacity 700ms ease,
+    transform 700ms ease,
+    filter 700ms ease;
+}
+
+.home-reveal.is-visible {
+  opacity: 1;
+  transform: translateY(0);
+  filter: blur(0);
+}
+
+.home-scrolled .editorial-header {
+  background: rgba(5, 3, 5, 0.72);
+  backdrop-filter: blur(16px);
+}
+
+.editorial-collection-card {
+  animation: soft-card-glow 8s ease-in-out infinite;
+}
+
+.editorial-collection-card:nth-child(2n) {
+  animation-delay: -2.2s;
+}
+
+.movement-banner::before {
+  animation-duration: 13s;
+}
+
+@keyframes blossom-drift {
+  from { background-position: 0 0; }
+  to { background-position: 240px 160px; }
+}
+
+@keyframes figure-float {
+  0%, 100% { transform: translateY(0) scale(var(--figure-scale, 1)); }
+  50% { transform: translateY(var(--float-offset, -8px)) scale(var(--figure-scale, 1)); }
+}
+
+@keyframes soft-card-glow {
+  0%, 100% { filter: saturate(1); }
+  50% { filter: saturate(1.14); }
 }
 
 .collections-strip {
