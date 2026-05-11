@@ -398,90 +398,6 @@
       text-transform: uppercase;
     }
 
-    .book-corner {
-      position: absolute;
-      width: min(16vw, 130px);
-      height: min(16vw, 130px);
-      z-index: 10;
-      border: 0;
-      background: transparent;
-      cursor: pointer;
-      opacity: 1;
-    }
-
-    .book-corner::before {
-      content: "";
-      position: absolute;
-      width: 0;
-      height: 0;
-      opacity: 0;
-      filter: drop-shadow(0 0 18px rgba(255, 116, 170, 0.32));
-      transition: border-width 240ms ease, opacity 180ms ease, transform 240ms ease;
-    }
-
-    .book-corner:hover::before {
-      opacity: 1;
-      transform: scale(1.02);
-    }
-
-    .book-corner:disabled {
-      pointer-events: none;
-    }
-
-    .corner-tr { top: clamp(16px, 2.4vw, 42px); right: clamp(16px, 2.4vw, 42px); }
-    .corner-tr::before { top: 0; right: 0; border-top: 0 solid rgba(255, 160, 197, 0.48); border-left: 0 solid transparent; }
-    .corner-tr:hover::before { border-top-width: 66px; border-left-width: 66px; }
-
-    .corner-br { bottom: clamp(16px, 2.4vw, 42px); right: clamp(16px, 2.4vw, 42px); }
-    .corner-br::before { bottom: 0; right: 0; border-bottom: 0 solid rgba(255, 160, 197, 0.48); border-left: 0 solid transparent; }
-    .corner-br:hover::before { border-bottom-width: 66px; border-left-width: 66px; }
-
-    .corner-tl { top: clamp(16px, 2.4vw, 42px); left: clamp(16px, 2.4vw, 42px); }
-    .corner-tl::before { top: 0; left: 0; border-top: 0 solid rgba(255, 160, 197, 0.48); border-right: 0 solid transparent; }
-    .corner-tl:hover::before { border-top-width: 66px; border-right-width: 66px; }
-
-    .corner-bl { bottom: clamp(16px, 2.4vw, 42px); left: clamp(16px, 2.4vw, 42px); }
-    .corner-bl::before { bottom: 0; left: 0; border-bottom: 0 solid rgba(255, 160, 197, 0.48); border-right: 0 solid transparent; }
-    .corner-bl:hover::before { border-bottom-width: 66px; border-right-width: 66px; }
-
-    .book-controls {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 16px;
-      margin-top: 22px;
-    }
-
-    .book-controls button {
-      width: 46px;
-      height: 46px;
-      border-radius: 50%;
-      border: 1px solid rgba(255, 116, 170, 0.28);
-      background: rgba(255, 255, 255, 0.04);
-      color: #fff;
-      cursor: pointer;
-      transition: transform 180ms ease, background 180ms ease;
-    }
-
-    .book-controls button:hover:not(:disabled) {
-      transform: translateY(-2px);
-      background: #ff86b6;
-      color: #1a0810;
-    }
-
-    .book-controls button:disabled {
-      opacity: 0.34;
-      cursor: not-allowed;
-    }
-
-    .page-count {
-      color: rgba(255, 255, 255, 0.56);
-      font-size: 12px;
-      font-weight: 900;
-      letter-spacing: 0.16em;
-      text-transform: uppercase;
-    }
-
     @media (max-width: 920px) {
       .book-main { padding-top: 110px; }
       .book-intro { grid-template-columns: 1fr; }
@@ -552,17 +468,7 @@
       <div class="page-flip-shell" data-page-flip-shell>
         <div class="page-flip-book" data-page-flip></div>
       </div>
-      <button class="book-corner corner-tl" type="button" data-book-prev aria-label="Pagina anterior"></button>
-      <button class="book-corner corner-bl" type="button" data-book-prev aria-label="Pagina anterior"></button>
-      <button class="book-corner corner-tr" type="button" data-book-next aria-label="Proxima pagina"></button>
-      <button class="book-corner corner-br" type="button" data-book-next aria-label="Proxima pagina"></button>
     </section>
-
-    <div class="book-controls">
-      <button type="button" data-book-prev aria-label="Pagina anterior">&#8592;</button>
-      <span class="page-count" data-book-count>Fechado</span>
-      <button type="button" data-book-next aria-label="Proxima pagina">&#8594;</button>
-    </div>
   </main>
 
   <script src="https://cdn.jsdelivr.net/npm/page-flip@2.0.7/dist/js/page-flip.browser.min.js"></script>
@@ -591,7 +497,6 @@
 
     const flipShell = document.querySelector("[data-page-flip-shell]");
     let flipTarget = document.querySelector("[data-page-flip]");
-    const pageCount = document.querySelector("[data-book-count]");
 
     function escapeHtml(value) {
       return String(value || "").replace(/[&<>"']/g, (char) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", "\"": "&quot;", "'": "&#039;" }[char]));
@@ -719,26 +624,11 @@
       flipTarget = flipShell.querySelector("[data-page-flip]");
     }
 
-    function updateControls() {
-      if (!state.pageFlip || !state.ready) {
-        pageCount.textContent = "Fechado";
-        return;
-      }
-      const current = state.pageFlip.getCurrentPageIndex();
-      const total = state.pageFlip.getPageCount();
-      const person = current <= 0 ? 0 : Math.ceil(current / 2);
-      const people = currentCards().length;
-      pageCount.textContent = current <= 0 ? "Capa" : `${Math.min(person, people)} / ${people}`;
-      document.querySelectorAll("[data-book-prev]").forEach((button) => { button.disabled = current <= 0; });
-      document.querySelectorAll("[data-book-next]").forEach((button) => { button.disabled = current >= total - 1; });
-    }
-
     function createPageFlip() {
       state.ready = false;
       resetFlipTarget();
       buildPages();
       if (!window.St?.PageFlip) {
-        pageCount.textContent = "Biblioteca nao carregou";
         return;
       }
       state.pageFlip = new St.PageFlip(flipTarget, {
@@ -758,10 +648,7 @@
         startZIndex: 4,
       });
       state.pageFlip.loadFromHTML(flipTarget.querySelectorAll(".book-physical-page"));
-      state.pageFlip.on("flip", updateControls);
-      state.pageFlip.on("changeState", updateControls);
       state.ready = true;
-      updateControls();
     }
 
     function setSection(section) {
@@ -771,24 +658,10 @@
       createPageFlip();
     }
 
-    document.querySelectorAll("[data-book-next]").forEach((button) => {
-      button.addEventListener("click", () => state.pageFlip?.flipNext());
-    });
-
-    document.querySelectorAll("[data-book-prev]").forEach((button) => {
-      button.addEventListener("click", () => state.pageFlip?.flipPrev());
-    });
-
     document.querySelectorAll("[data-book-tab]").forEach((tab) => {
       tab.addEventListener("click", () => setSection(tab.dataset.bookTab));
     });
 
-    document.addEventListener("keydown", (event) => {
-      if (event.key === "ArrowRight") state.pageFlip?.flipNext();
-      if (event.key === "ArrowLeft") state.pageFlip?.flipPrev();
-    });
-
-    window.addEventListener("resize", () => window.setTimeout(updateControls, 80));
     loadBookCards().then(() => setSection(state.section));
   </script>
   <script src="script.js"></script>
