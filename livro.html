@@ -549,7 +549,7 @@
     </section>
 
     <section class="book-stage" aria-live="polite">
-      <div class="page-flip-shell">
+      <div class="page-flip-shell" data-page-flip-shell>
         <div class="page-flip-book" data-page-flip></div>
       </div>
       <button class="book-corner corner-tl" type="button" data-book-prev aria-label="Pagina anterior"></button>
@@ -589,7 +589,8 @@
       ready: false,
     };
 
-    const flipTarget = document.querySelector("[data-page-flip]");
+    const flipShell = document.querySelector("[data-page-flip-shell]");
+    let flipTarget = document.querySelector("[data-page-flip]");
     const pageCount = document.querySelector("[data-book-count]");
 
     function escapeHtml(value) {
@@ -709,6 +710,15 @@
       flipTarget.innerHTML = pages.join("");
     }
 
+    function resetFlipTarget() {
+      if (state.pageFlip) {
+        try { state.pageFlip.destroy(); } catch (error) { console.warn("Nao foi possivel destruir o livro anterior.", error); }
+        state.pageFlip = null;
+      }
+      flipShell.innerHTML = '<div class="page-flip-book" data-page-flip></div>';
+      flipTarget = flipShell.querySelector("[data-page-flip]");
+    }
+
     function updateControls() {
       if (!state.pageFlip || !state.ready) {
         pageCount.textContent = "Fechado";
@@ -725,10 +735,7 @@
 
     function createPageFlip() {
       state.ready = false;
-      if (state.pageFlip) {
-        state.pageFlip.destroy();
-        state.pageFlip = null;
-      }
+      resetFlipTarget();
       buildPages();
       if (!window.St?.PageFlip) {
         pageCount.textContent = "Biblioteca nao carregou";
