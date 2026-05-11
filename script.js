@@ -560,13 +560,15 @@ function homeCollectionCard(collection) {
   `;
 }
 
-function spotlightCard(card, inert = false) {
+const spotlightLoops = new WeakMap();
+
+function spotlightCard(card) {
   const images = Array.isArray(card.images) && card.images.length ? card.images : (card.image ? [card.image] : []);
   const image = images[0] || "";
   const sectionClass = card.section === "influencers" ? "influencer-shot" : "portrait";
   const visual = card.visual || (card.section === "influencers" ? "soft" : "pink");
   return `
-    <a href="${card.href || "#"}" ${inert ? 'aria-hidden="true" tabindex="-1"' : ""}>
+    <a href="${card.href || "#"}">
       <div class="${sectionClass} ${visual} ${image ? "has-upload" : ""}" ${image ? `style="background-image:url('${image}')"` : ""}></div>
       <b>${card.name || "Blossom"}</b>
       <small>${card.role || (card.section === "influencers" ? "Creator" : "Embaixador")}</small>
@@ -582,18 +584,87 @@ function renderSpotlightTracks() {
       .sort((a, b) => Number(a.position || 0) - Number(b.position || 0));
     const fallback = defaultFeaturedCards.filter((card) => card.section === section);
     const visibleCards = cards.length ? cards : fallback;
-    const groupCards = [];
-    const minCards = Math.max(10, visibleCards.length * 2);
-    while (groupCards.length < minCards) {
-      groupCards.push(...visibleCards);
-    }
-    const content = groupCards.map((card) => spotlightCard(card)).join("");
-    const duplicate = groupCards.map((card) => spotlightCard(card, true)).join("");
-    track.innerHTML = `
-      <div class="spotlight-group">${content}</div>
-      <div class="spotlight-group" aria-hidden="true">${duplicate}</div>
-    `;
+    track.innerHTML = visibleCards.map((card) => spotlightCard(card)).join("");
+    startSpotlightLoop(track);
   });
+}
+
+function sizeSpotlightCards(track) {
+  const cards = [...track.querySelectorAll("a")];
+  if (!cards.length) return 0;
+  const gap = Number.parseFloat(getComputedStyle(track).columnGap || "22") || 22;
+  const viewport = track.closest(".spotlight-carousel")?.clientWidth || window.innerWidth;
+  const minWidth = cards.length > 1
+    ? (viewport - Math.max(cards.length - 2, 0) * gap) / Math.max(cards.length - 1, 1)
+    : viewport;
+  track.style.setProperty("--spotlight-card-width", `${Math.ceil(Math.max(190, minWidth))}px`);
+  return gap;
+}
+
+function startSpotlightLoop(track) {
+  const previous = spotlightLoops.get(track);
+  if (previous) cancelAnimationFrame(previous.frame);
+
+  const cards = [...track.querySelectorAll("a")];
+  const reverse = track.classList.contains("reverse");
+  if (cards.length < 2) return;
+
+  let gap = sizeSpotlightCards(track);
+  let offset = 0;
+  let last = performance.now();
+
+  const stepSize = () => {
+    const card = track.querySelector("a");
+    return (card?.getBoundingClientRect().width || 0) + gap;
+  };
+
+  if (reverse) offset = -stepSize();
+  track.style.transform = `translate3d(${offset}px, 0, 0)`;
+
+  const tick = (now) => {
+    const controller = spotlightLoops.get(track);
+    if (!controller) return;
+    const elapsed = Math.min(now - last, 64);
+    last = now;
+
+    if (!track.matches(":has(a:hover)")) {
+      const speed = 42;
+      const distance = (elapsed / 1000) * speed;
+      const step = stepSize();
+
+      if (reverse) {
+        offset += distance;
+        if (offset >= 0) {
+          const lastCard = track.lastElementChild;
+          if (lastCard) track.insertBefore(lastCard, track.firstElementChild);
+          offset -= step;
+        }
+      } else {
+        offset -= distance;
+        if (Math.abs(offset) >= step) {
+          const firstCard = track.firstElementChild;
+          if (firstCard) track.appendChild(firstCard);
+          offset += step;
+        }
+      }
+
+      track.style.transform = `translate3d(${offset}px, 0, 0)`;
+    }
+
+    controller.frame = requestAnimationFrame(tick);
+  };
+
+  const onResize = () => {
+    gap = sizeSpotlightCards(track);
+    offset = reverse ? -stepSize() : 0;
+    track.style.transform = `translate3d(${offset}px, 0, 0)`;
+  };
+
+  window.removeEventListener("resize", track._spotlightResize);
+  track._spotlightResize = onResize;
+  window.addEventListener("resize", onResize);
+
+  spotlightLoops.set(track, { frame: requestAnimationFrame(tick) });
 }
 
 function lookbookCard(product, index) {

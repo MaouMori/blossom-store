@@ -5989,30 +5989,19 @@ select option:checked {
 .spotlight-track {
   width: max-content;
   display: flex;
-  gap: 0;
-  animation: spotlight-marquee 34s linear infinite;
+  gap: 22px;
   transform: translate3d(0, 0, 0);
   will-change: transform;
 }
 
 .spotlight-track.reverse {
-  animation-name: spotlight-marquee-reverse;
-  animation-duration: 38s;
-}
-
-.spotlight-track:has(.spotlight-group > a:hover) {
-  animation-play-state: paused;
-}
-
-.spotlight-group {
-  display: flex;
-  gap: 22px;
-  padding-right: 22px;
+  justify-content: flex-start;
 }
 
 .spotlight-carousel a {
   position: relative;
-  width: clamp(190px, 15.7vw, 260px);
+  width: var(--spotlight-card-width, clamp(190px, 15.7vw, 260px));
+  flex: 0 0 var(--spotlight-card-width, clamp(190px, 15.7vw, 260px));
   min-height: clamp(300px, 25vw, 390px);
   padding: 0;
   overflow: hidden;
@@ -6164,16 +6153,6 @@ select option:checked {
   font-size: 10px;
   font-weight: 900;
   letter-spacing: 0.2em;
-}
-
-@keyframes spotlight-marquee {
-  from { transform: translateX(0); }
-  to { transform: translateX(-50%); }
-}
-
-@keyframes spotlight-marquee-reverse {
-  from { transform: translateX(-50%); }
-  to { transform: translateX(0); }
 }
 
 .home-reveal {
