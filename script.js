@@ -560,13 +560,13 @@ function homeCollectionCard(collection) {
   `;
 }
 
-function spotlightCard(card) {
+function spotlightCard(card, inert = false) {
   const images = Array.isArray(card.images) && card.images.length ? card.images : (card.image ? [card.image] : []);
   const image = images[0] || "";
   const sectionClass = card.section === "influencers" ? "influencer-shot" : "portrait";
   const visual = card.visual || (card.section === "influencers" ? "soft" : "pink");
   return `
-    <a href="${card.href || "#"}">
+    <a href="${card.href || "#"}" ${inert ? 'aria-hidden="true" tabindex="-1"' : ""}>
       <div class="${sectionClass} ${visual} ${image ? "has-upload" : ""}" ${image ? `style="background-image:url('${image}')"` : ""}></div>
       <b>${card.name || "Blossom"}</b>
       <small>${card.role || (card.section === "influencers" ? "Creator" : "Embaixador")}</small>
@@ -582,10 +582,16 @@ function renderSpotlightTracks() {
       .sort((a, b) => Number(a.position || 0) - Number(b.position || 0));
     const fallback = defaultFeaturedCards.filter((card) => card.section === section);
     const visibleCards = cards.length ? cards : fallback;
-    const content = visibleCards.map((card) => spotlightCard(card)).join("");
+    const groupCards = [];
+    const minCards = Math.max(10, visibleCards.length * 2);
+    while (groupCards.length < minCards) {
+      groupCards.push(...visibleCards);
+    }
+    const content = groupCards.map((card) => spotlightCard(card)).join("");
+    const duplicate = groupCards.map((card) => spotlightCard(card, true)).join("");
     track.innerHTML = `
       <div class="spotlight-group">${content}</div>
-      <div class="spotlight-group" aria-hidden="true">${content}</div>
+      <div class="spotlight-group" aria-hidden="true">${duplicate}</div>
     `;
   });
 }
