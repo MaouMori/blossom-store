@@ -6529,7 +6529,7 @@ select option:checked {
 }
 
 .home-editorial.editorial-light .editorial-section-title {
-  color: #251017;
+  color: #251017 !important;
 }
 
 .home-editorial.editorial-light .section-flower {
@@ -6537,7 +6537,11 @@ select option:checked {
 }
 
 .home-editorial.editorial-light .editorial-section-title i {
-  background: #251017;
+  background: #251017 !important;
+}
+
+.home-editorial.editorial-light .see-all {
+  color: var(--ed-pink);
 }
 
 .home-editorial.editorial-light .editorial-hero {
