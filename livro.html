@@ -7,40 +7,240 @@
   <title>Blossom Store - Livro</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700;800;900&family=Oswald:wght@500;600;700&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700;800;900&family=Playfair+Display:wght@500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles.css">
   <style>
+    html,
+    body.book-page-body {
+      background: #050305 !important;
+    }
+
     .book-page-body {
+      margin: 0;
       min-height: 100vh;
+      min-height: 100dvh;
       background:
-        radial-gradient(circle at 75% 8%, rgba(255, 114, 167, 0.18), transparent 32rem),
-        radial-gradient(circle at 18% 48%, rgba(122, 21, 54, 0.18), transparent 34rem),
-        #050305;
+        radial-gradient(circle at 50% 42%, rgba(255, 105, 164, 0.16), transparent 26rem),
+        radial-gradient(circle at 12% 58%, rgba(255, 105, 164, 0.11), transparent 20rem),
+        radial-gradient(circle at 86% 62%, rgba(255, 105, 164, 0.13), transparent 18rem),
+        linear-gradient(180deg, #060305, #10060b 48%, #040203);
       color: #fff;
       font-family: "Archivo", sans-serif;
       overflow-x: hidden;
     }
 
-    .book-main {
-      width: min(1620px, calc(100% - 34px));
-      margin: 0 auto;
-      padding: 128px 0 72px;
+    .book-page-body::before,
+    .book-page-body::after {
+      content: "";
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      pointer-events: none;
     }
 
-    .book-intro {
+    .book-page-body::before {
+      background:
+        radial-gradient(ellipse at center, transparent 0 32%, rgba(0, 0, 0, 0.48) 76%, rgba(0, 0, 0, 0.82) 100%),
+        repeating-radial-gradient(circle at 50% 48%, rgba(255, 137, 183, 0.055) 0 1px, transparent 1px 58px);
+      opacity: 0.9;
+    }
+
+    .book-page-body::after {
+      background:
+        radial-gradient(ellipse at 11% 53%, rgba(255, 132, 182, 0.2) 0 4px, transparent 5px),
+        radial-gradient(ellipse at 88% 55%, rgba(255, 132, 182, 0.18) 0 5px, transparent 6px),
+        radial-gradient(ellipse at 83% 83%, rgba(255, 132, 182, 0.22) 0 6px, transparent 7px),
+        radial-gradient(ellipse at 4% 79%, rgba(255, 132, 182, 0.17) 0 5px, transparent 6px);
+      filter: blur(0.2px);
+      opacity: 0.8;
+    }
+
+    .editorial-header {
+      z-index: 20;
+      background: linear-gradient(180deg, rgba(5, 3, 5, 0.84), transparent);
+      border-bottom: 0;
+    }
+
+    .book-main {
+      position: relative;
+      z-index: 1;
+      width: min(1460px, calc(100% - 32px));
+      min-height: 100vh;
+      margin: 0 auto;
+      padding: 92px 0 26px;
       display: grid;
-      grid-template-columns: minmax(260px, 0.75fr) minmax(320px, 1.25fr);
-      gap: 34px;
-      align-items: end;
-      margin-bottom: 34px;
+      align-items: center;
+    }
+
+    .book-tabs {
+      position: absolute;
+      top: 92px;
+      right: 14px;
+      z-index: 8;
+      display: flex;
+      gap: 8px;
+    }
+
+    .book-tab {
+      padding: 9px 14px;
+      border: 1px solid rgba(255, 129, 177, 0.34);
+      border-radius: 999px;
+      background: rgba(11, 5, 8, 0.68);
+      color: rgba(255, 255, 255, 0.72);
+      cursor: pointer;
+      font: 900 10px/1 "Archivo", sans-serif;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      backdrop-filter: blur(12px);
+      transition: background 180ms ease, color 180ms ease, transform 180ms ease;
+    }
+
+    .book-tab:hover,
+    .book-tab.is-active {
+      transform: translateY(-1px);
+      background: #ff83b5;
+      color: #17070d;
+    }
+
+    .book-stage {
+      position: relative;
+      width: 100%;
+      min-height: min(70vw, 760px);
+      display: grid;
+      place-items: center;
+      overflow: visible;
+    }
+
+    .book-stage::before {
+      content: "";
+      position: absolute;
+      width: min(1260px, 92vw);
+      height: min(720px, 56vw);
+      border-radius: 48%;
+      background: radial-gradient(ellipse at center, rgba(255, 93, 157, 0.19), transparent 64%);
+      filter: blur(28px);
+      transform: translateY(34px);
+      pointer-events: none;
+    }
+
+    .book-stage::after {
+      content: "";
+      position: absolute;
+      left: 12%;
+      right: 12%;
+      bottom: 4%;
+      height: 54px;
+      border-radius: 50%;
+      background: rgba(0, 0, 0, 0.78);
+      filter: blur(22px);
+      pointer-events: none;
+    }
+
+    .page-flip-shell {
+      position: relative;
+      z-index: 2;
+      width: min(1160px, 84vw);
+      height: min(670px, 48vw);
+      min-height: 590px;
+      display: grid;
+      place-items: center;
+    }
+
+    .page-flip-shell::before,
+    .page-flip-shell::after {
+      content: "";
+      position: absolute;
+      top: 16px;
+      bottom: 16px;
+      width: 42px;
+      border: 1px solid rgba(255, 204, 222, 0.22);
+      background:
+        repeating-linear-gradient(90deg, rgba(255, 220, 190, 0.12) 0 2px, rgba(0, 0, 0, 0.18) 2px 5px),
+        linear-gradient(180deg, rgba(255, 210, 174, 0.44), rgba(40, 18, 18, 0.55));
+      box-shadow: inset 0 0 12px rgba(255, 218, 179, 0.18);
+      pointer-events: none;
+    }
+
+    .page-flip-shell::before {
+      left: -12px;
+      border-radius: 18px 0 0 18px;
+    }
+
+    .page-flip-shell::after {
+      right: -12px;
+      border-radius: 0 18px 18px 0;
+    }
+
+    .page-flip-book {
+      width: 100%;
+      height: 100%;
+      filter: drop-shadow(0 34px 74px rgba(0, 0, 0, 0.62));
+    }
+
+    .book-physical-page {
+      position: relative;
+      overflow: hidden;
+      color: #fff;
+      background:
+        linear-gradient(180deg, rgba(255, 255, 255, 0.038), transparent 12%, transparent 87%, rgba(0, 0, 0, 0.22)),
+        radial-gradient(circle at 50% 10%, rgba(255, 109, 166, 0.12), transparent 23rem),
+        linear-gradient(90deg, #171015, #24141c 48%, #120b0f);
+      border: 1px solid rgba(255, 154, 192, 0.22);
+      box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.025);
+    }
+
+    .book-physical-page::before {
+      content: "";
+      position: absolute;
+      inset: 18px;
+      z-index: 2;
+      pointer-events: none;
+      border: 1px solid rgba(255, 160, 197, 0.18);
+      border-radius: 12px;
+    }
+
+    .book-physical-page::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      z-index: 1;
+      pointer-events: none;
+      background:
+        radial-gradient(circle at 90% 12%, rgba(255, 128, 181, 0.12), transparent 12rem),
+        radial-gradient(circle at 8% 86%, rgba(255, 128, 181, 0.09), transparent 14rem);
+      mix-blend-mode: screen;
+    }
+
+    .book-physical-page.--left {
+      border-radius: 22px 0 0 22px;
+      box-shadow: inset -44px 0 62px rgba(0, 0, 0, 0.42);
+    }
+
+    .book-physical-page.--right {
+      border-radius: 0 22px 22px 0;
+      box-shadow: inset 44px 0 62px rgba(0, 0, 0, 0.42);
+    }
+
+    .book-left-page,
+    .book-right-page {
+      position: relative;
+      z-index: 3;
+      min-height: 100%;
+      padding: clamp(28px, 3.3vw, 48px);
+    }
+
+    .book-left-page {
+      display: grid;
+      grid-template-rows: auto 1fr auto;
+      gap: clamp(14px, 1.6vw, 22px);
     }
 
     .book-kicker {
       display: inline-flex;
       align-items: center;
       gap: 10px;
-      color: #ff74aa;
-      font-size: 12px;
+      color: #ff85b8;
+      font-size: 11px;
       font-weight: 900;
       letter-spacing: 0.18em;
       text-transform: uppercase;
@@ -49,240 +249,90 @@
     .book-kicker::before,
     .book-title-mark {
       content: "";
-      width: 14px;
-      height: 14px;
+      width: 12px;
+      height: 12px;
       background: currentColor;
       clip-path: polygon(50% 0, 61% 34%, 98% 35%, 68% 56%, 79% 91%, 50% 70%, 21% 91%, 32% 56%, 2% 35%, 39% 34%);
-      filter: drop-shadow(0 0 12px rgba(255, 116, 170, 0.55));
+      filter: drop-shadow(0 0 10px rgba(255, 116, 170, 0.55));
     }
 
-    .book-intro h1 {
-      margin: 16px 0 14px;
-      font-family: "Oswald", sans-serif;
-      font-size: clamp(54px, 8vw, 126px);
-      line-height: 0.88;
-      letter-spacing: 0.01em;
-      text-transform: uppercase;
-    }
-
-    .book-intro p {
-      max-width: 560px;
-      margin: 0;
-      color: rgba(255, 255, 255, 0.66);
-      line-height: 1.75;
-      font-size: 15px;
-    }
-
-    .book-tabs {
-      display: flex;
-      justify-content: flex-end;
-      gap: 12px;
-      flex-wrap: wrap;
-    }
-
-    .book-tab {
-      min-width: 188px;
-      padding: 14px 22px;
-      border: 1px solid rgba(255, 116, 170, 0.32);
-      border-radius: 999px;
-      background: rgba(255, 255, 255, 0.035);
-      color: rgba(255, 255, 255, 0.74);
-      cursor: pointer;
-      font: 900 12px/1 "Archivo", sans-serif;
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
-      transition: transform 180ms ease, background 180ms ease, color 180ms ease, box-shadow 180ms ease;
-    }
-
-    .book-tab:hover,
-    .book-tab.is-active {
-      transform: translateY(-2px);
-      background: #ff86b6;
-      color: #1a0810;
-      box-shadow: 0 14px 42px rgba(255, 116, 170, 0.22);
-    }
-
-    .book-stage {
-      position: relative;
-      min-height: clamp(720px, 56vw, 900px);
-      padding: clamp(16px, 2.4vw, 42px);
-      border: 1px solid rgba(255, 116, 170, 0.18);
-      border-radius: 34px;
-      background:
-        radial-gradient(circle at 50% 102%, rgba(255, 116, 170, 0.16), transparent 28rem),
-        linear-gradient(135deg, rgba(255, 255, 255, 0.06), rgba(255, 255, 255, 0.012));
-      box-shadow: 0 52px 160px rgba(0, 0, 0, 0.58);
-      overflow: visible;
-    }
-
-    .book-stage::after {
-      content: "";
-      position: absolute;
-      left: 9%;
-      right: 9%;
-      bottom: 16px;
-      height: 44px;
-      border-radius: 999px;
-      background: rgba(0, 0, 0, 0.6);
-      filter: blur(24px);
-      pointer-events: none;
-    }
-
-    .page-flip-shell {
-      position: relative;
-      z-index: 1;
-      width: 100%;
-      height: clamp(680px, 52vw, 860px);
-      display: grid;
-      place-items: center;
-    }
-
-    .page-flip-book {
-      width: min(100%, 1440px);
-      height: 100%;
-      filter: drop-shadow(0 32px 64px rgba(0, 0, 0, 0.46));
-    }
-
-    .book-physical-page {
-      position: relative;
-      overflow: hidden;
-      background:
-        linear-gradient(180deg, rgba(255, 255, 255, 0.045), transparent 13%, transparent 86%, rgba(0, 0, 0, 0.18)),
-        radial-gradient(circle at 50% 12%, rgba(255, 116, 170, 0.12), transparent 23rem),
-        linear-gradient(90deg, #10090d, #191014 48%, #0c0608);
-      border: 1px solid rgba(255, 178, 205, 0.2);
-      color: #fff;
-    }
-
-    .book-physical-page::before {
-      content: "";
-      position: absolute;
-      inset: 22px;
-      border: 1px solid rgba(255, 178, 205, 0.18);
-      border-radius: 14px;
-      pointer-events: none;
-      z-index: 2;
-    }
-
-    .book-physical-page.--left {
-      box-shadow: inset -46px 0 58px rgba(0, 0, 0, 0.36);
-    }
-
-    .book-physical-page.--right {
-      box-shadow: inset 46px 0 58px rgba(0, 0, 0, 0.36);
-    }
-
-    .book-cover-page {
-      display: grid;
-      place-items: center;
-      cursor: pointer;
-      background:
-        repeating-linear-gradient(90deg, rgba(255, 255, 255, 0.028) 0 1px, transparent 1px 10px),
-        linear-gradient(135deg, rgba(255, 116, 170, 0.18), transparent 42%),
-        linear-gradient(90deg, rgba(255, 116, 170, 0.2), transparent 12%),
-        linear-gradient(180deg, #1a0910, #070305 58%, #13060b);
-      box-shadow:
-        inset 32px 0 44px rgba(0, 0, 0, 0.58),
-        inset -12px 0 26px rgba(255, 116, 170, 0.08);
-    }
-
-    .book-cover-page::after {
-      content: "";
-      position: absolute;
-      inset: 42px;
-      border: 1px dashed rgba(255, 178, 205, 0.16);
-      border-radius: 18px;
-      pointer-events: none;
-    }
-
-    .cover-inner {
-      position: relative;
-      z-index: 2;
-      text-align: center;
-      padding: 36px;
-    }
-
-    .cover-inner::before,
-    .cover-inner::after {
-      content: "";
-      position: absolute;
-      left: 50%;
-      width: min(560px, 76vw);
-      height: 1px;
-      transform: translateX(-50%);
-      background: linear-gradient(90deg, transparent, rgba(255, 134, 182, 0.72), transparent);
-    }
-
-    .cover-inner::before { top: 12px; }
-    .cover-inner::after { bottom: 12px; }
-
-    .cover-flower {
-      width: 104px;
-      height: 104px;
-      margin: 0 auto 26px;
-      display: grid;
-      place-items: center;
-      border-radius: 50%;
-      background: rgba(255, 116, 170, 0.1);
-      color: #ff86b6;
-      font-size: 56px;
-      box-shadow: 0 0 70px rgba(255, 116, 170, 0.2);
-    }
-
-    .cover-title {
-      font-family: "Playfair Display", serif;
-      font-size: clamp(54px, 7vw, 108px);
-      line-height: 0.92;
+    .left-title {
+      margin: 12px 0 8px;
       color: #fff2f7;
-      text-transform: uppercase;
-      letter-spacing: 0.04em;
-      text-shadow: 0 0 28px rgba(255, 116, 170, 0.26);
-    }
-
-    .cover-subtitle {
-      margin-top: 25px;
-      color: #ff86b6;
-      font-weight: 900;
-      letter-spacing: 0.2em;
-      text-transform: uppercase;
-      font-size: 13px;
-    }
-
-    .cover-hint {
-      margin-top: 38px;
-      color: rgba(255, 255, 255, 0.55);
-      font-size: 11px;
-      font-weight: 800;
-      letter-spacing: 0.16em;
+      font-family: "Playfair Display", serif;
+      font-size: clamp(38px, 3.8vw, 58px);
+      font-weight: 600;
+      line-height: 0.92;
+      letter-spacing: -0.02em;
       text-transform: uppercase;
     }
 
-    .book-photo-page,
-    .book-profile-page,
-    .book-empty-page {
-      min-height: 100%;
-      padding: clamp(34px, 4vw, 68px);
+    .left-title span,
+    .profile-name span {
+      color: #ff87b9;
     }
 
-    .book-photo-page {
-      display: grid;
-      place-items: center;
+    .title-rule {
+      width: min(430px, 80%);
+      height: 1px;
+      margin: 14px 0;
+      background: linear-gradient(90deg, #ff87b9, rgba(255, 205, 160, 0.68), transparent);
+    }
+
+    .book-left-page p {
+      max-width: 470px;
+      margin: 0;
+      color: rgba(255, 255, 255, 0.72);
+      line-height: 1.55;
+      font-size: 14px;
+    }
+
+    .profile-photo-frame {
+      position: relative;
+      align-self: end;
+      width: min(100%, 500px);
+      margin: 0 auto;
+      aspect-ratio: 1.14;
+      border-radius: 18px;
+      padding: 10px;
+      border: 1px solid rgba(255, 207, 158, 0.55);
+      background:
+        linear-gradient(135deg, rgba(255, 198, 120, 0.32), transparent 18%, transparent 82%, rgba(255, 128, 181, 0.24)),
+        rgba(0, 0, 0, 0.24);
+      box-shadow: 0 0 0 1px rgba(255, 128, 181, 0.14), 0 18px 50px rgba(0, 0, 0, 0.34);
+    }
+
+    .profile-photo-frame::before,
+    .profile-photo-frame::after {
+      content: "✿";
+      position: absolute;
+      z-index: 4;
+      color: #ff8dbc;
+      font-size: 34px;
+      text-shadow: 0 0 18px rgba(255, 132, 182, 0.55);
+    }
+
+    .profile-photo-frame::before {
+      right: -18px;
+      top: -18px;
+    }
+
+    .profile-photo-frame::after {
+      left: -10px;
+      bottom: -20px;
     }
 
     .profile-photo {
       position: relative;
-      z-index: 1;
-      width: min(100%, 570px);
-      height: min(100%, 680px);
-      min-height: 560px;
-      border-radius: 18px;
+      width: 100%;
+      height: 100%;
       overflow: hidden;
-      border: 1px solid rgba(255, 178, 205, 0.25);
+      border-radius: 13px;
       background:
-        radial-gradient(circle at 50% 18%, rgba(255, 134, 182, 0.75) 0 7%, transparent 7.5%),
-        radial-gradient(circle at 50% 34%, rgba(255, 116, 170, 0.52) 0 13%, transparent 13.5%),
-        linear-gradient(180deg, rgba(255, 116, 170, 0.24), rgba(255, 116, 170, 0.02) 72%),
-        #080405;
+        radial-gradient(circle at 50% 28%, rgba(255, 130, 183, 0.55), transparent 18%),
+        radial-gradient(circle at 50% 62%, rgba(255, 130, 183, 0.3), transparent 28%),
+        linear-gradient(180deg, rgba(255, 116, 170, 0.18), rgba(0, 0, 0, 0.1)),
+        #0a0507;
     }
 
     .profile-photo img {
@@ -294,131 +344,253 @@
 
     .profile-empty {
       position: absolute;
-      inset: auto 24px 28px;
+      inset: auto 22px 22px;
       color: rgba(255, 255, 255, 0.62);
-      font-size: 12px;
+      font-size: 10px;
       font-weight: 900;
-      letter-spacing: 0.15em;
+      letter-spacing: 0.18em;
+      text-align: center;
       text-transform: uppercase;
     }
 
-    .profile-panel {
-      position: relative;
-      z-index: 1;
+    .image-label {
+      text-align: center;
+      color: rgba(255, 255, 255, 0.56);
+      font-size: 10px;
+      font-weight: 900;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+    }
+
+    .book-right-page {
       display: grid;
-      gap: 26px;
-      min-height: 100%;
       align-content: center;
+      gap: 12px;
     }
 
     .profile-role {
       display: inline-flex;
       align-items: center;
-      gap: 12px;
-      color: #ff86b6;
+      gap: 11px;
+      color: #ff89b9;
       font-weight: 900;
-      font-size: 12px;
+      font-size: 11px;
       letter-spacing: 0.2em;
       text-transform: uppercase;
     }
 
     .profile-name {
+      position: relative;
       margin: 0;
+      color: #e9dde0;
       font-family: "Playfair Display", serif;
-      font-size: clamp(50px, 5.4vw, 92px);
+      font-size: clamp(46px, 4.35vw, 72px);
+      font-weight: 500;
       line-height: 0.92;
-      color: #fff2f7;
       text-transform: uppercase;
+    }
+
+    .profile-name::after {
+      content: attr(data-script);
+      position: absolute;
+      left: 22%;
+      top: 8%;
+      color: rgba(255, 255, 255, 0.07);
+      font-family: "Playfair Display", serif;
+      font-size: 1.18em;
+      font-style: italic;
+      text-transform: none;
+      pointer-events: none;
     }
 
     .profile-quote {
       margin: 0;
-      max-width: 570px;
-      color: rgba(255, 255, 255, 0.72);
-      font: 600 clamp(18px, 2.15vw, 28px)/1.45 "Playfair Display", serif;
+      max-width: 610px;
+      color: rgba(255, 255, 255, 0.85);
+      font: 500 clamp(17px, 1.42vw, 21px)/1.3 "Playfair Display", serif;
     }
 
     .profile-grid {
       display: grid;
       grid-template-columns: repeat(2, minmax(0, 1fr));
       gap: 14px;
-      margin-top: 6px;
+    }
+
+    .profile-info,
+    .social-panel,
+    .about-panel {
+      border: 1px solid rgba(255, 139, 185, 0.22);
+      border-radius: 12px;
+      background: linear-gradient(135deg, rgba(255, 255, 255, 0.045), rgba(255, 255, 255, 0.018));
+      box-shadow: inset 0 0 22px rgba(255, 105, 164, 0.035);
     }
 
     .profile-info {
-      min-height: 94px;
-      padding: 16px;
-      border: 1px solid rgba(255, 178, 205, 0.16);
-      border-radius: 12px;
-      background: rgba(255, 255, 255, 0.035);
+      min-height: 62px;
+      padding: 11px 16px;
     }
 
-    .profile-info span {
+    .profile-info span,
+    .social-panel span,
+    .about-panel span {
       display: block;
-      color: #ff86b6;
+      color: #ff93c1;
       font-size: 10px;
       font-weight: 900;
-      letter-spacing: 0.14em;
+      letter-spacing: 0.18em;
       text-transform: uppercase;
     }
 
     .profile-info b {
       display: block;
-      margin-top: 8px;
+      margin-top: 7px;
       color: #fff;
       font-size: 15px;
     }
 
-    .book-gallery {
-      display: grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-      gap: 10px;
+    .social-panel {
+      padding: 0 22px 11px;
+      text-align: center;
     }
 
-    .book-gallery div {
-      aspect-ratio: 1;
-      border: 1px solid rgba(255, 178, 205, 0.18);
-      border-radius: 10px;
-      background:
-        radial-gradient(circle at 50% 28%, rgba(255, 134, 182, 0.58), transparent 18%),
-        linear-gradient(180deg, rgba(255, 116, 170, 0.15), transparent),
-        #080405;
-      background-size: cover;
-      background-position: center;
-      overflow: hidden;
+    .social-panel span {
+      display: inline-block;
+      padding: 0 12px;
+      transform: translateY(-50%);
+      background: #1f1017;
     }
 
-    .book-empty-page {
+    .social-links {
+      display: flex;
+      justify-content: center;
+      gap: clamp(20px, 4vw, 58px);
+    }
+
+    .social-links a {
+      width: 44px;
+      height: 44px;
       display: grid;
       place-items: center;
-      text-align: center;
-      color: rgba(255, 255, 255, 0.58);
+      border: 1px solid rgba(255, 139, 185, 0.38);
+      border-radius: 50%;
+      color: #ff93c1;
+      font-size: 20px;
       font-weight: 900;
-      letter-spacing: 0.14em;
-      text-transform: uppercase;
+      text-decoration: none;
+      transition: transform 180ms ease, background 180ms ease, color 180ms ease;
     }
 
-    @media (max-width: 920px) {
-      .book-main { padding-top: 110px; }
-      .book-intro { grid-template-columns: 1fr; }
-      .book-tabs { justify-content: flex-start; }
-      .book-stage { min-height: 720px; padding: 12px; }
-      .page-flip-shell { height: 690px; }
-      .book-photo-page,
-      .book-profile-page,
-      .book-empty-page { padding: 28px; }
-      .profile-photo { min-height: 430px; }
-      .profile-grid { grid-template-columns: 1fr; }
+    .social-links a:hover {
+      transform: translateY(-3px);
+      background: #ff8fbe;
+      color: #16070d;
     }
 
-    @media (max-width: 560px) {
-      .book-main { width: min(100% - 20px, 1620px); }
-      .book-tab { min-width: 100%; }
-      .book-stage { min-height: 620px; }
-      .page-flip-shell { height: 590px; }
-      .book-gallery { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-      .cover-title { font-size: 48px; }
+    .about-panel {
+      padding: 12px 18px 14px;
+    }
+
+    .about-panel p {
+      margin: 8px 0 0;
+      max-width: 590px;
+      color: rgba(255, 255, 255, 0.72);
+      font-size: 12px;
+      line-height: 1.45;
+    }
+
+    .book-arrow {
+      position: absolute;
+      z-index: 6;
+      top: 53%;
+      width: 54px;
+      height: 54px;
+      display: grid;
+      place-items: center;
+      border: 1px solid rgba(255, 213, 227, 0.22);
+      border-radius: 50%;
+      background: rgba(10, 5, 7, 0.58);
+      color: #fff;
+      cursor: pointer;
+      font-size: 34px;
+      line-height: 1;
+      backdrop-filter: blur(10px);
+      box-shadow: 0 10px 28px rgba(0, 0, 0, 0.34);
+      transition: transform 180ms ease, background 180ms ease, color 180ms ease;
+    }
+
+    .book-arrow:hover:not(:disabled) {
+      transform: translateY(-50%) scale(1.05);
+      background: #ff8fbe;
+      color: #14070c;
+    }
+
+    .book-arrow:disabled {
+      opacity: 0.28;
+      cursor: default;
+    }
+
+    .book-arrow.prev {
+      left: calc(50% - min(590px, 42vw) - 30px);
+      transform: translateY(-50%);
+    }
+
+    .book-arrow.next {
+      right: calc(50% - min(590px, 42vw) - 30px);
+      transform: translateY(-50%);
+    }
+
+    .book-dots {
+      position: absolute;
+      z-index: 7;
+      left: 50%;
+      bottom: max(10px, 2vh);
+      transform: translateX(-50%);
+      display: flex;
+      gap: 12px;
+      padding: 12px 20px;
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: 999px;
+      background: rgba(0, 0, 0, 0.58);
+      backdrop-filter: blur(12px);
+    }
+
+    .book-dots button {
+      width: 10px;
+      height: 10px;
+      padding: 0;
+      border: 1px solid rgba(255, 255, 255, 0.42);
+      border-radius: 50%;
+      background: transparent;
+      cursor: pointer;
+    }
+
+    .book-dots button.is-active {
+      border-color: #ff8fbe;
+      background: #ff8fbe;
+      box-shadow: 0 0 12px rgba(255, 143, 190, 0.68);
+    }
+
+    @media (max-width: 980px) {
+      .book-main { padding-top: 96px; }
+      .book-tabs { position: relative; inset: auto; justify-content: center; margin-bottom: 14px; }
+      .book-stage { min-height: 760px; }
+      .page-flip-shell { width: min(100%, 760px); height: 690px; min-height: 690px; }
+      .book-left-page,
+      .book-right-page { padding: 28px; }
+      .profile-photo-frame { width: min(100%, 430px); }
+      .book-arrow.prev { left: 12px; }
+      .book-arrow.next { right: 12px; }
+    }
+
+    @media (max-width: 600px) {
+      .page-flip-shell { height: 600px; min-height: 600px; }
+      .left-title { font-size: 38px; }
       .profile-name { font-size: 42px; }
+      .profile-grid { grid-template-columns: 1fr; }
+      .social-links { gap: 18px; }
+      .social-links a { width: 48px; height: 48px; font-size: 22px; }
+      .book-arrow { width: 42px; height: 42px; font-size: 28px; }
+      .book-dots { gap: 8px; padding: 10px 14px; }
     }
   </style>
 </head>
@@ -452,22 +624,18 @@
   </header>
 
   <main class="book-main">
-    <section class="book-intro">
-      <div>
-        <span class="book-kicker">Arquivo Blossom</span>
-        <h1>Livro da<br>comunidade</h1>
-        <p>Abra o livro para conhecer os embaixadores e influenciadores da Blossom. Cada pagina pode ser criada, editada e removida pelo painel admin.</p>
-      </div>
-      <div class="book-tabs" role="tablist" aria-label="Escolha o livro">
-        <button class="book-tab is-active" type="button" data-book-tab="ambassadors">Embaixadores</button>
-        <button class="book-tab" type="button" data-book-tab="influencers">Influenciadores</button>
-      </div>
-    </section>
+    <div class="book-tabs" role="tablist" aria-label="Escolha o livro">
+      <button class="book-tab is-active" type="button" data-book-tab="ambassadors">Embaixadores</button>
+      <button class="book-tab" type="button" data-book-tab="influencers">Influenciadores</button>
+    </div>
 
     <section class="book-stage" aria-live="polite">
       <div class="page-flip-shell" data-page-flip-shell>
         <div class="page-flip-book" data-page-flip></div>
       </div>
+      <button class="book-arrow prev" type="button" data-book-prev aria-label="Pagina anterior">&#8249;</button>
+      <button class="book-arrow next" type="button" data-book-next aria-label="Proxima pagina">&#8250;</button>
+      <div class="book-dots" data-book-dots aria-label="Paginas do livro"></div>
     </section>
   </main>
 
@@ -496,6 +664,7 @@
     };
 
     const flipShell = document.querySelector("[data-page-flip-shell]");
+    const dotsTarget = document.querySelector("[data-book-dots]");
     let flipTarget = document.querySelector("[data-page-flip]");
 
     function escapeHtml(value) {
@@ -518,6 +687,10 @@
         quote: card.quote || (section === "influencers" ? "Criando conteudo com estilo Blossom." : "Represento a Blossom com orgulho."),
         since: card.since || "2024",
         influence: card.influence || (section === "influencers" ? "Digital" : "Roleplay"),
+        about: card.about || card.bio || "Apaixonada por moda e autenticidade, essa pessoa representa a essencia Blossom dentro da comunidade.",
+        instagram: card.instagram || "#",
+        tiktok: card.tiktok || "#",
+        pinterest: card.pinterest || "#",
         images,
         image: images[0] || "",
         position: Number(card.position ?? position),
@@ -550,69 +723,71 @@
         .sort((a, b) => Number(a.position || 0) - Number(b.position || 0));
     }
 
-    function coverPageMarkup() {
-      const subtitle = state.section === "influencers" ? "Conheca nossos influenciadores" : "Conheca nossos embaixadores";
-      return `
-        <section class="book-physical-page book-cover-page" data-cover-page>
-          <div class="cover-inner">
-            <div class="cover-flower">&#10047;</div>
-            <div class="cover-title">Blossom<br>Store</div>
-            <div class="cover-subtitle">${subtitle}</div>
-            <div class="cover-hint">Use a ponta direita para abrir</div>
-          </div>
-        </section>
-      `;
+    function introText() {
+      return state.section === "influencers"
+        ? "Conheca os influenciadores que espalham a essencia Blossom, criando conexao, estilo e presenca em cada conteudo."
+        : "Conheca os embaixadores e influenciadores que fazem parte da historia da Blossom. Cada pagina guarda essencia, conexao e inspiracao.";
     }
 
-    function photoPageMarkup(card) {
+    function leftPageMarkup(card, index) {
       const image = card.image ? `<img src="${card.image}" alt="${escapeHtml(card.name)}">` : '<div class="profile-empty">Imagem preparada</div>';
       return `
         <section class="book-physical-page --left">
-          <div class="book-photo-page">
-            <div class="profile-photo">${image}</div>
+          <div class="book-left-page">
+            <div>
+              <span class="book-kicker">Arquivo Blossom</span>
+              <h1 class="left-title">Livro da<br><span>Comunidade</span></h1>
+              <div class="title-rule"></div>
+              <p>${introText()}</p>
+            </div>
+            <div class="profile-photo-frame">
+              <div class="profile-photo">${image}</div>
+            </div>
+            <div class="image-label">Imagem preparada</div>
           </div>
         </section>
       `;
     }
 
-    function profilePageMarkup(card) {
-      const images = itemImages(card);
-      const gallery = (images.length ? images : ["", "", ""]).slice(0, 6).map((image) => (
-        `<div ${image ? `style="background-image:url('${image}')"` : ""}></div>`
-      )).join("");
+    function rightPageMarkup(card) {
+      const nameParts = String(card.name || "Blossom").replace("@", "").split(/\s+/);
+      const first = escapeHtml(nameParts[0] || card.name);
+      const rest = escapeHtml(nameParts.slice(1).join(" ") || "");
+      const displayName = rest ? `${first}<br><span>${rest}</span>` : first;
       return `
         <section class="book-physical-page --right">
-          <div class="book-profile-page">
-            <div class="profile-panel">
-              <span class="profile-role"><i class="book-title-mark"></i><span>${escapeHtml(card.role)}</span></span>
-              <h2 class="profile-name">${escapeHtml(card.name)}</h2>
-              <p class="profile-quote">"${escapeHtml(card.quote)}"</p>
-              <div class="profile-grid">
-                <div class="profile-info"><span>Nome</span><b>${escapeHtml(card.name)}</b></div>
-                <div class="profile-info"><span>Cargo</span><b>${escapeHtml(card.role)}</b></div>
-                <div class="profile-info"><span>Desde</span><b>${escapeHtml(card.since)}</b></div>
-                <div class="profile-info"><span>Influencia</span><b>${escapeHtml(card.influence)}</b></div>
+          <div class="book-right-page">
+            <span class="profile-role"><i class="book-title-mark"></i><span>${escapeHtml(card.role)}</span></span>
+            <h2 class="profile-name" data-script="${escapeHtml(card.name)}">${displayName}</h2>
+            <p class="profile-quote">"${escapeHtml(card.quote)}"</p>
+            <div class="profile-grid">
+              <div class="profile-info"><span>Nome</span><b>${escapeHtml(card.name)}</b></div>
+              <div class="profile-info"><span>Cargo</span><b>${escapeHtml(card.role)}</b></div>
+              <div class="profile-info"><span>Desde</span><b>${escapeHtml(card.since)}</b></div>
+              <div class="profile-info"><span>Influencia</span><b>${escapeHtml(card.influence)}</b></div>
+            </div>
+            <div class="social-panel">
+              <span>Redes sociais</span>
+              <div class="social-links">
+                <a href="${escapeHtml(card.instagram)}" aria-label="Instagram">◎</a>
+                <a href="${escapeHtml(card.tiktok)}" aria-label="TikTok">♪</a>
+                <a href="${escapeHtml(card.pinterest)}" aria-label="Pinterest">p</a>
               </div>
-              <div class="book-gallery">${gallery}</div>
+            </div>
+            <div class="about-panel">
+              <span>Sobre ela</span>
+              <p>${escapeHtml(card.about)}</p>
             </div>
           </div>
         </section>
       `;
     }
 
-    function emptyBackPageMarkup() {
-      return '<section class="book-physical-page book-empty-page"><span>Fim do livro Blossom</span></section>';
-    }
-
     function buildPages() {
       const cards = currentCards();
-      const pages = [coverPageMarkup()];
-      cards.forEach((card) => {
-        pages.push(photoPageMarkup(card));
-        pages.push(profilePageMarkup(card));
-      });
-      if (pages.length % 2 === 0) pages.push(emptyBackPageMarkup());
-      flipTarget.innerHTML = pages.join("");
+      const safeCards = cards.length ? cards : [normalizeCard({}, 0)];
+      flipTarget.innerHTML = safeCards.map((card, index) => `${leftPageMarkup(card, index)}${rightPageMarkup(card)}`).join("");
+      renderDots();
     }
 
     function resetFlipTarget() {
@@ -624,22 +799,45 @@
       flipTarget = flipShell.querySelector("[data-page-flip]");
     }
 
+    function currentPersonIndex() {
+      if (!state.pageFlip || !state.ready) return 0;
+      return Math.max(0, Math.floor(state.pageFlip.getCurrentPageIndex() / 2));
+    }
+
+    function updateBookControls() {
+      if (!state.pageFlip || !state.ready) return;
+      const index = currentPersonIndex();
+      const cards = currentCards();
+      const maxIndex = Math.max(0, cards.length - 1);
+      document.querySelector("[data-book-prev]").disabled = index <= 0;
+      document.querySelector("[data-book-next]").disabled = index >= maxIndex;
+      dotsTarget.querySelectorAll("button").forEach((dot, dotIndex) => dot.classList.toggle("is-active", dotIndex === index));
+    }
+
+    function renderDots() {
+      const cards = currentCards();
+      dotsTarget.innerHTML = cards.map((_, index) => `<button type="button" data-book-dot="${index}" aria-label="Ir para pagina ${index + 1}"></button>`).join("");
+      dotsTarget.querySelectorAll("[data-book-dot]").forEach((button) => {
+        button.addEventListener("click", () => {
+          state.pageFlip?.flip(Number(button.dataset.bookDot) * 2);
+        });
+      });
+    }
+
     function createPageFlip() {
       state.ready = false;
       resetFlipTarget();
       buildPages();
-      if (!window.St?.PageFlip) {
-        return;
-      }
+      if (!window.St?.PageFlip) return;
       state.pageFlip = new St.PageFlip(flipTarget, {
-        width: 720,
-        height: 860,
+        width: 590,
+        height: 670,
         size: "stretch",
         minWidth: 320,
-        maxWidth: 720,
+        maxWidth: 590,
         minHeight: 520,
-        maxHeight: 860,
-        showCover: true,
+        maxHeight: 670,
+        showCover: false,
         useMouseEvents: true,
         mobileScrollSupport: false,
         drawShadow: true,
@@ -648,7 +846,10 @@
         startZIndex: 4,
       });
       state.pageFlip.loadFromHTML(flipTarget.querySelectorAll(".book-physical-page"));
+      state.pageFlip.on("flip", updateBookControls);
+      state.pageFlip.on("changeState", updateBookControls);
       state.ready = true;
+      updateBookControls();
     }
 
     function setSection(section) {
@@ -657,6 +858,14 @@
       history.replaceState(null, "", `livro.html?aba=${section}`);
       createPageFlip();
     }
+
+    document.querySelector("[data-book-next]").addEventListener("click", () => {
+      state.pageFlip?.flip(Math.min(currentPersonIndex() + 1, currentCards().length - 1) * 2);
+    });
+
+    document.querySelector("[data-book-prev]").addEventListener("click", () => {
+      state.pageFlip?.flip(Math.max(currentPersonIndex() - 1, 0) * 2);
+    });
 
     document.querySelectorAll("[data-book-tab]").forEach((tab) => {
       tab.addEventListener("click", () => setSection(tab.dataset.bookTab));
