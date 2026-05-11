@@ -6528,14 +6528,16 @@ select option:checked {
   color: var(--ed-pink);
 }
 
-.home-editorial.editorial-light .editorial-section-title,
-.home-editorial.editorial-light .section-flower,
-.home-editorial.editorial-light .editorial-section-title i {
-  color: var(--ed-text);
+.home-editorial.editorial-light .editorial-section-title {
+  color: #251017;
+}
+
+.home-editorial.editorial-light .section-flower {
+  color: var(--ed-pink);
 }
 
 .home-editorial.editorial-light .editorial-section-title i {
-  background: var(--ed-text);
+  background: #251017;
 }
 
 .home-editorial.editorial-light .editorial-hero {
