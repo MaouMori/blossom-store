@@ -1,5 +1,39 @@
 const money = new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL" });
 
+if ("scrollRestoration" in history) history.scrollRestoration = "manual";
+if (!location.hash) window.scrollTo(0, 0);
+window.addEventListener("pageshow", () => { if (!location.hash) window.scrollTo(0, 0); });
+
+function normalizeNavLinks() {
+  const current = location.pathname.split("/").pop() || "index.html";
+  document.querySelectorAll(".main-nav, .mobile-nav, .editorial-nav").forEach((nav) => {
+    const hasBook = Array.from(nav.querySelectorAll("a")).some((link) => (link.getAttribute("href") || "").startsWith("livro.html"));
+    if (!hasBook) {
+      const bookLink = document.createElement("a");
+      bookLink.href = "livro.html";
+      bookLink.textContent = "Livro";
+      const before = Array.from(nav.querySelectorAll("a")).find((link) => /sobre/i.test(link.textContent));
+      nav.insertBefore(bookLink, before || null);
+    }
+    nav.querySelectorAll("a").forEach((link) => {
+      const rawHref = link.getAttribute("href") || "";
+      const href = rawHref.startsWith("#") ? "" : (rawHref.split("#")[0] || "index.html");
+      link.classList.toggle("active", href === current);
+    });
+  });
+}
+
+function initStickyHeader() {
+  normalizeNavLinks();
+  const header = document.querySelector(".site-header, .editorial-header");
+  if (!header) return;
+  const update = () => {
+    document.body.classList.toggle("nav-scrolled", window.scrollY > 42);
+  };
+  update();
+  window.addEventListener("scroll", update, { passive: true });
+}
+
 function initMobileMenu() {
   const toggle = document.querySelector("[data-mobile-menu-toggle]");
   const overlay = document.querySelector("[data-mobile-nav-overlay]");
@@ -14,6 +48,7 @@ function initMobileMenu() {
   nav.querySelectorAll("a").forEach((link) => link.addEventListener("click", closeMenu));
 }
 
+document.addEventListener("DOMContentLoaded", initStickyHeader);
 document.addEventListener("DOMContentLoaded", initMobileMenu);
 
 function initLazyImages() {
