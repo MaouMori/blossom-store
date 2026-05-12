@@ -897,8 +897,8 @@ function createSpotlightPopup() {
   popup.dataset.spotlightPopup = "";
   popup.style.cssText = "position:fixed;inset:0;z-index:100;display:none;align-items:center;justify-content:center;background:rgba(5,3,5,0.85);backdrop-filter:blur(8px);padding:24px;cursor:pointer;";
   popup.innerHTML = `
-    <div style="position:relative;max-width:900px;width:100%;display:grid;grid-template-columns:1fr 1fr;gap:32px;align-items:center;background:#0b080b;border:1px solid rgba(255,112,158,0.25);border-radius:16px;padding:32px;cursor:default;">
-      <div data-popup-image style="aspect-ratio:1;border-radius:12px;background-size:cover;background-position:center;background:linear-gradient(135deg,rgba(255,156,188,0.2),transparent),linear-gradient(150deg,#161c22,#070a0d);"></div>
+    <div style="position:relative;max-width:980px;width:100%;display:grid;grid-template-columns:1.15fr 1fr;gap:32px;align-items:center;background:#0b080b;border:1px solid rgba(255,112,158,0.25);border-radius:16px;padding:32px;cursor:default;">
+      <div data-popup-image style="aspect-ratio:1.42;border-radius:12px;background-color:#09070a;background-image:linear-gradient(135deg,rgba(255,156,188,0.2),transparent),linear-gradient(150deg,#161c22,#070a0d);background-size:contain;background-position:center;background-repeat:no-repeat;"></div>
       <div style="display:grid;gap:12px;">
         <h2 data-popup-name style="margin:0;font-size:clamp(28px,4vw,48px);font-family:'Oswald',sans-serif;text-transform:uppercase;color:#fff5f8;"></h2>
         <p data-popup-role style="margin:0;font-size:14px;color:rgba(232,210,219,0.6);text-transform:uppercase;letter-spacing:0.2em;font-weight:800;"></p>
@@ -923,7 +923,11 @@ document.addEventListener("click", (event) => {
     popup.querySelector("[data-popup-name]").textContent = name;
     popup.querySelector("[data-popup-role]").textContent = role;
     const imgDiv = popup.querySelector("[data-popup-image]");
-    if (image) { imgDiv.style.backgroundImage = `url('${image}')`; } else { imgDiv.style.backgroundImage = ""; }
+    imgDiv.style.backgroundSize = "contain";
+    imgDiv.style.backgroundPosition = "center";
+    imgDiv.style.backgroundRepeat = "no-repeat";
+    imgDiv.style.backgroundColor = "#09070a";
+    if (image) { imgDiv.style.backgroundImage = `url('${image}')`; } else { imgDiv.style.backgroundImage = "linear-gradient(135deg,rgba(255,156,188,0.2),transparent),linear-gradient(150deg,#161c22,#070a0d)"; }
     popup.style.display = "flex";
     return;
   }

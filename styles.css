@@ -4334,7 +4334,7 @@ select option:checked {
   }
 
   [data-spotlight-popup] [data-popup-image] {
-    aspect-ratio: 1;
+    aspect-ratio: 1.42;
     max-height: 280px;
   }
 
