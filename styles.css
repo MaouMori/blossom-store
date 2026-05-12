@@ -6231,8 +6231,10 @@ body.nav-scrolled .editorial-header .theme-pill {
 
 .spotlight-carousel .portrait.has-upload,
 .spotlight-carousel .influencer-shot.has-upload {
-  background-size: cover;
+  background-size: contain;
   background-position: center;
+  background-repeat: no-repeat;
+  background-color: #09070a;
 }
 
 .spotlight-carousel .portrait.has-upload::before,

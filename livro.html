@@ -340,6 +340,9 @@
     }
 
     .profile-photo {
+      appearance: none;
+      border: 0;
+      padding: 0;
       position: relative;
       width: 100%;
       height: 100%;
@@ -350,6 +353,19 @@
         radial-gradient(ellipse at 50% 74%, rgba(255, 130, 183, 0.36), transparent 32%),
         linear-gradient(180deg, rgba(255, 116, 170, 0.18), rgba(0, 0, 0, 0.1)),
         #0a0507;
+    }
+
+    button.profile-photo {
+      cursor: zoom-in;
+      transition: transform 180ms ease, box-shadow 180ms ease, filter 180ms ease;
+    }
+
+    button.profile-photo:hover,
+    button.profile-photo:focus-visible {
+      transform: scale(1.012);
+      box-shadow: 0 0 0 1px rgba(255, 135, 185, 0.42), 0 18px 48px rgba(255, 105, 164, 0.12);
+      filter: saturate(1.06) brightness(1.04);
+      outline: none;
     }
 
     .profile-photo:not(:has(img))::before {
@@ -388,6 +404,65 @@
       object-fit: contain;
       display: block;
       background: rgba(10, 5, 7, 0.84);
+      pointer-events: none;
+    }
+
+    .book-lightbox-open {
+      overflow: hidden;
+    }
+
+    .book-lightbox[hidden] {
+      display: none;
+    }
+
+    .book-lightbox {
+      position: fixed;
+      inset: 0;
+      z-index: 200;
+      display: grid;
+      place-items: center;
+      padding: clamp(18px, 4vw, 56px);
+      background:
+        radial-gradient(circle at 50% 50%, rgba(255, 105, 164, 0.16), transparent 42%),
+        rgba(0, 0, 0, 0.88);
+      backdrop-filter: blur(14px);
+    }
+
+    .book-lightbox img {
+      max-width: min(96vw, 1480px);
+      max-height: min(88vh, 920px);
+      object-fit: contain;
+      border-radius: 18px;
+      border: 1px solid rgba(255, 135, 185, 0.36);
+      background: #09070a;
+      box-shadow: 0 34px 120px rgba(0, 0, 0, 0.72), 0 0 0 1px rgba(255, 255, 255, 0.04);
+    }
+
+    .book-lightbox-close {
+      position: fixed;
+      top: clamp(14px, 3vw, 34px);
+      right: clamp(14px, 3vw, 34px);
+      z-index: 2;
+      width: 42px;
+      height: 42px;
+      border-radius: 999px;
+      border: 1px solid rgba(255, 135, 185, 0.48);
+      background: rgba(12, 7, 11, 0.82);
+      color: #fff;
+      font-size: 26px;
+      line-height: 1;
+      cursor: pointer;
+      box-shadow: 0 14px 36px rgba(0, 0, 0, 0.42);
+      transition: transform 180ms ease, background 180ms ease, border-color 180ms ease;
+    }
+
+    .book-lightbox-close:hover,
+    .book-lightbox-close:focus-visible {
+      transform: translateY(-2px) scale(1.04);
+      border-color: rgba(255, 135, 185, 0.86);
+      background: #ff87b9;
+      color: #17080f;
+      outline: none;
     }
 
     .profile-empty {
@@ -687,6 +762,11 @@
     </section>
   </main>
 
+  <div class="book-lightbox" data-book-lightbox hidden>
+    <button class="book-lightbox-close" type="button" data-book-lightbox-close aria-label="Fechar imagem">&times;</button>
+    <img data-book-lightbox-image alt="">
+  </div>
+
   <script src="https://cdn.jsdelivr.net/npm/page-flip@2.0.7/dist/js/page-flip.browser.min.js"></script>
   <script>
     const fallbackBookCards = [
@@ -779,6 +859,9 @@
 
     function leftPageMarkup(card, index) {
       const image = card.image ? `<img src="${card.image}" alt="${escapeHtml(card.name)}">` : '<div class="profile-empty">Imagem preparada</div>';
+      const photo = card.image
+        ? `<button class="profile-photo" type="button" data-book-lightbox-src="${escapeHtml(card.image)}" data-book-lightbox-alt="${escapeHtml(card.name)}" aria-label="Expandir imagem de ${escapeHtml(card.name)}">${image}</button>`
+        : `<div class="profile-photo">${image}</div>`;
       return `
         <section class="book-physical-page --left">
           <div class="book-left-page">
@@ -789,7 +872,7 @@
               <p>${introText()}</p>
             </div>
             <div class="profile-photo-frame">
-              <div class="profile-photo">${image}</div>
+              ${photo}
             </div>
             <div class="image-label">Imagem preparada</div>
           </div>
@@ -917,6 +1000,42 @@
 
     document.querySelectorAll("[data-book-tab]").forEach((tab) => {
       tab.addEventListener("click", () => setSection(tab.dataset.bookTab));
+    });
+
+    const lightbox = document.querySelector("[data-book-lightbox]");
+    const lightboxImage = document.querySelector("[data-book-lightbox-image]");
+
+    function openBookLightbox(src, alt) {
+      if (!src) return;
+      lightboxImage.src = src;
+      lightboxImage.alt = alt || "Imagem do livro";
+      lightbox.hidden = false;
+      document.body.classList.add("book-lightbox-open");
+    }
+
+    function closeBookLightbox() {
+      lightbox.hidden = true;
+      lightboxImage.removeAttribute("src");
+      lightboxImage.alt = "";
+      document.body.classList.remove("book-lightbox-open");
+    }
+
+    document.addEventListener("click", (event) => {
+      const trigger = event.target.closest("[data-book-lightbox-src]");
+      if (trigger) {
+        event.preventDefault();
+        event.stopPropagation();
+        openBookLightbox(trigger.dataset.bookLightboxSrc, trigger.dataset.bookLightboxAlt);
+        return;
+      }
+
+      if (!lightbox.hidden && (event.target === lightbox || event.target.closest("[data-book-lightbox-close]"))) {
+        closeBookLightbox();
+      }
+    });
+
+    document.addEventListener("keydown", (event) => {
+      if (event.key === "Escape" && !lightbox.hidden) closeBookLightbox();
     });
 
     loadBookCards().then(() => setSection(state.section));
