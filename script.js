@@ -948,6 +948,7 @@ document.addEventListener("click", (event) => {
 
 /* Account */
 function toggleAccountMenu(force) {
+  if (!selectors.accountMenu || !selectors.accountToggle) return;
   const shouldOpen = typeof force === "boolean" ? force : selectors.accountMenu.hidden;
   selectors.accountMenu.hidden = !shouldOpen;
   selectors.accountToggle.setAttribute("aria-expanded", String(shouldOpen));

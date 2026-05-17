@@ -884,7 +884,7 @@
       imageLabel: "Imagem preparada",
     };
 
-    const state = {
+    const bookState = {
       section: new URLSearchParams(location.search).get("aba") === "influencers" ? "influencers" : "ambassadors",
       cards: fallbackBookCards,
       settings: fallbackBookSettings,
@@ -935,31 +935,31 @@
             const cards = store?.taxonomies?.featuredCards;
             const settings = store?.taxonomies?.bookSettings;
             if (Array.isArray(cards) && cards.length) {
-              state.cards = cards.map(normalizeCard);
-              if (settings && typeof settings === "object") state.settings = { ...fallbackBookSettings, ...settings };
+              bookState.cards = cards.map(normalizeCard);
+              if (settings && typeof settings === "object") bookState.settings = { ...fallbackBookSettings, ...settings };
               return;
             }
           }
         }
         const saved = JSON.parse(localStorage.getItem("blossom-featured-cards") || "[]");
-        if (Array.isArray(saved) && saved.length) state.cards = saved.map(normalizeCard);
+        if (Array.isArray(saved) && saved.length) bookState.cards = saved.map(normalizeCard);
         const savedSettings = JSON.parse(localStorage.getItem("blossom-book-settings") || "null");
-        if (savedSettings && typeof savedSettings === "object") state.settings = { ...fallbackBookSettings, ...savedSettings };
+        if (savedSettings && typeof savedSettings === "object") bookState.settings = { ...fallbackBookSettings, ...savedSettings };
       } catch (error) {
         console.warn("Nao foi possivel carregar o livro.", error);
       }
     }
 
     function currentCards() {
-      return state.cards
-        .filter((card) => card.section === state.section)
+      return bookState.cards
+        .filter((card) => card.section === bookState.section)
         .sort((a, b) => Number(a.position || 0) - Number(b.position || 0));
     }
 
     function introText() {
-      return state.section === "influencers"
-        ? state.settings.influencersIntro
-        : state.settings.ambassadorsIntro;
+      return bookState.section === "influencers"
+        ? bookState.settings.influencersIntro
+        : bookState.settings.ambassadorsIntro;
     }
 
     function leftPageMarkup(card, index) {
@@ -972,14 +972,14 @@
           <div class="book-left-page">
             <div>
               <span class="book-kicker">Arquivo Blossom</span>
-              <h1 class="left-title">${escapeHtml(state.settings.titleLine1)}<br><span>${escapeHtml(state.settings.titleLine2)}</span></h1>
+              <h1 class="left-title">${escapeHtml(bookState.settings.titleLine1)}<br><span>${escapeHtml(bookState.settings.titleLine2)}</span></h1>
               <div class="title-rule"></div>
               <p>${introText()}</p>
             </div>
             <div class="profile-photo-frame">
               ${photo}
             </div>
-            <div class="image-label">${escapeHtml(state.settings.imageLabel)}</div>
+            <div class="image-label">${escapeHtml(bookState.settings.imageLabel)}</div>
           </div>
         </section>
       `;
@@ -1027,21 +1027,21 @@
     }
 
     function resetFlipTarget() {
-      if (state.pageFlip) {
-        try { state.pageFlip.destroy(); } catch (error) { console.warn("Nao foi possivel destruir o livro anterior.", error); }
-        state.pageFlip = null;
+      if (bookState.pageFlip) {
+        try { bookState.pageFlip.destroy(); } catch (error) { console.warn("Nao foi possivel destruir o livro anterior.", error); }
+        bookState.pageFlip = null;
       }
       flipShell.innerHTML = '<div class="page-flip-book" data-page-flip></div>';
       flipTarget = flipShell.querySelector("[data-page-flip]");
     }
 
     function currentPersonIndex() {
-      if (!state.pageFlip || !state.ready) return 0;
-      return Math.max(0, Math.floor(state.pageFlip.getCurrentPageIndex() / 2));
+      if (!bookState.pageFlip || !bookState.ready) return 0;
+      return Math.max(0, Math.floor(bookState.pageFlip.getCurrentPageIndex() / 2));
     }
 
     function updateBookControls() {
-      if (!state.pageFlip || !state.ready) return;
+      if (!bookState.pageFlip || !bookState.ready) return;
       const index = currentPersonIndex();
       const cards = currentCards();
       const maxIndex = Math.max(0, cards.length - 1);
@@ -1055,17 +1055,17 @@
       dotsTarget.innerHTML = cards.map((_, index) => `<button type="button" data-book-dot="${index}" aria-label="Ir para pagina ${index + 1}"></button>`).join("");
       dotsTarget.querySelectorAll("[data-book-dot]").forEach((button) => {
         button.addEventListener("click", () => {
-          state.pageFlip?.flip(Number(button.dataset.bookDot) * 2);
+          bookState.pageFlip?.flip(Number(button.dataset.bookDot) * 2);
         });
       });
     }
 
     function createPageFlip() {
-      state.ready = false;
+      bookState.ready = false;
       resetFlipTarget();
       buildPages();
       if (!window.St?.PageFlip) return;
-      state.pageFlip = new St.PageFlip(flipTarget, {
+      bookState.pageFlip = new St.PageFlip(flipTarget, {
         width: 760,
         height: 860,
         size: "stretch",
@@ -1081,26 +1081,26 @@
         maxShadowOpacity: 0.62,
         startZIndex: 4,
       });
-      state.pageFlip.loadFromHTML(flipTarget.querySelectorAll(".book-physical-page"));
-      state.pageFlip.on("flip", updateBookControls);
-      state.pageFlip.on("changeState", updateBookControls);
-      state.ready = true;
+      bookState.pageFlip.loadFromHTML(flipTarget.querySelectorAll(".book-physical-page"));
+      bookState.pageFlip.on("flip", updateBookControls);
+      bookState.pageFlip.on("changeState", updateBookControls);
+      bookState.ready = true;
       updateBookControls();
     }
 
     function setSection(section) {
-      state.section = section;
+      bookState.section = section;
       document.querySelectorAll("[data-book-tab]").forEach((tab) => tab.classList.toggle("is-active", tab.dataset.bookTab === section));
       history.replaceState(null, "", `livro.html?aba=${section}`);
       createPageFlip();
     }
 
     document.querySelector("[data-book-next]").addEventListener("click", () => {
-      state.pageFlip?.flip(Math.min(currentPersonIndex() + 1, currentCards().length - 1) * 2);
+      bookState.pageFlip?.flip(Math.min(currentPersonIndex() + 1, currentCards().length - 1) * 2);
     });
 
     document.querySelector("[data-book-prev]").addEventListener("click", () => {
-      state.pageFlip?.flip(Math.max(currentPersonIndex() - 1, 0) * 2);
+      bookState.pageFlip?.flip(Math.max(currentPersonIndex() - 1, 0) * 2);
     });
 
     document.querySelectorAll("[data-book-tab]").forEach((tab) => {
@@ -1143,7 +1143,7 @@
       if (event.key === "Escape" && !lightbox.hidden) closeBookLightbox();
     });
 
-    loadBookCards().then(() => setSection(state.section));
+    loadBookCards().then(() => setSection(bookState.section));
   </script>
   <script src="script.js"></script>
 </body>

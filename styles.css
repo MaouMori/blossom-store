@@ -5517,6 +5517,10 @@ body.nav-scrolled .editorial-header .theme-pill {
   display: none;
 }
 
+.book-page-body.home-editorial .admin-shortcut {
+  display: grid;
+}
+
 .home-editorial .user-icon {
   color: var(--ed-text);
   background: transparent;
