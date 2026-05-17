@@ -6351,6 +6351,16 @@ body.nav-scrolled .editorial-header .theme-pill {
   color: rgba(255, 233, 241, 0.78);
 }
 
+.home-editorial.editorial-light .spotlight-carousel.ambassador-row b,
+.home-editorial.editorial-light .spotlight-carousel.influencer-row b {
+  color: #fff7fa;
+}
+
+.home-editorial.editorial-light .spotlight-carousel.ambassador-row small,
+.home-editorial.editorial-light .spotlight-carousel.influencer-row small {
+  color: rgba(255, 233, 241, 0.78);
+}
+
 .home-editorial.editorial-light .spotlight-carousel .portrait,
 .home-editorial.editorial-light .spotlight-carousel .influencer-shot {
   border-color: rgba(218, 74, 123, 0.3);

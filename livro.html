@@ -36,6 +36,15 @@
       overflow-x: hidden;
     }
 
+    .book-page-body.editorial-light {
+      background:
+        radial-gradient(circle at 50% 46%, rgba(255, 105, 164, 0.18), transparent 34rem),
+        radial-gradient(circle at 12% 58%, rgba(255, 105, 164, 0.12), transparent 26rem),
+        radial-gradient(circle at 86% 62%, rgba(255, 105, 164, 0.14), transparent 24rem),
+        linear-gradient(180deg, #fff8fb, #ffeaf2 48%, #fff7fa);
+      color: #251017;
+    }
+
     .book-page-body::before,
     .book-page-body::after {
       content: "";
@@ -51,6 +60,17 @@
         radial-gradient(ellipse at center, transparent 0 28%, rgba(0, 0, 0, 0.34) 70%, rgba(0, 0, 0, 0.78) 100%),
         repeating-radial-gradient(circle at 50% 48%, rgba(255, 137, 183, 0.09) 0 1px, transparent 1px 58px);
       opacity: 1;
+    }
+
+    .book-page-body.editorial-light::before {
+      background:
+        linear-gradient(90deg, rgba(255, 248, 251, 0.48), transparent 24%, transparent 76%, rgba(255, 248, 251, 0.48)),
+        radial-gradient(ellipse at center, transparent 0 28%, rgba(218, 74, 123, 0.1) 70%, rgba(218, 74, 123, 0.18) 100%),
+        repeating-radial-gradient(circle at 50% 48%, rgba(218, 74, 123, 0.08) 0 1px, transparent 1px 58px);
+    }
+
+    .book-page-body.editorial-light::after {
+      opacity: 0.42;
     }
 
     .book-page-body::after {
@@ -722,9 +742,10 @@
     <a class="editorial-corner-logo" href="index.html" aria-label="Blossom Store">&#10047;</a>
     <nav class="editorial-nav" aria-label="Navegacao principal">
       <a href="index.html">Inicio</a>
+      <a href="index.html#embaixadores">Embaixadores</a>
+      <a href="index.html#influenciadores">Influenciadores</a>
       <a class="active" href="livro.html">Livro</a>
       <a href="colecoes.html">Colecoes</a>
-      <a href="loja.html">Loja</a>
       <a href="sobre.html">Sobre nos</a>
       <a href="contato.html">Contato</a>
     </nav>
@@ -733,9 +754,10 @@
     <nav class="mobile-nav" aria-label="Navegacao mobile" data-mobile-nav>
       <button class="mobile-nav-close" type="button" aria-label="Fechar menu" data-mobile-nav-close>&times;</button>
       <a href="index.html">Inicio</a>
+      <a href="index.html#embaixadores">Embaixadores</a>
+      <a href="index.html#influenciadores">Influenciadores</a>
       <a class="active" href="livro.html">Livro</a>
       <a href="colecoes.html">Colecoes</a>
-      <a href="loja.html">Loja</a>
       <a href="sobre.html">Sobre nos</a>
       <a href="contato.html">Contato</a>
     </nav>
@@ -743,6 +765,19 @@
       <span>Claro</span>
       <button class="theme-pill" type="button" aria-label="Alternar tema" data-theme-toggle><i></i></button>
       <span>Escuro</span>
+      <div class="account">
+        <button class="account-toggle" type="button" data-account-toggle aria-expanded="false">
+          <span class="user-icon">&#9817;</span>
+          <span><b data-account-name>visitante</b></span>
+          <span class="chevron">&#8964;</span>
+        </button>
+        <div class="account-menu" data-account-menu hidden>
+          <a href="#" data-account-config>&#9881; Configuracoes</a>
+          <a href="login.html">&#10047; Painel Admin</a>
+          <button type="button" data-account-logout>Entrar</button>
+        </div>
+        <a class="admin-shortcut" href="login.html" aria-label="Painel admin">&#9881;</a>
+      </div>
     </div>
   </header>
 
