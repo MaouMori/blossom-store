@@ -6291,6 +6291,20 @@ body.nav-scrolled .editorial-header .theme-pill {
     linear-gradient(180deg, rgba(25, 20, 24, 0.82), rgba(5, 3, 5, 0.98));
 }
 
+.spotlight-carousel .portrait.has-upload,
+.spotlight-carousel .influencer-shot.has-upload,
+.spotlight-carousel .portrait.has-upload.dark,
+.spotlight-carousel .portrait.has-upload.rose,
+.spotlight-carousel .portrait.has-upload.black,
+.spotlight-carousel .influencer-shot.has-upload.mono,
+.spotlight-carousel .influencer-shot.has-upload.vivid,
+.spotlight-carousel .influencer-shot.has-upload.soft {
+  background-size: contain;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-color: #09070a;
+}
+
 .spotlight-carousel b,
 .spotlight-carousel small {
   position: relative;
@@ -6352,6 +6366,21 @@ body.nav-scrolled .editorial-header .theme-pill {
 
 .home-editorial.editorial-light .spotlight-carousel .portrait.pink {
   background: radial-gradient(circle at 50% 17%, rgba(255, 156, 188, 0.55) 0 28px, transparent 29px), radial-gradient(circle at 48% 38%, rgba(240, 111, 159, 0.14), transparent 36%), linear-gradient(180deg, #ffd8e6, #ffe8f2);
+}
+
+.home-editorial.editorial-light .spotlight-carousel .portrait.has-upload,
+.home-editorial.editorial-light .spotlight-carousel .influencer-shot.has-upload,
+.home-editorial.editorial-light .spotlight-carousel .portrait.has-upload.dark,
+.home-editorial.editorial-light .spotlight-carousel .portrait.has-upload.rose,
+.home-editorial.editorial-light .spotlight-carousel .portrait.has-upload.black,
+.home-editorial.editorial-light .spotlight-carousel .portrait.has-upload.pink,
+.home-editorial.editorial-light .spotlight-carousel .influencer-shot.has-upload.mono,
+.home-editorial.editorial-light .spotlight-carousel .influencer-shot.has-upload.vivid,
+.home-editorial.editorial-light .spotlight-carousel .influencer-shot.has-upload.soft {
+  background-size: contain;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-color: #f8edf2;
 }
 
 .home-editorial.editorial-light .spotlight-carousel .portrait::before,
