@@ -2,6 +2,8 @@ const adminMoney = new Intl.NumberFormat("pt-BR", { style: "currency", currency:
 const ADMIN_USER = "admin";
 const ADMIN_PASS = "admin123";
 
+if (localStorage.getItem("blossom-site-theme") === "light") document.body.classList.add("home-light");
+
 const productSeed = [
   ["hoodie-black", "Blossom Hoodie Black", "Masculino", "Moletons", "Preto", 199.9, "hoodie-dark", true],
   ["tee-white", "Blossom Tee White", "Masculino", "Camisetas", "Branco", 129.9, "tee-white", true],
@@ -111,6 +113,14 @@ const futureDropSeed = {
   cardTitle: "Blossom",
   image: "",
   images: [],
+};
+
+const bookSettingsSeed = {
+  titleLine1: "Livro da",
+  titleLine2: "Comunidade",
+  ambassadorsIntro: "Conheca os embaixadores e influenciadores que fazem parte da historia da Blossom. Cada pagina guarda essencia, conexao e inspiracao.",
+  influencersIntro: "Conheca os influenciadores que espalham a essencia Blossom, criando conexao, estilo e presenca em cada conteudo.",
+  imageLabel: "Imagem preparada",
 };
 
 const $ = (selector) => document.querySelector(selector);
@@ -325,6 +335,7 @@ let adminCollections = apiEnabled ? [] : getData("blossom-collections", collecti
 let adminTaxonomies = apiEnabled ? { categories: [], types: [], colors: [], visuals: [] } : getObjectData("blossom-taxonomies", taxonomySeed);
 let adminFeaturedCards = apiEnabled ? featuredSeed : getData("blossom-featured-cards", featuredSeed);
 let adminFutureDrop = apiEnabled ? futureDropSeed : getObjectData("blossom-future-drop", futureDropSeed);
+let adminBookSettings = apiEnabled ? bookSettingsSeed : getObjectData("blossom-book-settings", bookSettingsSeed);
 let adminOrders = [];
 let adminUsers = [];
 
@@ -339,6 +350,7 @@ async function loadApiStore() {
     adminTaxonomies = store.taxonomies && Object.keys(store.taxonomies).length ? store.taxonomies : { categories: [], types: [], colors: [], visuals: [] };
     adminFeaturedCards = Array.isArray(adminTaxonomies.featuredCards) && adminTaxonomies.featuredCards.length ? adminTaxonomies.featuredCards : featuredSeed;
     adminFutureDrop = adminTaxonomies.futureDrop && typeof adminTaxonomies.futureDrop === "object" ? { ...futureDropSeed, ...adminTaxonomies.futureDrop } : futureDropSeed;
+    adminBookSettings = adminTaxonomies.bookSettings && typeof adminTaxonomies.bookSettings === "object" ? { ...bookSettingsSeed, ...adminTaxonomies.bookSettings } : bookSettingsSeed;
     adminOrders = Array.isArray(store.orders) ? store.orders : [];
     renderAll();
   } catch { renderAll(); }
@@ -348,6 +360,7 @@ async function saveApiStore() {
   if (!apiEnabled) return;
   adminTaxonomies.featuredCards = adminFeaturedCards;
   adminTaxonomies.futureDrop = adminFutureDrop;
+  adminTaxonomies.bookSettings = adminBookSettings;
   const response = await fetch("/api/store", {
     method: "PUT",
     headers: { "Content-Type": "application/json" },
@@ -380,9 +393,10 @@ async function updateUserRole(username, role) {
 
 function saveProducts() { setData("blossom-products", adminProducts); return saveApiStore(); }
 function saveCollections() { setData("blossom-collections", adminCollections); return saveApiStore(); }
-function saveTaxonomies() { adminTaxonomies.featuredCards = adminFeaturedCards; adminTaxonomies.futureDrop = adminFutureDrop; setData("blossom-taxonomies", adminTaxonomies); return saveApiStore(); }
-function saveFeaturedCards() { adminTaxonomies.featuredCards = adminFeaturedCards; adminTaxonomies.futureDrop = adminFutureDrop; setData("blossom-featured-cards", adminFeaturedCards); return saveApiStore(); }
-function saveFutureDrop() { adminTaxonomies.futureDrop = adminFutureDrop; setData("blossom-future-drop", adminFutureDrop); return saveApiStore(); }
+function saveTaxonomies() { adminTaxonomies.featuredCards = adminFeaturedCards; adminTaxonomies.futureDrop = adminFutureDrop; adminTaxonomies.bookSettings = adminBookSettings; setData("blossom-taxonomies", adminTaxonomies); return saveApiStore(); }
+function saveFeaturedCards() { adminTaxonomies.featuredCards = adminFeaturedCards; adminTaxonomies.futureDrop = adminFutureDrop; adminTaxonomies.bookSettings = adminBookSettings; setData("blossom-featured-cards", adminFeaturedCards); return saveApiStore(); }
+function saveFutureDrop() { adminTaxonomies.futureDrop = adminFutureDrop; adminTaxonomies.bookSettings = adminBookSettings; setData("blossom-future-drop", adminFutureDrop); return saveApiStore(); }
+function saveBookSettings() { adminTaxonomies.bookSettings = adminBookSettings; setData("blossom-book-settings", adminBookSettings); return saveApiStore(); }
 
 function optionMarkup(values, selected = "") {
   return [...new Set(values)].map((value) => `<option ${value === selected ? "selected" : ""}>${value}</option>`).join("");
@@ -430,10 +444,21 @@ function renderAll() {
   renderCollections();
   renderFeaturedCards();
   renderBookPages();
+  renderBookSettings();
   renderTaxonomies();
   renderFutureDropPreview();
   renderUsers();
   updateStats();
+}
+
+function renderBookSettings() {
+  const form = $("[data-book-settings-form]");
+  if (!form) return;
+  field(form, "titleLine1").value = adminBookSettings.titleLine1 || "";
+  field(form, "titleLine2").value = adminBookSettings.titleLine2 || "";
+  field(form, "ambassadorsIntro").value = adminBookSettings.ambassadorsIntro || "";
+  field(form, "influencersIntro").value = adminBookSettings.influencersIntro || "";
+  field(form, "imageLabel").value = adminBookSettings.imageLabel || "";
 }
 
 function updateStats() {
@@ -800,6 +825,10 @@ function openBookForm(card = null) {
   field(form, "quote").value = card?.quote || "";
   field(form, "since").value = card?.since || "2024";
   field(form, "influence").value = card?.influence || (card?.section === "influencers" ? "Digital" : "Roleplay");
+  field(form, "about").value = card?.about || "";
+  field(form, "instagram").value = card?.instagram || "";
+  field(form, "tiktok").value = card?.tiktok || "";
+  field(form, "pinterest").value = card?.pinterest || "";
   field(form, "position").value = card?.position ?? adminFeaturedCards.length;
   form.dataset.currentImages = JSON.stringify(itemImages(card));
   const count = itemImages(card).length;
@@ -1088,6 +1117,10 @@ $("[data-book-form]")?.addEventListener("submit", async (event) => {
     quote: data.get("quote"),
     since: data.get("since"),
     influence: data.get("influence"),
+    about: data.get("about"),
+    instagram: data.get("instagram"),
+    tiktok: data.get("tiktok"),
+    pinterest: data.get("pinterest"),
     href: previousCard.href || `livro.html?aba=${section}`,
     visual: previousCard.visual || (section === "influencers" ? "soft" : "pink"),
     position: Number(data.get("position") || 0),
@@ -1104,6 +1137,31 @@ $("[data-book-form]")?.addEventListener("submit", async (event) => {
   } catch (error) {
     console.error(error);
     $("[data-book-image-note]").textContent = `Erro ao salvar: ${errorText(error)}`;
+  } finally {
+    submitButton.disabled = false;
+    submitButton.textContent = originalText;
+  }
+});
+
+$("[data-book-settings-form]")?.addEventListener("submit", async (event) => {
+  event.preventDefault();
+  const form = event.currentTarget;
+  const submitButton = form.querySelector("[type='submit']");
+  const originalText = submitButton.textContent;
+  submitButton.disabled = true;
+  submitButton.textContent = "Salvando...";
+  adminBookSettings = {
+    titleLine1: field(form, "titleLine1").value.trim(),
+    titleLine2: field(form, "titleLine2").value.trim(),
+    ambassadorsIntro: field(form, "ambassadorsIntro").value.trim(),
+    influencersIntro: field(form, "influencersIntro").value.trim(),
+    imageLabel: field(form, "imageLabel").value.trim(),
+  };
+  try {
+    await saveBookSettings();
+    toast("Configuracoes do livro salvas.");
+  } catch (error) {
+    toast(`Erro ao salvar: ${errorText(error)}`);
   } finally {
     submitButton.disabled = false;
     submitButton.textContent = originalText;
@@ -1153,6 +1211,7 @@ $("[data-reset-data]")?.addEventListener("click", () => {
   adminTaxonomies = taxonomySeed;
   adminFeaturedCards = featuredSeed;
   adminFutureDrop = futureDropSeed;
+  adminBookSettings = bookSettingsSeed;
   saveProducts().catch((error) => console.warn(error));
   saveCollections().catch((error) => console.warn(error));
   saveFeaturedCards().catch((error) => console.warn(error));

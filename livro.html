@@ -41,7 +41,7 @@
         radial-gradient(circle at 50% 46%, rgba(255, 105, 164, 0.18), transparent 34rem),
         radial-gradient(circle at 12% 58%, rgba(255, 105, 164, 0.12), transparent 26rem),
         radial-gradient(circle at 86% 62%, rgba(255, 105, 164, 0.14), transparent 24rem),
-        linear-gradient(180deg, #fff8fb, #ffeaf2 48%, #fff7fa);
+        linear-gradient(180deg, #fff8fb, #ffeaf2 48%, #fff7fa) !important;
       color: #251017;
     }
 
@@ -819,9 +819,18 @@
       ["influencers", "@heartzui", "Creator", "Com o coracao na Blossom.", "2024", "Nacional"],
     ].map(([section, name, role, quote, since, influence], position) => ({ id: `${section}-${position}`, section, name, role, quote, since, influence, images: [], image: "", position }));
 
+    const fallbackBookSettings = {
+      titleLine1: "Livro da",
+      titleLine2: "Comunidade",
+      ambassadorsIntro: "Conheca os embaixadores e influenciadores que fazem parte da historia da Blossom. Cada pagina guarda essencia, conexao e inspiracao.",
+      influencersIntro: "Conheca os influenciadores que espalham a essencia Blossom, criando conexao, estilo e presenca em cada conteudo.",
+      imageLabel: "Imagem preparada",
+    };
+
     const state = {
       section: new URLSearchParams(location.search).get("aba") === "influencers" ? "influencers" : "ambassadors",
       cards: fallbackBookCards,
+      settings: fallbackBookSettings,
       pageFlip: null,
       ready: false,
     };
@@ -867,14 +876,18 @@
           if (response.ok) {
             const store = await response.json();
             const cards = store?.taxonomies?.featuredCards;
+            const settings = store?.taxonomies?.bookSettings;
             if (Array.isArray(cards) && cards.length) {
               state.cards = cards.map(normalizeCard);
+              if (settings && typeof settings === "object") state.settings = { ...fallbackBookSettings, ...settings };
               return;
             }
           }
         }
         const saved = JSON.parse(localStorage.getItem("blossom-featured-cards") || "[]");
         if (Array.isArray(saved) && saved.length) state.cards = saved.map(normalizeCard);
+        const savedSettings = JSON.parse(localStorage.getItem("blossom-book-settings") || "null");
+        if (savedSettings && typeof savedSettings === "object") state.settings = { ...fallbackBookSettings, ...savedSettings };
       } catch (error) {
         console.warn("Nao foi possivel carregar o livro.", error);
       }
@@ -888,8 +901,8 @@
 
     function introText() {
       return state.section === "influencers"
-        ? "Conheca os influenciadores que espalham a essencia Blossom, criando conexao, estilo e presenca em cada conteudo."
-        : "Conheca os embaixadores e influenciadores que fazem parte da historia da Blossom. Cada pagina guarda essencia, conexao e inspiracao.";
+        ? state.settings.influencersIntro
+        : state.settings.ambassadorsIntro;
     }
 
     function leftPageMarkup(card, index) {
@@ -902,14 +915,14 @@
           <div class="book-left-page">
             <div>
               <span class="book-kicker">Arquivo Blossom</span>
-              <h1 class="left-title">Livro da<br><span>Comunidade</span></h1>
+              <h1 class="left-title">${escapeHtml(state.settings.titleLine1)}<br><span>${escapeHtml(state.settings.titleLine2)}</span></h1>
               <div class="title-rule"></div>
               <p>${introText()}</p>
             </div>
             <div class="profile-photo-frame">
               ${photo}
             </div>
-            <div class="image-label">Imagem preparada</div>
+            <div class="image-label">${escapeHtml(state.settings.imageLabel)}</div>
           </div>
         </section>
       `;

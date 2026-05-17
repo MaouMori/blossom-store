@@ -5433,6 +5433,24 @@ select option:checked {
   transition: margin 160ms ease, background-color 160ms ease;
 }
 
+.site-theme-control {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.site-theme-control > span {
+  color: var(--muted);
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.home-light .site-theme-control > span {
+  color: #725b64;
+}
+
 body.nav-scrolled .editorial-header {
   top: 12px;
   left: 50%;

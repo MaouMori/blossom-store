@@ -103,17 +103,28 @@ function initHomeCarousels() {
 }
 
 function initThemeToggle() {
-  const button = document.querySelector("[data-theme-toggle]");
-  if (!button || !document.body.classList.contains("home-editorial")) return;
-  const saved = localStorage.getItem("blossom-home-theme") || "dark";
+  ensureGlobalThemeControl();
+  const buttons = document.querySelectorAll("[data-theme-toggle]");
+  const saved = localStorage.getItem("blossom-site-theme") || localStorage.getItem("blossom-home-theme") || "dark";
   function setTheme(theme) {
     const light = theme === "light";
     document.body.classList.toggle("editorial-light", light);
-    button.setAttribute("aria-pressed", String(light));
-    localStorage.setItem("blossom-home-theme", light ? "light" : "dark");
+    document.body.classList.toggle("home-light", light);
+    buttons.forEach((button) => button.setAttribute("aria-pressed", String(light)));
+    localStorage.setItem("blossom-site-theme", light ? "light" : "dark");
   }
   setTheme(saved);
-  button.addEventListener("click", () => { setTheme(document.body.classList.contains("editorial-light") ? "dark" : "light"); });
+  buttons.forEach((button) => button.addEventListener("click", () => { setTheme(document.body.classList.contains("home-light") ? "dark" : "light"); }));
+}
+
+function ensureGlobalThemeControl() {
+  if (document.querySelector("[data-theme-toggle]")) return;
+  const account = document.querySelector(".site-header .account");
+  if (!account) return;
+  const control = document.createElement("div");
+  control.className = "site-theme-control";
+  control.innerHTML = `<span>Claro</span><button class="theme-pill" type="button" aria-label="Alternar tema" data-theme-toggle><i></i></button><span>Escuro</span>`;
+  account.prepend(control);
 }
 
 function initHomeMotion() {

@@ -842,6 +842,21 @@
 
       <!-- BOOK -->
       <section class="admin-section" data-section="book">
+        <div class="admin-content-panel" style="margin-bottom:18px;">
+          <div class="admin-panel-header">
+            <h2>Configurações do Livro</h2>
+          </div>
+          <form data-book-settings-form style="display:grid;gap:14px;">
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;">
+              <label>Título - linha 1<input name="titleLine1" required></label>
+              <label>Título - linha 2<input name="titleLine2" required></label>
+            </div>
+            <label>Texto do livro de embaixadores<textarea name="ambassadorsIntro" rows="3" required></textarea></label>
+            <label>Texto do livro de influenciadores<textarea name="influencersIntro" rows="3" required></textarea></label>
+            <label>Legenda sob a imagem<input name="imageLabel" required></label>
+            <button class="btn-add" type="submit" style="width:fit-content;">Salvar configurações</button>
+          </form>
+        </div>
         <div class="admin-content-panel">
           <div class="admin-panel-header">
             <h2>Gerenciar Livro</h2>
@@ -983,6 +998,10 @@
       <label>Frase/Quote<textarea name="quote" rows="3"></textarea></label>
       <label>Desde<input name="since" placeholder="2024"></label>
       <label>Influência<input name="influence" placeholder="Global, Nacional..."></label>
+      <label>Sobre a pessoa<textarea name="about" rows="3"></textarea></label>
+      <label>Instagram<input name="instagram" placeholder="https://..."></label>
+      <label>TikTok<input name="tiktok" placeholder="https://..."></label>
+      <label>Pinterest<input name="pinterest" placeholder="https://..."></label>
       <label>Posição<input name="position" type="number" min="0" step="1" value="0"></label>
       <label>Imagens da página
         <input name="images" type="file" accept="image/png,image/jpeg,image/gif,image/webp" multiple>
