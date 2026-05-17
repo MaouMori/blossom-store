@@ -249,14 +249,14 @@ button:hover {
 
 body.nav-scrolled .site-header {
   top: 12px;
-  width: min(1080px, calc(100% - 32px));
+  width: min(1240px, calc(100% - 32px));
   height: 56px;
   padding: 0 20px;
   border: 1px solid rgba(255, 156, 188, 0.22);
   border-radius: 999px;
   background: rgba(5, 7, 9, 0.78);
   box-shadow: 0 18px 48px rgba(0, 0, 0, 0.28);
-  grid-template-columns: 190px minmax(0, 1fr) 220px;
+  grid-template-columns: 180px minmax(max-content, 1fr) max-content;
 }
 
 body.nav-scrolled .site-header .brand-mark {
@@ -273,7 +273,7 @@ body.nav-scrolled .site-header .brand small {
 }
 
 body.nav-scrolled .site-header .main-nav {
-  gap: clamp(16px, 2vw, 30px);
+  gap: clamp(14px, 1.5vw, 24px);
 }
 
 body.nav-scrolled .site-header .main-nav a {
@@ -5437,7 +5437,7 @@ body.nav-scrolled .editorial-header {
   top: 12px;
   left: 50%;
   right: auto;
-  width: min(1080px, calc(100% - 32px));
+  width: min(1240px, calc(100% - 32px));
   height: 56px;
   padding: 0 20px;
   transform: translateX(-50%);
@@ -5446,7 +5446,7 @@ body.nav-scrolled .editorial-header {
   background: rgba(5, 3, 5, 0.76);
   box-shadow: 0 18px 48px rgba(0, 0, 0, 0.3);
   backdrop-filter: blur(18px);
-  grid-template-columns: 42px minmax(0, 1fr) auto;
+  grid-template-columns: 42px minmax(max-content, 1fr) max-content;
 }
 
 body.nav-scrolled .editorial-header .editorial-corner-logo {
@@ -5454,7 +5454,15 @@ body.nav-scrolled .editorial-header .editorial-corner-logo {
 }
 
 body.nav-scrolled .editorial-header .editorial-nav {
-  gap: clamp(16px, 2vw, 30px);
+  gap: clamp(12px, 1.35vw, 24px);
+}
+
+body.nav-scrolled .editorial-header .editorial-utilities {
+  gap: 6px;
+}
+
+.home-editorial.nav-scrolled .account {
+  margin-left: 10px;
 }
 
 body.nav-scrolled .editorial-header .editorial-nav a,
@@ -6849,6 +6857,28 @@ body.nav-scrolled .editorial-header .theme-pill {
 
   .editorial-strip {
     padding-inline: 20px;
+  }
+}
+
+@media (min-width: 761px) and (max-width: 1180px) {
+  body.nav-scrolled .editorial-header {
+    width: calc(100% - 24px);
+    padding-inline: 16px;
+    grid-template-columns: 34px minmax(max-content, 1fr) max-content;
+  }
+
+  body.nav-scrolled .editorial-header .editorial-nav {
+    gap: 10px;
+  }
+
+  body.nav-scrolled .editorial-header .editorial-nav a,
+  body.nav-scrolled .editorial-header .editorial-utilities > span {
+    font-size: 8px;
+    letter-spacing: 0.12em;
+  }
+
+  .home-editorial.nav-scrolled .account {
+    margin-left: 6px;
   }
 }
 
