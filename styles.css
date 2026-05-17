@@ -6340,15 +6340,15 @@ body.nav-scrolled .editorial-header .theme-pill {
 }
 
 .home-editorial.editorial-light .spotlight-carousel a::before {
-  background: linear-gradient(180deg, rgba(255, 248, 251, 0), rgba(255, 248, 251, 0.88) 58%, rgba(255, 248, 251, 0.98));
+  background: linear-gradient(180deg, rgba(18, 7, 12, 0), rgba(18, 7, 12, 0.32) 52%, rgba(18, 7, 12, 0.88));
 }
 
 .home-editorial.editorial-light .spotlight-carousel b {
-  color: var(--ed-text);
+  color: #fff7fa;
 }
 
 .home-editorial.editorial-light .spotlight-carousel small {
-  color: var(--ed-muted);
+  color: rgba(255, 233, 241, 0.78);
 }
 
 .home-editorial.editorial-light .spotlight-carousel .portrait,
@@ -6388,7 +6388,7 @@ body.nav-scrolled .editorial-header .theme-pill {
   background-size: contain;
   background-position: center;
   background-repeat: no-repeat;
-  background-color: #f8edf2;
+  background-color: #12090d;
 }
 
 .home-editorial.editorial-light .spotlight-carousel .portrait::before,
@@ -6402,8 +6402,8 @@ body.nav-scrolled .editorial-header .theme-pill {
 }
 
 .home-editorial.editorial-light .spotlight-carousel a {
-  background: #fff0f5;
-  border-color: rgba(218, 74, 123, 0.25);
+  background: #14090e;
+  border-color: rgba(218, 74, 123, 0.34);
 }
 
 .home-editorial.editorial-light .spotlight-carousel a:hover,
@@ -6774,12 +6774,22 @@ body.nav-scrolled .editorial-header .theme-pill {
 }
 
 .home-editorial.editorial-light .spotlight-carousel {
-  background: rgba(218, 74, 123, 0.06);
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.34), rgba(255, 232, 241, 0.42)),
+    rgba(218, 74, 123, 0.08);
 }
 
 .home-editorial.editorial-light .spotlight-carousel::before,
 .home-editorial.editorial-light .spotlight-carousel::after {
   background: linear-gradient(90deg, var(--ed-bg), transparent);
+}
+
+.home-editorial.editorial-light .spotlight-head > span {
+  color: rgba(37, 16, 23, 0.48);
+}
+
+.home-editorial.editorial-light .spotlight-head h2 {
+  color: #251017;
 }
 
 .home-editorial.editorial-light .editorial-actions a {
