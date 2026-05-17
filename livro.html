@@ -21,6 +21,10 @@
       overflow-y: scroll;
     }
 
+    html.site-light {
+      background: #fff8fb !important;
+    }
+
     .book-page-body {
       margin: 0;
       min-height: 100vh;
@@ -71,6 +75,59 @@
 
     .book-page-body.editorial-light::after {
       opacity: 0.42;
+    }
+
+    .book-page-body.editorial-light .editorial-header {
+      background: linear-gradient(180deg, rgba(255, 248, 251, 0.9), transparent);
+    }
+
+    .book-page-body.editorial-light .book-stage::before {
+      background:
+        radial-gradient(ellipse at center, rgba(255, 93, 157, 0.18), transparent 62%),
+        radial-gradient(ellipse at center, rgba(255, 205, 160, 0.22), transparent 38%);
+    }
+
+    .book-page-body.editorial-light .book-physical-page {
+      color: #2a121a;
+      background:
+        linear-gradient(180deg, rgba(255, 255, 255, 0.5), transparent 12%, transparent 87%, rgba(218, 74, 123, 0.08)),
+        radial-gradient(circle at 50% 10%, rgba(255, 109, 166, 0.14), transparent 23rem),
+        linear-gradient(90deg, #fff7fa, #ffeef4 48%, #fff8fb);
+      border-color: rgba(218, 74, 123, 0.22);
+    }
+
+    .book-page-body.editorial-light .left-title,
+    .book-page-body.editorial-light .profile-info b {
+      color: #2a121a;
+    }
+
+    .book-page-body.editorial-light .book-left-page p,
+    .book-page-body.editorial-light .profile-quote,
+    .book-page-body.editorial-light .about-panel p {
+      color: rgba(42, 18, 26, 0.76);
+    }
+
+    .book-page-body.editorial-light .profile-name {
+      color: #4a2330;
+    }
+
+    .book-page-body.editorial-light .profile-name::after {
+      color: rgba(74, 35, 48, 0.08);
+    }
+
+    .book-page-body.editorial-light .profile-info,
+    .book-page-body.editorial-light .social-panel,
+    .book-page-body.editorial-light .about-panel {
+      background: linear-gradient(135deg, rgba(255, 255, 255, 0.7), rgba(255, 238, 244, 0.84));
+      border-color: rgba(218, 74, 123, 0.22);
+    }
+
+    .book-page-body.editorial-light .social-panel span {
+      background: #fff1f6;
+    }
+
+    .book-page-body.editorial-light .image-label {
+      color: rgba(42, 18, 26, 0.56);
     }
 
     .book-page-body::after {

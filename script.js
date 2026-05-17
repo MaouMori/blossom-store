@@ -108,6 +108,8 @@ function initThemeToggle() {
   const saved = localStorage.getItem("blossom-site-theme") || localStorage.getItem("blossom-home-theme") || "dark";
   function setTheme(theme) {
     const light = theme === "light";
+    document.documentElement.classList.toggle("site-light", light);
+    document.documentElement.dataset.siteTheme = light ? "light" : "dark";
     document.body.classList.toggle("editorial-light", light);
     document.body.classList.toggle("home-light", light);
     buttons.forEach((button) => button.setAttribute("aria-pressed", String(light)));
