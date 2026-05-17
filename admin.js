@@ -118,6 +118,8 @@ const futureDropSeed = {
 const bookSettingsSeed = {
   titleLine1: "Livro da",
   titleLine2: "Comunidade",
+  overviewKicker: "Sobre o livro",
+  overviewHeading: "Conheca quem faz parte da Blossom",
   ambassadorsIntro: "Conheca os embaixadores e influenciadores que fazem parte da historia da Blossom. Cada pagina guarda essencia, conexao e inspiracao.",
   influencersIntro: "Conheca os influenciadores que espalham a essencia Blossom, criando conexao, estilo e presenca em cada conteudo.",
   imageLabel: "Imagem preparada",
@@ -335,7 +337,7 @@ let adminCollections = apiEnabled ? [] : getData("blossom-collections", collecti
 let adminTaxonomies = apiEnabled ? { categories: [], types: [], colors: [], visuals: [] } : getObjectData("blossom-taxonomies", taxonomySeed);
 let adminFeaturedCards = apiEnabled ? featuredSeed : getData("blossom-featured-cards", featuredSeed);
 let adminFutureDrop = apiEnabled ? futureDropSeed : getObjectData("blossom-future-drop", futureDropSeed);
-let adminBookSettings = apiEnabled ? bookSettingsSeed : getObjectData("blossom-book-settings", bookSettingsSeed);
+let adminBookSettings = apiEnabled ? bookSettingsSeed : { ...bookSettingsSeed, ...getObjectData("blossom-book-settings", bookSettingsSeed) };
 let adminOrders = [];
 let adminUsers = [];
 
@@ -456,6 +458,8 @@ function renderBookSettings() {
   if (!form) return;
   field(form, "titleLine1").value = adminBookSettings.titleLine1 || "";
   field(form, "titleLine2").value = adminBookSettings.titleLine2 || "";
+  field(form, "overviewKicker").value = adminBookSettings.overviewKicker || "";
+  field(form, "overviewHeading").value = adminBookSettings.overviewHeading || "";
   field(form, "ambassadorsIntro").value = adminBookSettings.ambassadorsIntro || "";
   field(form, "influencersIntro").value = adminBookSettings.influencersIntro || "";
   field(form, "imageLabel").value = adminBookSettings.imageLabel || "";
@@ -1153,6 +1157,8 @@ $("[data-book-settings-form]")?.addEventListener("submit", async (event) => {
   adminBookSettings = {
     titleLine1: field(form, "titleLine1").value.trim(),
     titleLine2: field(form, "titleLine2").value.trim(),
+    overviewKicker: field(form, "overviewKicker").value.trim(),
+    overviewHeading: field(form, "overviewHeading").value.trim(),
     ambassadorsIntro: field(form, "ambassadorsIntro").value.trim(),
     influencersIntro: field(form, "influencersIntro").value.trim(),
     imageLabel: field(form, "imageLabel").value.trim(),

@@ -130,6 +130,19 @@
       color: rgba(42, 18, 26, 0.56);
     }
 
+    .book-page-body.editorial-light .intro-right-page h2 {
+      color: #2b131c;
+    }
+
+    .book-page-body.editorial-light .intro-card {
+      background: rgba(255, 255, 255, 0.74);
+      border-color: rgba(218, 74, 123, 0.18);
+    }
+
+    .book-page-body.editorial-light .intro-card p {
+      color: rgba(42, 18, 26, 0.72);
+    }
+
     .book-page-body::after {
       background:
         radial-gradient(ellipse at 7% 38%, rgba(255, 132, 182, 0.28) 0 8px, transparent 9px),
@@ -196,6 +209,7 @@
       position: relative;
       width: 100%;
       min-height: min(82vw, 920px);
+      padding-bottom: 56px;
       display: grid;
       place-items: center;
       overflow: visible;
@@ -327,6 +341,55 @@
       display: grid;
       grid-template-rows: auto minmax(0, 1fr) auto;
       gap: clamp(14px, 1.5vw, 22px);
+    }
+
+    .intro-right-page {
+      display: grid;
+      align-content: center;
+      gap: clamp(18px, 2vw, 26px);
+    }
+
+    .intro-right-page h2 {
+      max-width: 520px;
+      margin: 0;
+      color: #fff2f7;
+      font-family: "Playfair Display", serif;
+      font-size: clamp(34px, 3.4vw, 54px);
+      font-weight: 600;
+      line-height: 0.98;
+      text-transform: uppercase;
+    }
+
+    .intro-right-page h2 span {
+      color: #ff87b9;
+    }
+
+    .intro-grid {
+      display: grid;
+      gap: 14px;
+    }
+
+    .intro-card {
+      border: 1px solid rgba(255, 132, 182, 0.22);
+      border-radius: 16px;
+      padding: clamp(18px, 2vw, 24px);
+      background: rgba(255, 255, 255, 0.025);
+    }
+
+    .intro-card span {
+      display: block;
+      margin-bottom: 8px;
+      color: #ff87b9;
+      font-size: 11px;
+      font-weight: 900;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+    }
+
+    .intro-card p {
+      margin: 0;
+      color: rgba(255, 255, 255, 0.72);
+      line-height: 1.65;
     }
 
     .book-kicker {
@@ -481,6 +544,59 @@
       object-fit: contain;
       display: block;
       background: rgba(10, 5, 7, 0.84);
+      pointer-events: none;
+    }
+
+    .member-image-page::before,
+    .member-image-page::after {
+      display: none;
+    }
+
+    .member-image-page .book-left-page {
+      display: block;
+      min-height: 100%;
+      padding: 0;
+    }
+
+    .member-full-image {
+      appearance: none;
+      position: relative;
+      display: block;
+      width: 100%;
+      height: 100%;
+      border: 0;
+      padding: 0;
+      overflow: hidden;
+      background:
+        radial-gradient(circle at 50% 24%, rgba(255, 130, 183, 0.6), transparent 13%),
+        radial-gradient(ellipse at 50% 74%, rgba(255, 130, 183, 0.34), transparent 30%),
+        linear-gradient(180deg, rgba(255, 116, 170, 0.18), rgba(0, 0, 0, 0.12)),
+        #0a0507;
+    }
+
+    button.member-full-image {
+      cursor: zoom-in;
+    }
+
+    .member-full-image img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center;
+      transition: transform 220ms ease, filter 220ms ease;
+    }
+
+    button.member-full-image:hover img,
+    button.member-full-image:focus-visible img {
+      transform: scale(1.018);
+      filter: saturate(1.06) brightness(1.03);
+    }
+
+    .member-full-image::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(180deg, transparent 68%, rgba(5, 2, 4, 0.24));
       pointer-events: none;
     }
 
@@ -743,7 +859,7 @@
       position: absolute;
       z-index: 7;
       left: 50%;
-      bottom: max(10px, 2vh);
+      bottom: 2px;
       transform: translateX(-50%);
       display: flex;
       gap: 12px;
@@ -879,6 +995,8 @@
     const fallbackBookSettings = {
       titleLine1: "Livro da",
       titleLine2: "Comunidade",
+      overviewKicker: "Sobre o livro",
+      overviewHeading: "Conheca quem faz parte da Blossom",
       ambassadorsIntro: "Conheca os embaixadores e influenciadores que fazem parte da historia da Blossom. Cada pagina guarda essencia, conexao e inspiracao.",
       influencersIntro: "Conheca os influenciadores que espalham a essencia Blossom, criando conexao, estilo e presenca em cada conteudo.",
       imageLabel: "Imagem preparada",
@@ -962,11 +1080,7 @@
         : bookState.settings.ambassadorsIntro;
     }
 
-    function leftPageMarkup(card, index) {
-      const image = card.image ? `<img src="${card.image}" alt="${escapeHtml(card.name)}">` : '<div class="profile-empty">Imagem preparada</div>';
-      const photo = card.image
-        ? `<button class="profile-photo" type="button" data-book-lightbox-src="${escapeHtml(card.image)}" data-book-lightbox-alt="${escapeHtml(card.name)}" aria-label="Expandir imagem de ${escapeHtml(card.name)}">${image}</button>`
-        : `<div class="profile-photo">${image}</div>`;
+    function introLeftPageMarkup() {
       return `
         <section class="book-physical-page --left">
           <div class="book-left-page">
@@ -976,10 +1090,41 @@
               <div class="title-rule"></div>
               <p>${introText()}</p>
             </div>
-            <div class="profile-photo-frame">
-              ${photo}
+          </div>
+        </section>
+      `;
+    }
+
+    function introRightPageMarkup() {
+      return `
+        <section class="book-physical-page --right">
+          <div class="book-right-page intro-right-page">
+            <span class="profile-role"><i class="book-title-mark"></i><span>${escapeHtml(bookState.settings.overviewKicker)}</span></span>
+            <h2>${escapeHtml(bookState.settings.overviewHeading)}</h2>
+            <div class="intro-grid">
+              <article class="intro-card">
+                <span>Embaixadores</span>
+                <p>${escapeHtml(bookState.settings.ambassadorsIntro)}</p>
+              </article>
+              <article class="intro-card">
+                <span>Influenciadores</span>
+                <p>${escapeHtml(bookState.settings.influencersIntro)}</p>
+              </article>
             </div>
-            <div class="image-label">${escapeHtml(bookState.settings.imageLabel)}</div>
+          </div>
+        </section>
+      `;
+    }
+
+    function leftPageMarkup(card) {
+      const image = card.image ? `<img src="${card.image}" alt="${escapeHtml(card.name)}">` : '<div class="profile-empty">Imagem preparada</div>';
+      const photo = card.image
+        ? `<button class="member-full-image" type="button" data-book-lightbox-src="${escapeHtml(card.image)}" data-book-lightbox-alt="${escapeHtml(card.name)}" aria-label="Expandir imagem de ${escapeHtml(card.name)}">${image}</button>`
+        : `<div class="member-full-image">${image}</div>`;
+      return `
+        <section class="book-physical-page --left member-image-page">
+          <div class="book-left-page">
+            ${photo}
           </div>
         </section>
       `;
@@ -1022,7 +1167,7 @@
     function buildPages() {
       const cards = currentCards();
       const safeCards = cards.length ? cards : [normalizeCard({}, 0)];
-      flipTarget.innerHTML = safeCards.map((card, index) => `${leftPageMarkup(card, index)}${rightPageMarkup(card)}`).join("");
+      flipTarget.innerHTML = `${introLeftPageMarkup()}${introRightPageMarkup()}${safeCards.map((card) => `${leftPageMarkup(card)}${rightPageMarkup(card)}`).join("")}`;
       renderDots();
     }
 
@@ -1035,16 +1180,16 @@
       flipTarget = flipShell.querySelector("[data-page-flip]");
     }
 
-    function currentPersonIndex() {
+    function currentSpreadIndex() {
       if (!bookState.pageFlip || !bookState.ready) return 0;
       return Math.max(0, Math.floor(bookState.pageFlip.getCurrentPageIndex() / 2));
     }
 
     function updateBookControls() {
       if (!bookState.pageFlip || !bookState.ready) return;
-      const index = currentPersonIndex();
+      const index = currentSpreadIndex();
       const cards = currentCards();
-      const maxIndex = Math.max(0, cards.length - 1);
+      const maxIndex = cards.length;
       document.querySelector("[data-book-prev]").disabled = index <= 0;
       document.querySelector("[data-book-next]").disabled = index >= maxIndex;
       dotsTarget.querySelectorAll("button").forEach((dot, dotIndex) => dot.classList.toggle("is-active", dotIndex === index));
@@ -1052,7 +1197,7 @@
 
     function renderDots() {
       const cards = currentCards();
-      dotsTarget.innerHTML = cards.map((_, index) => `<button type="button" data-book-dot="${index}" aria-label="Ir para pagina ${index + 1}"></button>`).join("");
+      dotsTarget.innerHTML = Array.from({ length: cards.length + 1 }, (_, index) => `<button type="button" data-book-dot="${index}" aria-label="Ir para pagina ${index + 1}"></button>`).join("");
       dotsTarget.querySelectorAll("[data-book-dot]").forEach((button) => {
         button.addEventListener("click", () => {
           bookState.pageFlip?.flip(Number(button.dataset.bookDot) * 2);
@@ -1096,11 +1241,11 @@
     }
 
     document.querySelector("[data-book-next]").addEventListener("click", () => {
-      bookState.pageFlip?.flip(Math.min(currentPersonIndex() + 1, currentCards().length - 1) * 2);
+      bookState.pageFlip?.flip(Math.min(currentSpreadIndex() + 1, currentCards().length) * 2);
     });
 
     document.querySelector("[data-book-prev]").addEventListener("click", () => {
-      bookState.pageFlip?.flip(Math.max(currentPersonIndex() - 1, 0) * 2);
+      bookState.pageFlip?.flip(Math.max(currentSpreadIndex() - 1, 0) * 2);
     });
 
     document.querySelectorAll("[data-book-tab]").forEach((tab) => {
