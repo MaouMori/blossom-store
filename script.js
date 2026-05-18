@@ -336,6 +336,11 @@ const selectors = {
   homeProducts: document.querySelector("[data-home-products]"),
   homeCollections: document.querySelector("[data-home-collections]"),
   futureDrop: document.querySelector("[data-future-drop]"),
+  ambassadorShowcase: document.querySelector("[data-ambassador-showcase]"),
+  cherryShowcase: document.querySelector("[data-cherry-showcase]"),
+  cherryFeature: document.querySelector("[data-cherry-feature]"),
+  cherryGrid: document.querySelector("[data-cherry-grid]"),
+  cherryToggle: document.querySelector("[data-cherry-toggle]"),
   spotlightTracks: document.querySelectorAll("[data-spotlight-track]"),
   lookbookTrack: document.querySelector("[data-lookbook-track]"),
   contactForm: document.querySelector("[data-contact-form]"),
@@ -501,6 +506,47 @@ function spotlightCard(card) {
   `;
 }
 
+function featuredBySection(section) {
+  return featuredCards
+    .filter((card) => card.section === section)
+    .sort((a, b) => Number(a.position || 0) - Number(b.position || 0));
+}
+
+function applySpotlightBackground(element, card, fallbackLabel) {
+  if (!element) return;
+  const image = primaryImage(card);
+  element.classList.toggle("has-upload", Boolean(image));
+  element.style.backgroundImage = image ? `url('${image}')` : "";
+  element.dataset.spotlightName = card?.name || fallbackLabel || "Blossom";
+  element.dataset.spotlightRole = card?.role || "";
+  element.dataset.spotlightImage = image || "";
+  const label = element.querySelector("span");
+  const title = element.querySelector("strong");
+  if (label) label.textContent = image ? "" : "Imagem";
+  if (title) title.textContent = card?.name || fallbackLabel || "Blossom";
+}
+
+function renderAmbassadorShowcase() {
+  if (!selectors.ambassadorShowcase) return;
+  const cards = featuredBySection("ambassadors");
+  const hero = selectors.ambassadorShowcase.querySelector(".ambassador-hero");
+  const imageCard = cards.find((card) => primaryImage(card)) || cards[0] || defaultFeaturedCards.find((card) => card.section === "ambassadors");
+  applySpotlightBackground(hero, { ...imageCard, name: "Embaixadores Blossom", role: "Comunidade oficial" }, "Embaixadores Blossom");
+}
+
+function renderCherryShowcase() {
+  if (!selectors.cherryShowcase) return;
+  const cherrys = featuredBySection("cherrys");
+  const main = cherrys[0] || { name: "Cherry Blossom", role: "Cherry em destaque", visual: "rose", image: "" };
+  const others = cherrys.slice(1);
+  applySpotlightBackground(selectors.cherryFeature, main, "Cherry Blossom");
+  if (selectors.cherryGrid) {
+    selectors.cherryGrid.innerHTML = others.length
+      ? others.map((card) => spotlightCard({ ...card, section: "cherrys" })).join("")
+      : '<p class="empty-products">Cadastre outros Cherrys no painel de destaques.</p>';
+  }
+}
+
 function renderSpotlightTracks() {
   selectors.spotlightTracks.forEach((track) => {
     const section = track.dataset.spotlightTrack;
@@ -622,6 +668,8 @@ function renderPagination(totalPages) {
 
 function renderHomeSections() {
   renderFutureDrop();
+  renderAmbassadorShowcase();
+  renderCherryShowcase();
   renderSpotlightTracks();
   if (hasHomeProducts) {
     const saleProducts = recentItems(products.filter((product) => product.visibility !== "collection-only"), 8);
@@ -873,6 +921,13 @@ if (hasCollections) {
   selectors.collectionColor?.addEventListener("change", () => { state.collectionColor = selectors.collectionColor.value; renderCollections(); });
   selectors.collectionSort?.addEventListener("change", () => { state.collectionSort = selectors.collectionSort.value; renderCollections(); });
 }
+
+selectors.cherryToggle?.addEventListener("click", () => {
+  if (!selectors.cherryShowcase || !selectors.cherryGrid || !selectors.cherryToggle) return;
+  const open = selectors.cherryShowcase.classList.toggle("is-open");
+  selectors.cherryGrid.hidden = !open;
+  selectors.cherryToggle.innerHTML = open ? 'Ocultar outros Cherrys <span>↗</span>' : 'Mostrar outros Cherrys <span>↗</span>';
+});
 
 if (hasContact) {
   selectors.contactMessage.addEventListener("input", () => { selectors.contactMessageCount.textContent = selectors.contactMessage.value.length; });

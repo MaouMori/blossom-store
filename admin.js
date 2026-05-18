@@ -125,6 +125,13 @@ const bookSettingsSeed = {
   imageLabel: "Imagem preparada",
 };
 
+function featuredSectionLabel(section) {
+  if (section === "ambassadors") return "Embaixadores";
+  if (section === "influencers") return "Influenciadores";
+  if (section === "cherrys") return "Cherrys";
+  return section || "Destaques";
+}
+
 const $ = (selector) => document.querySelector(selector);
 const $$ = (selector) => document.querySelectorAll(selector);
 const apiEnabled = location.protocol.startsWith("http");
@@ -638,7 +645,7 @@ function renderFeaturedCards() {
                 </div>
               </div>
             </td>
-            <td>${item.section === "ambassadors" ? "Embaixadores" : "Influenciadores"}</td>
+            <td>${featuredSectionLabel(item.section)}</td>
             <td>${item.position || 0}</td>
             <td class="cell-actions" style="justify-content:flex-end;">
               <button type="button" data-edit-featured-card="${item.id}" title="Editar">✎</button>
@@ -654,7 +661,9 @@ function renderFeaturedCards() {
 function renderBookPages() {
   const list = $("[data-book-list]");
   if (!list) return;
-  const sorted = [...adminFeaturedCards].sort((a, b) => String(a.section).localeCompare(String(b.section)) || Number(a.position || 0) - Number(b.position || 0));
+  const sorted = adminFeaturedCards
+    .filter((item) => item.section === "ambassadors" || item.section === "influencers")
+    .sort((a, b) => String(a.section).localeCompare(String(b.section)) || Number(a.position || 0) - Number(b.position || 0));
   list.innerHTML = sorted.length ? `
     <table class="admin-table">
       <thead>
@@ -678,7 +687,7 @@ function renderBookPages() {
                 </div>
               </div>
             </td>
-            <td>${item.section === "ambassadors" ? "Embaixadores" : "Influenciadores"}</td>
+            <td>${featuredSectionLabel(item.section)}</td>
             <td>${item.since || "2024"}</td>
             <td>${item.influence || (item.section === "influencers" ? "Digital" : "Roleplay")}</td>
             <td class="cell-actions" style="justify-content:flex-end;">
@@ -1071,8 +1080,8 @@ $("[data-featured-form]")?.addEventListener("submit", async (event) => {
   const card = {
     ...previousCard,
     id, section: data.get("section"), name: data.get("name"),
-    role: data.get("role") || (data.get("section") === "influencers" ? "Creator" : "Embaixador"),
-    href: data.get("href") || (data.get("section") === "influencers" ? "contato.html" : "sobre.html#time"),
+    role: data.get("role") || (data.get("section") === "influencers" ? "Creator" : data.get("section") === "cherrys" ? "Cherry" : "Embaixador"),
+    href: data.get("href") || (data.get("section") === "influencers" ? "contato.html" : data.get("section") === "cherrys" ? "livro.html" : "sobre.html#time"),
     visual: data.get("visual"), position: Number(data.get("position") || 0),
     image: images[0] || "", images, created: previousCard.created ?? Date.now(),
   };
