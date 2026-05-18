@@ -491,6 +491,7 @@ function homeCollectionCard(collection) {
 }
 
 const spotlightLoops = new WeakMap();
+let ambassadorShowcaseTimer = null;
 
 function spotlightCard(card) {
   const images = Array.isArray(card.images) && card.images.length ? card.images : (card.image ? [card.image] : []);
@@ -530,8 +531,23 @@ function renderAmbassadorShowcase() {
   if (!selectors.ambassadorShowcase) return;
   const cards = featuredBySection("ambassadors");
   const hero = selectors.ambassadorShowcase.querySelector(".ambassador-hero");
-  const imageCard = cards.find((card) => primaryImage(card)) || cards[0] || defaultFeaturedCards.find((card) => card.section === "ambassadors");
-  applySpotlightBackground(hero, { ...imageCard, name: "Embaixadores Blossom", role: "Comunidade oficial" }, "Embaixadores Blossom");
+  const fallback = defaultFeaturedCards.filter((card) => card.section === "ambassadors");
+  const slides = (cards.length ? cards : fallback).filter(Boolean);
+  let index = 0;
+  const renderSlide = () => {
+    const card = slides[index % Math.max(slides.length, 1)] || {};
+    applySpotlightBackground(hero, { ...card, name: "Embaixadores Blossom", role: card.role || "Comunidade oficial" }, "Embaixadores Blossom");
+    hero?.classList.remove("is-switching");
+    requestAnimationFrame(() => hero?.classList.add("is-switching"));
+  };
+  if (ambassadorShowcaseTimer) clearInterval(ambassadorShowcaseTimer);
+  renderSlide();
+  if (slides.length > 1) {
+    ambassadorShowcaseTimer = setInterval(() => {
+      index = (index + 1) % slides.length;
+      renderSlide();
+    }, 3000);
+  }
 }
 
 function renderCherryShowcase() {

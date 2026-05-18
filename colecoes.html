@@ -3,218 +3,131 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
-  <meta name="theme-color" content="#1a0b12">
+  <meta name="theme-color" content="#050305">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <title>Blossom Store</title>
+  <title>Blossom Store - Colecoes</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700;800&family=Oswald:wght@500;600;700&family=Playfair+Display:wght@500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles.css">
 </head>
-<body>
-  <header class="site-header">
-    <a class="brand" href="index.html">
-      <span class="brand-mark">✿</span>
-      <span>
-        <b>BLOSSOM</b>
-        <small>STORE</small>
-      </span>
+<body class="home-editorial collections-editorial">
+  <header class="editorial-header">
+    <a class="editorial-corner-logo collections-logo" href="index.html" aria-label="Blossom Store">
+      <strong>Blossom</strong><span>Store</span>
     </a>
-
-    <nav class="main-nav" aria-label="Navegação principal">
-      <a href="index.html">Home</a>
-      <a class="active" href="colecoes.html">Coleções</a>
-      <a href="loja.html">Loja</a>
-      <a href="sobre.html">Sobre nós</a>
+    <nav class="editorial-nav" aria-label="Navegacao principal">
+      <a href="index.html">Inicio</a>
+      <a href="index.html#embaixadores">Embaixadores</a>
+      <a href="index.html#influenciadores">Influenciadores</a>
+      <a class="active" href="colecoes.html">Colecoes</a>
+      <a href="sobre.html">Sobre nos</a>
       <a href="contato.html">Contato</a>
     </nav>
 
     <button class="mobile-menu-toggle" type="button" aria-label="Abrir menu" data-mobile-menu-toggle>☰</button>
-
     <div class="mobile-nav-overlay" data-mobile-nav-overlay></div>
-    <nav class="mobile-nav" aria-label="Navegação mobile" data-mobile-nav>
-      <button class="mobile-nav-close" type="button" aria-label="Fechar menu" data-mobile-nav-close>✕</button>
-      <a href="index.html">Home</a>
-      <a class="active" href="colecoes.html">Coleções</a>
-      <a href="loja.html">Loja</a>
-      <a href="sobre.html">Sobre nós</a>
+    <nav class="mobile-nav" aria-label="Navegacao mobile" data-mobile-nav>
+      <button class="mobile-nav-close" type="button" aria-label="Fechar menu" data-mobile-nav-close>×</button>
+      <a href="index.html">Inicio</a>
+      <a href="index.html#embaixadores">Embaixadores</a>
+      <a href="index.html#influenciadores">Influenciadores</a>
+      <a class="active" href="colecoes.html">Colecoes</a>
+      <a href="sobre.html">Sobre nos</a>
       <a href="contato.html">Contato</a>
     </nav>
 
-    <div class="account">
-      <button class="account-toggle" type="button" data-account-toggle aria-expanded="false">
-        <span class="user-icon">♙</span>
-        <span>
-          <b data-account-name>visitante</b>
-        </span>
-        <span class="chevron">⌄</span>
-      </button>
-      <div class="account-menu" data-account-menu hidden>
-        <a href="#" data-account-config>⚙ Configurações</a>
-        <a href="login.html">✿ Painel Admin</a>
-        <button type="button" data-account-logout>Entrar</button>
+    <div class="editorial-utilities">
+      <span>Claro</span>
+      <button class="theme-pill" type="button" aria-label="Alternar tema" data-theme-toggle><i></i></button>
+      <span>Escuro</span>
+      <div class="account">
+        <button class="account-toggle" type="button" data-account-toggle aria-expanded="false">
+          <span class="user-icon">♙</span>
+          <span><b data-account-name>visitante</b></span>
+          <span class="chevron">⌄</span>
+        </button>
+        <div class="account-menu" data-account-menu hidden>
+          <a href="#" data-account-config>⚙ Configuracoes</a>
+          <a href="login.html">✿ Painel Admin</a>
+          <button type="button" data-account-logout>Entrar</button>
+        </div>
+        <a class="admin-shortcut" href="login.html" aria-label="Painel admin">⚙</a>
       </div>
-      <a class="admin-shortcut" href="login.html" aria-label="Painel admin">⚙</a>
     </div>
   </header>
 
-  <main>
-    <section class="collections-hero">
-      <div class="template-visual collections-hero-media" aria-hidden="true">
-        <div class="figure figure-shop"></div>
-        <div class="garage-flower">✿</div>
-        <div class="car-shape"></div>
+  <main class="collections-editorial-main">
+    <section class="collections-editorial-hero">
+      <div class="collections-hero-copy">
+        <div class="editorial-section-title"><span class="section-flower">✿</span><span>Colecoes</span><i></i></div>
+        <h1>Explore o universo <strong>Blossom✿</strong></h1>
+        <p>Cada colecao carrega uma essencia unica. Estetica, atitude e exclusividade em cada detalhe.</p>
+        <a href="#todas-colecoes">Descubra todas as colecoes <span>↗</span></a>
       </div>
-      <div class="container collections-hero-content">
-        <span class="eyebrow">Coleções</span>
-        <h1>Expresse quem<br><strong>você é.</strong></h1>
-        <p>Cada coleção da Blossom Store é feita para representar estilos, momentos e identidades diferentes. Encontre a coleção que combina com o seu roleplay.</p>
-      </div>
-    </section>
-
-    <section class="collection-tabs container" aria-label="Tipos de coleções" data-collection-tabs>
-      <button class="active" type="button" data-collection-category-tab="Todas"><span>*</span><b>Todas</b><small>Todas as coleções</small></button>
-      <button type="button" data-collection-category-tab="Masculino"><span>M</span><b>Masculino</b><small>Coleções masculinas</small></button>
-      <button type="button" data-collection-category-tab="Feminino"><span>F</span><b>Feminino</b><small>Coleções femininas</small></button>
-      <button type="button" data-collection-category-tab="Acessórios"><span>A</span><b>Acessórios</b><small>Coleções de acessórios</small></button>
-      <button type="button" data-collection-category-tab="Drops Exclusivos"><span>D</span><b>Exclusivas</b><small>Coleções exclusivas</small></button>
-    </section>
-
-    <section class="collection-filters container" aria-label="Filtros de coleções">
-      <strong>Filtros</strong>
-      <label>Categoria
-        <select data-collection-category></select>
-      </label>
-      <label>Tipo de peça
-        <select data-collection-type></select>
-      </label>
-      <label>Cor
-        <select data-collection-color></select>
-      </label>
-      <span></span>
-      <label>Ordenar por:
-        <select data-collection-sort>
-          <option value="recent">Mais recentes</option>
-          <option value="pieces">Mais peças</option>
-          <option value="name">Nome A-Z</option>
-        </select>
-      </label>
-      <div class="view-switch">
-        <button class="active" type="button">Grid</button>
-        <button type="button">Lista</button>
+      <div class="collections-hero-art" aria-hidden="true">
+        <span>✿</span>
+        <strong>blossom</strong>
       </div>
     </section>
 
-    <section class="collections-grid container" data-collections-grid>
-      <article>
-        <div class="template-visual collection-preview spring"><span>Nova</span></div>
-        <div>
-          <h2>Blossom Spring '25</h2>
-          <b>Coleção Primavera 2025</b>
-          <p>Peças leves e estilosas para dominar as ruas.</p>
-          <footer><span>12 peças</span><a href="colecao.html?id=spring-25">Ver coleção</a></footer>
-        </div>
-      </article>
+    <section class="collections-toolbar" id="todas-colecoes">
+      <div class="editorial-section-title"><span class="section-flower">✿</span><span>Todas as colecoes</span><i></i></div>
+      <div class="collection-filters" aria-label="Filtros de colecoes">
+        <strong>Filtrar</strong>
+        <label>Categoria<select data-collection-category></select></label>
+        <label>Tipo<select data-collection-type></select></label>
+        <label>Cor<select data-collection-color></select></label>
+        <label>Ordenar
+          <select data-collection-sort>
+            <option value="recent">Mais recentes</option>
+            <option value="pieces">Mais pecas</option>
+            <option value="name">Nome A-Z</option>
+          </select>
+        </label>
+      </div>
+    </section>
+
+    <section class="collections-grid collections-editorial-grid" data-collections-grid>
       <article>
         <div class="template-visual collection-preview essentials"></div>
         <div>
           <h2>Blossom Essentials</h2>
-          <b>Coleção Essentials</b>
-          <p>Peças básicas com o padrão de qualidade Blossom.</p>
-          <footer><span>18 peças</span><a href="colecao.html?id=essentials">Ver coleção</a></footer>
-        </div>
-      </article>
-      <article>
-        <div class="template-visual collection-preview nightfall"></div>
-        <div>
-          <h2>Blossom Nightfall</h2>
-          <b>Coleção Nightfall</b>
-          <p>Cores escuras. Estilo pesado. Presença marcante.</p>
-          <footer><span>10 peças</span><a href="colecao.html?id=nightfall">Ver coleção</a></footer>
-        </div>
-      </article>
-      <article>
-        <div class="template-visual collection-preview luxury"></div>
-        <div>
-          <h2>Blossom Luxury</h2>
-          <b>Coleção Luxury</b>
-          <p>Detalhes premium para quem vive o topo do roleplay.</p>
-          <footer><span>08 peças</span><a href="colecao.html?id=luxury">Ver coleção</a></footer>
-        </div>
-      </article>
-      <article>
-        <div class="template-visual collection-preview sport"></div>
-        <div>
-          <h2>Blossom Sport</h2>
-          <b>Coleção Sport</b>
-          <p>Performance, conforto e estilo para qualquer missão.</p>
-          <footer><span>11 peças</span><a href="colecao.html?id=sport">Ver coleção</a></footer>
-        </div>
-      </article>
-      <article>
-        <div class="template-visual collection-preview oversized"></div>
-        <div>
-          <h2>Blossom Oversized</h2>
-          <b>Coleção Oversized</b>
-          <p>Modelagens amplas para um visual urbano e autêntico.</p>
-          <footer><span>14 peças</span><a href="colecao.html?id=oversized">Ver coleção</a></footer>
-        </div>
-      </article>
-      <article>
-        <div class="template-visual collection-preview pink-label"></div>
-        <div>
-          <h2>Blossom Pink Label</h2>
-          <b>Coleção Pink Label</b>
-          <p>A identidade rosa da Blossom. Única, forte e feminina.</p>
-          <footer><span>09 peças</span><a href="colecao.html?id=pink-label">Ver coleção</a></footer>
-        </div>
-      </article>
-      <article>
-        <div class="template-visual collection-preview collabs"></div>
-        <div>
-          <h2>Blossom Collabs</h2>
-          <b>Coleção Collabs</b>
-          <p>Parcerias especiais que viram história.</p>
-          <footer><span>07 peças</span><a href="colecao.html?id=collabs">Ver coleção</a></footer>
+          <b>Colecao Essentials</b>
+          <p>Pecas essenciais para quem vive a estetica Blossom todos os dias.</p>
+          <footer><span>00 pecas</span><a href="#">Ver colecao</a></footer>
         </div>
       </article>
     </section>
 
-    <section class="collection-benefits container">
-      <article><span>◇</span><b>Peças exclusivas</b><small>Roupas únicas que você só encontra aqui.</small></article>
-      <article><span>✿</span><b>Qualidade premium</b><small>Tecidos selecionados com acabamento impecável.</small></article>
-      <article><span>▱</span><b>Entrega rápida</b><small>Receba suas peças com segurança e agilidade.</small></article>
-      <article><span>☻</span><b>Suporte humanizado</b><small>Atendimento feito por quem entende do roleplay.</small></article>
-    </section>
-
-    <section class="services container" aria-label="Informações de compra">
-      <article><span>▱</span><b>Entrega digital</b><small>Receba na hora</small></article>
-      <article><span>◇</span><b>Compatível com FiveM</b><small>100% otimizado</small></article>
-      <article><span>☻</span><b>Suporte humanizado</b><small>Estamos aqui por você</small></article>
-      <article><span>⬟</span><b>Pagamento seguro</b><small>Segurança garantida</small></article>
+    <section class="movement-banner collections-join">
+      <h2>Join the movement</h2>
+      <p>Digital fashion isn't the future - it's now.</p>
+      <a href="contato.html">Faca parte <span>↗</span></a>
     </section>
   </main>
 
-  <footer class="site-footer">
-    <div class="footer-inner container">
-      <a class="footer-brand" href="index.html">
-        <span class="brand-mark">✿</span>
-        <span><b>BLOSSOM</b><small>STORE</small></span>
-      </a>
-      <p>© 2025 Blossom Store. Todos os direitos reservados.</p>
-      <nav aria-label="Links legais">
-        <a href="#">Política de privacidade</a>
-        <a href="#">Termos de uso</a>
-        <a href="#">Trocas e devoluções</a>
-      </nav>
-      <div class="footer-socials">
-        <a href="#">IG</a>
-        <a href="#">DC</a>
-        <a href="#">TK</a>
-      </div>
+  <footer class="editorial-footer">
+    <div>
+      <a class="footer-brand" href="index.html"><span class="brand-mark">✿</span><span><b>BLOSSOM</b><small>STORE</small></span></a>
+      <p>Moda com atitude. Feita para destacar quem voce e.</p>
     </div>
+    <nav>
+      <a href="index.html">Inicio</a>
+      <a href="colecoes.html">Colecoes</a>
+      <a href="sobre.html">Sobre nos</a>
+      <a href="contato.html">Contato</a>
+    </nav>
+    <nav>
+      <a href="#">Discord</a>
+      <a href="#">Instagram</a>
+      <a href="#">TikTok</a>
+      <a href="#">Patreon</a>
+    </nav>
+    <p>© 2025 Blossom Store. Todos os direitos reservados.</p>
   </footer>
+
   <script src="script.js"></script>
 </body>
 </html>
