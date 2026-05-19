@@ -258,6 +258,32 @@ const defaultFutureDrop = {
   button: "Lancamento em breve", href: "colecoes.html", badge: "Soon", cardTitle: "Blossom", image: "", images: [],
 };
 
+const defaultSiteBanners = {
+  homeHero: {
+    title: "Blossom✿",
+    subtitle: "Store",
+    heading: "Moda que expressa.<br>Atitude que floresce.",
+    description: "BLOSSOM nasceu da fusao entre o drama e o desejo de se destacar. Criamos pecas digitais que representam forca, beleza e rebeldia.",
+    primaryText: "Discord",
+    primaryHref: "https://discord.gg/blossom",
+    secondaryText: "Patreon",
+    secondaryHref: "https://www.patreon.com",
+    image: "",
+    images: [],
+  },
+  collectionsHero: {
+    eyebrow: "Colecoes",
+    title: "Explore o universo",
+    highlight: "Blossom",
+    description: "Cada colecao carrega uma essencia unica. Estetica, atitude e exclusividade em cada detalhe.",
+    button: "Descubra todas as colecoes",
+    href: "#todas-colecoes",
+    imageTitle: "blossom",
+    image: "",
+    images: [],
+  },
+};
+
 function recentValue(item) { return Number(item.createdAt || item.created || 0); }
 function recentItems(items, limit) { return [...items].sort((a, b) => recentValue(b) - recentValue(a)).slice(0, limit); }
 
@@ -284,6 +310,9 @@ let products = apiEnabled ? [] : readStore("blossom-products", []);
 let collections = apiEnabled ? [] : readStore("blossom-collections", []);
 let featuredCards = apiEnabled ? defaultFeaturedCards : readStore("blossom-featured-cards", defaultFeaturedCards);
 let futureDrop = apiEnabled ? defaultFutureDrop : readStore("blossom-future-drop", defaultFutureDrop);
+let siteBanners = apiEnabled ? defaultSiteBanners : (() => {
+  try { return { ...defaultSiteBanners, ...JSON.parse(localStorage.getItem("blossom-site-banners") || "{}") }; } catch { return defaultSiteBanners; }
+})();
 let taxonomies = (() => {
   if (apiEnabled) return { categories: [], types: [], colors: [], visuals: [] };
   try { const saved = JSON.parse(localStorage.getItem("blossom-taxonomies")); return saved && typeof saved === "object" ? { ...defaultTaxonomies, ...saved } : defaultTaxonomies; } catch { return defaultTaxonomies; }
@@ -336,6 +365,8 @@ const selectors = {
   homeProducts: document.querySelector("[data-home-products]"),
   homeCollections: document.querySelector("[data-home-collections]"),
   futureDrop: document.querySelector("[data-future-drop]"),
+  homeHero: document.querySelector("[data-home-hero]") || document.querySelector(".editorial-hero"),
+  collectionsHero: document.querySelector("[data-collections-hero]"),
   ambassadorShowcase: document.querySelector("[data-ambassador-showcase]"),
   cherryShowcase: document.querySelector("[data-cherry-showcase]"),
   cherryFeature: document.querySelector("[data-cherry-feature]"),
@@ -369,12 +400,13 @@ async function loadApiStore() {
     taxonomies = store.taxonomies && Object.keys(store.taxonomies).length ? store.taxonomies : { categories: [], types: [], colors: [], visuals: [] };
     featuredCards = Array.isArray(taxonomies.featuredCards) && taxonomies.featuredCards.length ? taxonomies.featuredCards : defaultFeaturedCards;
     futureDrop = taxonomies.futureDrop && typeof taxonomies.futureDrop === "object" ? { ...defaultFutureDrop, ...taxonomies.futureDrop } : defaultFutureDrop;
+    siteBanners = taxonomies.siteBanners && typeof taxonomies.siteBanners === "object" ? { ...defaultSiteBanners, ...taxonomies.siteBanners } : defaultSiteBanners;
     if (hasShop) { renderFilters(); renderCatalog(); }
     renderHomeSections();
     renderCollections();
     renderCollectionDetail();
   } catch {
-    products = []; collections = []; featuredCards = defaultFeaturedCards; futureDrop = defaultFutureDrop;
+    products = []; collections = []; featuredCards = defaultFeaturedCards; futureDrop = defaultFutureDrop; siteBanners = defaultSiteBanners;
     renderHomeSections(); renderCollections(); renderCollectionDetail();
   }
 }
@@ -592,6 +624,65 @@ function renderFutureDrop() {
   if (media) { media.classList.toggle("has-upload", Boolean(image)); media.style.backgroundImage = image ? `url('${image}')` : ""; }
 }
 
+function setHeroLink(link, text, href) {
+  if (!link) return;
+  link.href = href || "#";
+  link.textContent = text || "Abrir";
+  if (/^https?:\/\//.test(href || "")) {
+    link.target = "_blank";
+    link.rel = "noreferrer";
+  } else {
+    link.removeAttribute("target");
+    link.removeAttribute("rel");
+  }
+}
+
+function renderSiteBanners() {
+  const home = { ...defaultSiteBanners.homeHero, ...(siteBanners.homeHero || {}) };
+  const homeImage = primaryImage(home);
+  if (selectors.homeHero) {
+    const logo = selectors.homeHero.querySelector(".editorial-logo");
+    const title = logo?.querySelector("strong");
+    const subtitle = logo?.querySelector("span");
+    const heading = selectors.homeHero.querySelector("h1");
+    const description = selectors.homeHero.querySelector("p");
+    const actions = selectors.homeHero.querySelectorAll(".editorial-actions a");
+    const image = selectors.homeHero.querySelector(".editorial-hero-image");
+    if (title) title.textContent = home.title || defaultSiteBanners.homeHero.title;
+    if (subtitle) subtitle.textContent = home.subtitle || defaultSiteBanners.homeHero.subtitle;
+    if (heading) heading.innerHTML = home.heading || defaultSiteBanners.homeHero.heading;
+    if (description) description.textContent = home.description || defaultSiteBanners.homeHero.description;
+    setHeroLink(actions[0], home.primaryText, home.primaryHref);
+    setHeroLink(actions[1], home.secondaryText, home.secondaryHref);
+    if (image) {
+      image.classList.toggle("has-upload", Boolean(homeImage));
+      image.style.backgroundImage = homeImage ? `url('${homeImage}')` : "";
+    }
+  }
+
+  const collectionsBanner = { ...defaultSiteBanners.collectionsHero, ...(siteBanners.collectionsHero || {}) };
+  const collectionsImage = primaryImage(collectionsBanner);
+  if (selectors.collectionsHero) {
+    const eyebrow = selectors.collectionsHero.querySelector("[data-collections-hero-eyebrow]");
+    const title = selectors.collectionsHero.querySelector("[data-collections-hero-title]");
+    const highlight = selectors.collectionsHero.querySelector("[data-collections-hero-highlight]");
+    const description = selectors.collectionsHero.querySelector("[data-collections-hero-description]");
+    const link = selectors.collectionsHero.querySelector("[data-collections-hero-link]");
+    const image = selectors.collectionsHero.querySelector("[data-collections-hero-image]");
+    const imageTitle = selectors.collectionsHero.querySelector("[data-collections-hero-image-title]");
+    if (eyebrow) eyebrow.textContent = collectionsBanner.eyebrow || defaultSiteBanners.collectionsHero.eyebrow;
+    if (title) title.firstChild.textContent = `${collectionsBanner.title || defaultSiteBanners.collectionsHero.title} `;
+    if (highlight) highlight.textContent = collectionsBanner.highlight || defaultSiteBanners.collectionsHero.highlight;
+    if (description) description.textContent = collectionsBanner.description || defaultSiteBanners.collectionsHero.description;
+    if (link) { link.href = collectionsBanner.href || "#todas-colecoes"; link.innerHTML = `${collectionsBanner.button || defaultSiteBanners.collectionsHero.button} <span>↗</span>`; }
+    if (imageTitle) imageTitle.textContent = collectionsBanner.imageTitle || defaultSiteBanners.collectionsHero.imageTitle;
+    if (image) {
+      image.classList.toggle("has-upload", Boolean(collectionsImage));
+      image.style.backgroundImage = collectionsImage ? `url('${collectionsImage}')` : "";
+    }
+  }
+}
+
 function sizeSpotlightCards(track) {
   const cards = [...track.querySelectorAll("a")];
   if (!cards.length) return 0;
@@ -683,6 +774,7 @@ function renderPagination(totalPages) {
 }
 
 function renderHomeSections() {
+  renderSiteBanners();
   renderFutureDrop();
   renderAmbassadorShowcase();
   renderCherryShowcase();

@@ -115,6 +115,32 @@ const futureDropSeed = {
   images: [],
 };
 
+const siteBannersSeed = {
+  homeHero: {
+    title: "Blossom Store",
+    subtitle: "Store",
+    heading: "Moda que expressa.<br>Atitude que floresce.",
+    description: "BLOSSOM nasceu da fusao entre o drama e o desejo de se destacar. Criamos pecas digitais que representam forca, beleza e rebeldia.",
+    primaryText: "Discord",
+    primaryHref: "https://discord.gg/blossom",
+    secondaryText: "Patreon",
+    secondaryHref: "https://www.patreon.com",
+    image: "",
+    images: [],
+  },
+  collectionsHero: {
+    eyebrow: "Colecoes",
+    title: "Explore o universo",
+    highlight: "Blossom",
+    description: "Cada colecao carrega uma essencia unica. Estetica, atitude e exclusividade em cada detalhe.",
+    button: "Descubra todas as colecoes",
+    href: "#todas-colecoes",
+    imageTitle: "blossom",
+    image: "",
+    images: [],
+  },
+};
+
 const bookSettingsSeed = {
   titleLine1: "Livro da",
   titleLine2: "Comunidade",
@@ -344,6 +370,7 @@ let adminCollections = apiEnabled ? [] : getData("blossom-collections", collecti
 let adminTaxonomies = apiEnabled ? { categories: [], types: [], colors: [], visuals: [] } : getObjectData("blossom-taxonomies", taxonomySeed);
 let adminFeaturedCards = apiEnabled ? featuredSeed : getData("blossom-featured-cards", featuredSeed);
 let adminFutureDrop = apiEnabled ? futureDropSeed : getObjectData("blossom-future-drop", futureDropSeed);
+let adminSiteBanners = apiEnabled ? siteBannersSeed : getObjectData("blossom-site-banners", siteBannersSeed);
 let adminBookSettings = apiEnabled ? bookSettingsSeed : { ...bookSettingsSeed, ...getObjectData("blossom-book-settings", bookSettingsSeed) };
 let adminOrders = [];
 let adminUsers = [];
@@ -359,6 +386,7 @@ async function loadApiStore() {
     adminTaxonomies = store.taxonomies && Object.keys(store.taxonomies).length ? store.taxonomies : { categories: [], types: [], colors: [], visuals: [] };
     adminFeaturedCards = Array.isArray(adminTaxonomies.featuredCards) && adminTaxonomies.featuredCards.length ? adminTaxonomies.featuredCards : featuredSeed;
     adminFutureDrop = adminTaxonomies.futureDrop && typeof adminTaxonomies.futureDrop === "object" ? { ...futureDropSeed, ...adminTaxonomies.futureDrop } : futureDropSeed;
+    adminSiteBanners = adminTaxonomies.siteBanners && typeof adminTaxonomies.siteBanners === "object" ? { ...siteBannersSeed, ...adminTaxonomies.siteBanners } : siteBannersSeed;
     adminBookSettings = adminTaxonomies.bookSettings && typeof adminTaxonomies.bookSettings === "object" ? { ...bookSettingsSeed, ...adminTaxonomies.bookSettings } : bookSettingsSeed;
     adminOrders = Array.isArray(store.orders) ? store.orders : [];
     renderAll();
@@ -369,6 +397,7 @@ async function saveApiStore() {
   if (!apiEnabled) return;
   adminTaxonomies.featuredCards = adminFeaturedCards;
   adminTaxonomies.futureDrop = adminFutureDrop;
+  adminTaxonomies.siteBanners = adminSiteBanners;
   adminTaxonomies.bookSettings = adminBookSettings;
   const response = await fetch("/api/store", {
     method: "PUT",
@@ -402,10 +431,12 @@ async function updateUserRole(username, role) {
 
 function saveProducts() { setData("blossom-products", adminProducts); return saveApiStore(); }
 function saveCollections() { setData("blossom-collections", adminCollections); return saveApiStore(); }
-function saveTaxonomies() { adminTaxonomies.featuredCards = adminFeaturedCards; adminTaxonomies.futureDrop = adminFutureDrop; adminTaxonomies.bookSettings = adminBookSettings; setData("blossom-taxonomies", adminTaxonomies); return saveApiStore(); }
-function saveFeaturedCards() { adminTaxonomies.featuredCards = adminFeaturedCards; adminTaxonomies.futureDrop = adminFutureDrop; adminTaxonomies.bookSettings = adminBookSettings; setData("blossom-featured-cards", adminFeaturedCards); return saveApiStore(); }
-function saveFutureDrop() { adminTaxonomies.futureDrop = adminFutureDrop; adminTaxonomies.bookSettings = adminBookSettings; setData("blossom-future-drop", adminFutureDrop); return saveApiStore(); }
-function saveBookSettings() { adminTaxonomies.bookSettings = adminBookSettings; setData("blossom-book-settings", adminBookSettings); return saveApiStore(); }
+function syncAdminTaxonomies() { adminTaxonomies.featuredCards = adminFeaturedCards; adminTaxonomies.futureDrop = adminFutureDrop; adminTaxonomies.siteBanners = adminSiteBanners; adminTaxonomies.bookSettings = adminBookSettings; }
+function saveTaxonomies() { syncAdminTaxonomies(); setData("blossom-taxonomies", adminTaxonomies); return saveApiStore(); }
+function saveFeaturedCards() { syncAdminTaxonomies(); setData("blossom-featured-cards", adminFeaturedCards); return saveApiStore(); }
+function saveFutureDrop() { syncAdminTaxonomies(); setData("blossom-future-drop", adminFutureDrop); return saveApiStore(); }
+function saveSiteBanners() { syncAdminTaxonomies(); setData("blossom-site-banners", adminSiteBanners); return saveApiStore(); }
+function saveBookSettings() { syncAdminTaxonomies(); setData("blossom-book-settings", adminBookSettings); return saveApiStore(); }
 
 function optionMarkup(values, selected = "") {
   return [...new Set(values)].map((value) => `<option ${value === selected ? "selected" : ""}>${value}</option>`).join("");
@@ -456,6 +487,7 @@ function renderAll() {
   renderBookSettings();
   renderTaxonomies();
   renderFutureDropPreview();
+  renderSiteBannerForms();
   renderUsers();
   updateStats();
 }
@@ -732,6 +764,20 @@ function renderFutureDropPreview() {
   `;
 }
 
+function renderSiteBannerForms() {
+  $$("[data-site-banner-form]").forEach((form) => {
+    const key = form.dataset.siteBannerForm;
+    const banner = { ...(siteBannersSeed[key] || {}), ...(adminSiteBanners[key] || {}) };
+    Object.entries(banner).forEach(([name, value]) => {
+      const input = field(form, name);
+      if (input && input.type !== "file") input.value = value || "";
+    });
+    form.dataset.currentImages = JSON.stringify(itemImages(banner));
+    const note = $(`[data-site-banner-note="${key}"]`);
+    if (note) note.textContent = itemImages(banner).length ? `${itemImages(banner).length} imagem atual. Envie outra para substituir.` : "Nenhuma imagem anexada.";
+  });
+}
+
 function renderUsers() {
   const list = $("[data-users-list]");
   if (!list) return;
@@ -875,6 +921,14 @@ $("[data-new-featured-card]")?.addEventListener("click", () => openFeaturedForm(
 $("[data-new-book-page]")?.addEventListener("click", () => openBookForm());
 $("[data-edit-future-drop]")?.addEventListener("click", () => openFutureForm());
 $("[data-refresh-users]")?.addEventListener("click", loadUsers);
+
+$$("[data-site-banner-form] input[name='images']").forEach((input) => {
+  input.addEventListener("change", (event) => {
+    const form = event.target.closest("[data-site-banner-form]");
+    const note = $(`[data-site-banner-note="${form.dataset.siteBannerForm}"]`);
+    if (note) note.textContent = event.target.files.length ? `${event.target.files.length} imagem selecionada. Ela sera otimizada ao salvar.` : "Nenhuma imagem anexada.";
+  });
+});
 
 $("[data-product-form] input[name='images']")?.addEventListener("change", (event) => {
   const count = event.target.files.length;
@@ -1220,12 +1274,54 @@ $("[data-future-form]")?.addEventListener("submit", async (event) => {
   }
 });
 
+$$("[data-site-banner-form]").forEach((form) => {
+  form.addEventListener("submit", async (event) => {
+    event.preventDefault();
+    const form = event.currentTarget;
+    const key = form.dataset.siteBannerForm;
+    const data = new FormData(form);
+    const submitButton = form.querySelector("[type='submit']");
+    const originalText = submitButton.textContent;
+    submitButton.disabled = true;
+    submitButton.textContent = "Salvando...";
+    let images = JSON.parse(form.dataset.currentImages || "[]");
+    try {
+      const uploadedImages = await filesToDataUrls(field(form, "images").files);
+      images = uploadedImages.length ? uploadedImages : images;
+    } catch (error) {
+      const note = $(`[data-site-banner-note="${key}"]`);
+      if (note) note.textContent = error.message;
+      submitButton.disabled = false;
+      submitButton.textContent = originalText;
+      return;
+    }
+    const current = { ...(siteBannersSeed[key] || {}), ...(adminSiteBanners[key] || {}) };
+    const next = { ...current, image: images[0] || "", images };
+    for (const [name, value] of data.entries()) {
+      if (name !== "images") next[name] = value;
+    }
+    adminSiteBanners = { ...adminSiteBanners, [key]: next };
+    try {
+      await saveSiteBanners();
+      renderAll();
+      toast("Banner salvo.");
+    } catch (error) {
+      const note = $(`[data-site-banner-note="${key}"]`);
+      if (note) note.textContent = `Erro ao salvar: ${errorText(error)}`;
+    } finally {
+      submitButton.disabled = false;
+      submitButton.textContent = originalText;
+    }
+  });
+});
+
 $("[data-reset-data]")?.addEventListener("click", () => {
   adminProducts = productSeed;
   adminCollections = collectionSeed;
   adminTaxonomies = taxonomySeed;
   adminFeaturedCards = featuredSeed;
   adminFutureDrop = futureDropSeed;
+  adminSiteBanners = siteBannersSeed;
   adminBookSettings = bookSettingsSeed;
   saveProducts().catch((error) => console.warn(error));
   saveCollections().catch((error) => console.warn(error));

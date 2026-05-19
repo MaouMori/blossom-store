@@ -681,7 +681,7 @@
           <span>✿</span>
         </h1>
         <div class="admin-topbar-actions">
-          <a href="index.html" target="_blank">Ver Loja</a>
+          <a href="index.html">Ver Loja</a>
           <button type="button" data-logout>Sair</button>
         </div>
       </div>
@@ -820,6 +820,51 @@
 
       <!-- FUTURE DROP -->
       <section class="admin-section" data-section="future">
+        <div class="admin-content-panel" style="margin-bottom:18px;">
+          <div class="admin-panel-header">
+            <h2>Banner da Home</h2>
+          </div>
+          <form data-site-banner-form="homeHero" style="display:grid;gap:14px;">
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;">
+              <label>Logo/Titulo<input name="title" required></label>
+              <label>Subtitulo<input name="subtitle" required></label>
+            </div>
+            <label>Chamada principal<textarea name="heading" rows="2" required></textarea></label>
+            <label>Descricao<textarea name="description" rows="3" required></textarea></label>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;">
+              <label>Texto botao 1<input name="primaryText" required></label>
+              <label>Link botao 1<input name="primaryHref" required></label>
+            </div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;">
+              <label>Texto botao 2<input name="secondaryText" required></label>
+              <label>Link botao 2<input name="secondaryHref" required></label>
+            </div>
+            <label>Imagem principal<input name="images" type="file" accept="image/png,image/jpeg,image/gif,image/webp"></label>
+            <p class="admin-image-note" data-site-banner-note="homeHero">Nenhuma imagem anexada.</p>
+            <button class="btn-add" type="submit" style="width:fit-content;">Salvar banner da home</button>
+          </form>
+        </div>
+        <div class="admin-content-panel" style="margin-bottom:18px;">
+          <div class="admin-panel-header">
+            <h2>Banner de Colecoes</h2>
+          </div>
+          <form data-site-banner-form="collectionsHero" style="display:grid;gap:14px;">
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;">
+              <label>Etiqueta<input name="eyebrow" required></label>
+              <label>Titulo<input name="title" required></label>
+            </div>
+            <label>Destaque em rosa<input name="highlight" required></label>
+            <label>Descricao<textarea name="description" rows="3" required></textarea></label>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;">
+              <label>Texto do botao<input name="button" required></label>
+              <label>Link do botao<input name="href" required></label>
+            </div>
+            <label>Texto dentro da imagem<input name="imageTitle" required></label>
+            <label>Imagem do banner<input name="images" type="file" accept="image/png,image/jpeg,image/gif,image/webp"></label>
+            <p class="admin-image-note" data-site-banner-note="collectionsHero">Nenhuma imagem anexada.</p>
+            <button class="btn-add" type="submit" style="width:fit-content;">Salvar banner de colecoes</button>
+          </form>
+        </div>
         <div class="admin-content-panel">
           <div class="admin-panel-header">
             <h2>Drop Futuro</h2>
