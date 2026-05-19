@@ -6226,6 +6226,7 @@ body.nav-scrolled .editorial-header .theme-pill {
   align-items: center;
   justify-content: center;
   min-height: clamp(390px, 40vw, 620px);
+  border: 0;
   text-align: center;
 }
 
