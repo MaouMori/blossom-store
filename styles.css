@@ -7017,12 +7017,13 @@ body.nav-scrolled .editorial-header .theme-pill {
 
 .collections-editorial-hero {
   position: relative;
-  min-height: clamp(520px, 56vw, 760px);
+  min-height: clamp(560px, 54vw, 760px);
   display: grid;
-  grid-template-columns: minmax(320px, 0.48fr) minmax(0, 1fr);
+  grid-template-columns: minmax(340px, 0.8fr) minmax(460px, 1.05fr);
   align-items: center;
-  gap: clamp(28px, 5vw, 84px);
-  padding: clamp(110px, 10vw, 150px) max(46px, calc((100vw - 1240px) / 2)) 70px;
+  gap: clamp(46px, 6vw, 96px);
+  padding: clamp(120px, 10vw, 156px) max(64px, calc((100vw - 1320px) / 2)) 76px;
+  overflow: hidden;
 }
 
 .collections-editorial-hero::before,
@@ -7056,23 +7057,40 @@ body.nav-scrolled .editorial-header .theme-pill {
   z-index: 3;
 }
 
+.collections-hero-copy {
+  max-width: 540px;
+  min-width: 0;
+  align-self: center;
+}
+
+.collections-hero-copy .editorial-section-title {
+  position: relative;
+  left: auto;
+  top: auto;
+  width: auto;
+  margin: 0 0 24px;
+}
+
 .collections-hero-copy h1 {
-  margin: 28px 0 18px;
+  max-width: 100%;
+  margin: 0 0 24px;
   color: #fff7fa;
-  font-size: clamp(38px, 5.5vw, 76px);
+  font-size: clamp(44px, 4.3vw, 70px);
   font-weight: 500;
-  line-height: 0.98;
-  letter-spacing: 0.08em;
+  line-height: 1.03;
+  letter-spacing: 0.055em;
   text-transform: uppercase;
+  overflow-wrap: normal;
 }
 
 .collections-hero-copy h1 strong {
   display: block;
   color: var(--ed-pink);
   font-family: "Playfair Display", serif;
-  font-size: 1.26em;
+  font-size: clamp(58px, 5.7vw, 92px);
   font-weight: 600;
-  letter-spacing: 0.04em;
+  line-height: 0.95;
+  letter-spacing: 0.025em;
 }
 
 .collections-hero-copy p {
@@ -7111,7 +7129,9 @@ body.nav-scrolled .editorial-header .theme-pill {
 }
 
 .collections-hero-art {
-  min-height: clamp(320px, 38vw, 560px);
+  width: min(100%, 760px);
+  min-height: clamp(360px, 33vw, 540px);
+  justify-self: end;
   border-radius: 24px;
   overflow: hidden;
   display: grid;
@@ -7142,14 +7162,14 @@ body.nav-scrolled .editorial-header .theme-pill {
   position: absolute;
   top: 18%;
   color: var(--ed-pink);
-  font-size: clamp(80px, 11vw, 150px);
+  font-size: clamp(72px, 9vw, 136px);
   text-shadow: 0 0 40px rgba(255, 112, 158, 0.7);
 }
 
 .collections-hero-art strong {
   color: rgba(255, 194, 218, 0.86);
   font-family: "Playfair Display", serif;
-  font-size: clamp(62px, 10vw, 152px);
+  font-size: clamp(66px, 8vw, 128px);
   font-weight: 500;
   text-shadow: 0 0 42px rgba(255, 112, 158, 0.72);
 }
