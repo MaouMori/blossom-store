@@ -2,7 +2,23 @@ const adminMoney = new Intl.NumberFormat("pt-BR", { style: "currency", currency:
 const ADMIN_USER = "admin";
 const ADMIN_PASS = "admin123";
 
-if (localStorage.getItem("blossom-site-theme") === "light") document.body.classList.add("home-light");
+function setAdminTheme(theme) {
+  const light = theme === "light";
+  document.documentElement.classList.toggle("site-light", light);
+  document.documentElement.dataset.siteTheme = light ? "light" : "dark";
+  document.body.classList.toggle("home-light", light);
+  document.body.classList.toggle("editorial-light", light);
+  document.querySelectorAll("[data-theme-toggle]").forEach((button) => button.setAttribute("aria-pressed", String(light)));
+  localStorage.setItem("blossom-site-theme", light ? "light" : "dark");
+}
+
+setAdminTheme(localStorage.getItem("blossom-site-theme") || localStorage.getItem("blossom-home-theme") || "dark");
+
+document.addEventListener("DOMContentLoaded", () => {
+  document.querySelectorAll("[data-theme-toggle]").forEach((button) => {
+    button.addEventListener("click", () => setAdminTheme(document.body.classList.contains("home-light") ? "dark" : "light"));
+  });
+});
 
 const productSeed = [
   ["hoodie-black", "Blossom Hoodie Black", "Masculino", "Moletons", "Preto", 199.9, "hoodie-dark", true],

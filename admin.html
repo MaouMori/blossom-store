@@ -27,11 +27,44 @@
     }
 
     .admin-new-body {
+      --admin-bg: #09070a;
+      --admin-sidebar: rgba(15, 12, 16, 0.96);
+      --admin-panel: rgba(18, 15, 20, 0.94);
+      --admin-text: #fff7fb;
+      --admin-muted: #a99aa2;
+      --admin-line: rgba(255, 143, 190, 0.2);
+      --admin-line-soft: rgba(255, 143, 190, 0.1);
+      --admin-pink: #ff86b5;
+      --admin-pink-soft: #ffb6d2;
+      --admin-pink-bg: rgba(255, 134, 181, 0.12);
+      --admin-green: #7bc9a3;
+      --admin-green-bg: rgba(123, 201, 163, 0.12);
+      --admin-avatar: #d85b91;
       margin: 0;
-      background: var(--admin-bg);
+      background:
+        radial-gradient(circle at 78% 4%, rgba(255, 134, 181, 0.16), transparent 30rem),
+        radial-gradient(circle at 8% 38%, rgba(103, 22, 54, 0.18), transparent 28rem),
+        var(--admin-bg);
       color: var(--admin-text);
       font-family: "Archivo", Arial, sans-serif;
       min-height: 100vh;
+    }
+
+    .admin-new-body.home-light {
+      --admin-bg: #faf6f3;
+      --admin-sidebar: #fff;
+      --admin-panel: #fff;
+      --admin-text: #2d1f1f;
+      --admin-muted: #8a7a72;
+      --admin-line: rgba(139, 115, 105, 0.18);
+      --admin-line-soft: rgba(139, 115, 105, 0.10);
+      --admin-pink: #c97b7b;
+      --admin-pink-soft: #e8a8a8;
+      --admin-pink-bg: rgba(201, 123, 123, 0.08);
+      --admin-avatar: #d4a5a5;
+      background:
+        radial-gradient(circle at 78% 4%, rgba(201, 123, 123, 0.12), transparent 30rem),
+        #faf6f3;
     }
 
     .admin-layout {
@@ -192,6 +225,8 @@
       display: flex;
       align-items: center;
       gap: 12px;
+      flex-wrap: wrap;
+      justify-content: flex-end;
     }
 
     .admin-topbar-actions a,
@@ -305,6 +340,7 @@
       border: 1px solid var(--admin-line);
       border-radius: 12px;
       padding: 22px;
+      box-shadow: 0 18px 44px rgba(0, 0, 0, 0.12);
     }
 
     .admin-panel-header {
@@ -319,6 +355,90 @@
       font-size: 15px;
       font-weight: 800;
       color: var(--admin-text);
+    }
+
+    .admin-edit-form {
+      display: grid;
+      gap: 18px;
+    }
+
+    .admin-form-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 16px;
+    }
+
+    .admin-form-actions {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+      padding-top: 4px;
+    }
+
+    .admin-new-body .admin-content-panel label,
+    .admin-edit-form label {
+      display: grid;
+      gap: 8px;
+      color: var(--admin-text);
+      font-size: 11px;
+      font-weight: 900;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+
+    .admin-new-body .admin-content-panel input,
+    .admin-new-body .admin-content-panel select,
+    .admin-new-body .admin-content-panel textarea,
+    .admin-edit-form input,
+    .admin-edit-form select,
+    .admin-edit-form textarea {
+      width: 100%;
+      min-height: 44px;
+      box-sizing: border-box;
+      border: 1px solid var(--admin-line);
+      border-radius: 10px;
+      background: color-mix(in srgb, var(--admin-bg) 78%, var(--admin-panel));
+      color: var(--admin-text);
+      padding: 0 13px;
+      font: inherit;
+      font-size: 13px;
+      font-weight: 600;
+      letter-spacing: 0;
+      text-transform: none;
+      outline: none;
+      transition: border-color 160ms ease, box-shadow 160ms ease, background 160ms ease;
+    }
+
+    .admin-new-body .admin-content-panel textarea,
+    .admin-edit-form textarea {
+      min-height: 96px;
+      padding-block: 12px;
+      resize: vertical;
+      line-height: 1.55;
+    }
+
+    .admin-new-body .admin-content-panel input[type="file"],
+    .admin-edit-form input[type="file"] {
+      padding: 10px;
+      cursor: pointer;
+    }
+
+    .admin-new-body .admin-content-panel input:focus,
+    .admin-new-body .admin-content-panel select:focus,
+    .admin-new-body .admin-content-panel textarea:focus,
+    .admin-edit-form input:focus,
+    .admin-edit-form select:focus,
+    .admin-edit-form textarea:focus {
+      border-color: var(--admin-pink);
+      box-shadow: 0 0 0 3px color-mix(in srgb, var(--admin-pink) 22%, transparent);
+    }
+
+    .admin-image-note {
+      margin: -6px 0 0;
+      color: var(--admin-muted);
+      font-size: 12px;
+      line-height: 1.5;
     }
 
     .admin-panel-header a,
@@ -347,6 +467,35 @@
 
     .admin-panel-header .btn-add:hover {
       background: #b86a6a;
+    }
+
+    .btn-add {
+      min-height: 42px;
+      width: fit-content;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 0 18px;
+      border-radius: 10px;
+      border: 1px solid var(--admin-pink);
+      background: linear-gradient(135deg, var(--admin-pink), color-mix(in srgb, var(--admin-pink) 82%, #fff));
+      color: #18080f;
+      font-size: 11px;
+      font-weight: 900;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      cursor: pointer;
+      box-shadow: 0 14px 28px color-mix(in srgb, var(--admin-pink) 18%, transparent);
+      transition: transform 160ms ease, filter 160ms ease, box-shadow 160ms ease;
+    }
+
+    .btn-add:hover,
+    .btn-add:focus-visible {
+      transform: translateY(-1px);
+      filter: brightness(1.04);
+      box-shadow: 0 18px 34px color-mix(in srgb, var(--admin-pink) 26%, transparent);
+      outline: none;
     }
 
     /* Table styles */
@@ -571,6 +720,41 @@
       cursor: pointer;
     }
 
+    .admin-theme-control {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 10px;
+      border: 1px solid var(--admin-line);
+      border-radius: 999px;
+      background: var(--admin-panel);
+    }
+
+    .admin-theme-control span {
+      color: var(--admin-muted);
+      font-size: 10px;
+      font-weight: 900;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+
+    .admin-theme-control .theme-pill {
+      width: 36px;
+      height: 16px;
+      min-height: 0;
+      display: inline-block;
+      padding: 2px;
+      border-radius: 999px;
+      background: rgba(255, 134, 181, 0.18);
+    }
+
+    .admin-theme-control .theme-pill:hover,
+    .admin-theme-control .theme-pill:focus-visible {
+      border-color: var(--admin-pink);
+      transform: none;
+      outline: none;
+    }
+
     /* Responsive */
     @media (max-width: 1100px) {
       .admin-layout {
@@ -586,6 +770,9 @@
       .admin-panels-grid.three-col {
         grid-template-columns: 1fr;
       }
+      .admin-form-grid {
+        grid-template-columns: 1fr;
+      }
     }
 
     @media (max-width: 600px) {
@@ -594,6 +781,15 @@
       }
       .admin-main {
         padding: 16px;
+      }
+      .admin-topbar {
+        align-items: flex-start;
+        gap: 14px;
+        flex-direction: column;
+      }
+      .admin-topbar-actions {
+        width: 100%;
+        justify-content: flex-start;
       }
     }
   </style>
@@ -681,6 +877,11 @@
           <span>✿</span>
         </h1>
         <div class="admin-topbar-actions">
+          <div class="admin-theme-control" aria-label="Tema do site">
+            <span>Claro</span>
+            <button class="theme-pill" type="button" aria-label="Alternar tema" data-theme-toggle><i></i></button>
+            <span>Escuro</span>
+          </div>
           <a href="index.html">Ver Loja</a>
           <button type="button" data-logout>Sair</button>
         </div>
@@ -824,45 +1025,45 @@
           <div class="admin-panel-header">
             <h2>Banner da Home</h2>
           </div>
-          <form data-site-banner-form="homeHero" style="display:grid;gap:14px;">
-            <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;">
+          <form class="admin-edit-form" data-site-banner-form="homeHero">
+            <div class="admin-form-grid">
               <label>Logo/Titulo<input name="title" required></label>
               <label>Subtitulo<input name="subtitle" required></label>
             </div>
             <label>Chamada principal<textarea name="heading" rows="2" required></textarea></label>
             <label>Descricao<textarea name="description" rows="3" required></textarea></label>
-            <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;">
+            <div class="admin-form-grid">
               <label>Texto botao 1<input name="primaryText" required></label>
               <label>Link botao 1<input name="primaryHref" required></label>
             </div>
-            <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;">
+            <div class="admin-form-grid">
               <label>Texto botao 2<input name="secondaryText" required></label>
               <label>Link botao 2<input name="secondaryHref" required></label>
             </div>
             <label>Imagem principal<input name="images" type="file" accept="image/png,image/jpeg,image/gif,image/webp"></label>
             <p class="admin-image-note" data-site-banner-note="homeHero">Nenhuma imagem anexada.</p>
-            <button class="btn-add" type="submit" style="width:fit-content;">Salvar banner da home</button>
+            <div class="admin-form-actions"><button class="btn-add" type="submit">Salvar banner da home</button></div>
           </form>
         </div>
         <div class="admin-content-panel" style="margin-bottom:18px;">
           <div class="admin-panel-header">
             <h2>Banner de Colecoes</h2>
           </div>
-          <form data-site-banner-form="collectionsHero" style="display:grid;gap:14px;">
-            <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;">
+          <form class="admin-edit-form" data-site-banner-form="collectionsHero">
+            <div class="admin-form-grid">
               <label>Etiqueta<input name="eyebrow" required></label>
               <label>Titulo<input name="title" required></label>
             </div>
             <label>Destaque em rosa<input name="highlight" required></label>
             <label>Descricao<textarea name="description" rows="3" required></textarea></label>
-            <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;">
+            <div class="admin-form-grid">
               <label>Texto do botao<input name="button" required></label>
               <label>Link do botao<input name="href" required></label>
             </div>
             <label>Texto dentro da imagem<input name="imageTitle" required></label>
             <label>Imagem do banner<input name="images" type="file" accept="image/png,image/jpeg,image/gif,image/webp"></label>
             <p class="admin-image-note" data-site-banner-note="collectionsHero">Nenhuma imagem anexada.</p>
-            <button class="btn-add" type="submit" style="width:fit-content;">Salvar banner de colecoes</button>
+            <div class="admin-form-actions"><button class="btn-add" type="submit">Salvar banner de colecoes</button></div>
           </form>
         </div>
         <div class="admin-content-panel">
@@ -891,19 +1092,19 @@
           <div class="admin-panel-header">
             <h2>Configurações do Livro</h2>
           </div>
-          <form data-book-settings-form style="display:grid;gap:14px;">
-            <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;">
+          <form class="admin-edit-form" data-book-settings-form>
+            <div class="admin-form-grid">
               <label>Título - linha 1<input name="titleLine1" required></label>
               <label>Título - linha 2<input name="titleLine2" required></label>
             </div>
-            <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;">
+            <div class="admin-form-grid">
               <label>Etiqueta da abertura<input name="overviewKicker" required></label>
               <label>Titulo da abertura<input name="overviewHeading" required></label>
             </div>
             <label>Texto do livro de embaixadores<textarea name="ambassadorsIntro" rows="3" required></textarea></label>
             <label>Texto do livro de influenciadores<textarea name="influencersIntro" rows="3" required></textarea></label>
             <label>Legenda sob a imagem<input name="imageLabel" required></label>
-            <button class="btn-add" type="submit" style="width:fit-content;">Salvar configurações</button>
+            <div class="admin-form-actions"><button class="btn-add" type="submit">Salvar configurações</button></div>
           </form>
         </div>
         <div class="admin-content-panel">
