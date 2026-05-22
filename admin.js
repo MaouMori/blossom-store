@@ -265,10 +265,14 @@ function setData(key, value) {
 function getObjectData(key, seed) {
   try {
     const saved = JSON.parse(localStorage.getItem(key));
-    return saved && typeof saved === "object" ? { ...seed, ...saved } : seed;
+    return saved && typeof saved === "object" && !Array.isArray(saved) ? { ...seed, ...saved } : seed;
   } catch {
     return seed;
   }
+}
+
+function isPlainObject(value) {
+  return Boolean(value && typeof value === "object" && !Array.isArray(value));
 }
 
 function fileToDataUrl(file) {
@@ -401,9 +405,9 @@ async function loadApiStore() {
     adminCollections = Array.isArray(store.collections) ? store.collections : [];
     adminTaxonomies = store.taxonomies && Object.keys(store.taxonomies).length ? store.taxonomies : { categories: [], types: [], colors: [], visuals: [] };
     adminFeaturedCards = Array.isArray(adminTaxonomies.featuredCards) && adminTaxonomies.featuredCards.length ? adminTaxonomies.featuredCards : featuredSeed;
-    adminFutureDrop = adminTaxonomies.futureDrop && typeof adminTaxonomies.futureDrop === "object" ? { ...futureDropSeed, ...adminTaxonomies.futureDrop } : futureDropSeed;
-    adminSiteBanners = adminTaxonomies.siteBanners && typeof adminTaxonomies.siteBanners === "object" ? { ...siteBannersSeed, ...adminTaxonomies.siteBanners } : siteBannersSeed;
-    adminBookSettings = adminTaxonomies.bookSettings && typeof adminTaxonomies.bookSettings === "object" ? { ...bookSettingsSeed, ...adminTaxonomies.bookSettings } : bookSettingsSeed;
+    adminFutureDrop = isPlainObject(adminTaxonomies.futureDrop) ? { ...futureDropSeed, ...adminTaxonomies.futureDrop } : getObjectData("blossom-future-drop", futureDropSeed);
+    adminSiteBanners = isPlainObject(adminTaxonomies.siteBanners) ? { ...siteBannersSeed, ...adminTaxonomies.siteBanners } : getObjectData("blossom-site-banners", siteBannersSeed);
+    adminBookSettings = isPlainObject(adminTaxonomies.bookSettings) ? { ...bookSettingsSeed, ...adminTaxonomies.bookSettings } : getObjectData("blossom-book-settings", bookSettingsSeed);
     adminOrders = Array.isArray(store.orders) ? store.orders : [];
     renderAll();
   } catch { renderAll(); }

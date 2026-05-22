@@ -232,6 +232,19 @@ function readStore(key, fallback) {
   try { const saved = JSON.parse(localStorage.getItem(key)); return Array.isArray(saved) ? saved : fallback; } catch { return fallback; }
 }
 
+function readObjectStore(key, fallback) {
+  try {
+    const saved = JSON.parse(localStorage.getItem(key));
+    return saved && typeof saved === "object" && !Array.isArray(saved) ? { ...fallback, ...saved } : fallback;
+  } catch {
+    return fallback;
+  }
+}
+
+function isPlainObject(value) {
+  return Boolean(value && typeof value === "object" && !Array.isArray(value));
+}
+
 const apiEnabled = location.protocol.startsWith("http");
 const legacyDemoAccountName = ["vinicius", "silv-33afab"].join("_");
 
@@ -399,8 +412,8 @@ async function loadApiStore() {
     collections = Array.isArray(store.collections) ? store.collections : [];
     taxonomies = store.taxonomies && Object.keys(store.taxonomies).length ? store.taxonomies : { categories: [], types: [], colors: [], visuals: [] };
     featuredCards = Array.isArray(taxonomies.featuredCards) && taxonomies.featuredCards.length ? taxonomies.featuredCards : defaultFeaturedCards;
-    futureDrop = taxonomies.futureDrop && typeof taxonomies.futureDrop === "object" ? { ...defaultFutureDrop, ...taxonomies.futureDrop } : defaultFutureDrop;
-    siteBanners = taxonomies.siteBanners && typeof taxonomies.siteBanners === "object" ? { ...defaultSiteBanners, ...taxonomies.siteBanners } : defaultSiteBanners;
+    futureDrop = isPlainObject(taxonomies.futureDrop) ? { ...defaultFutureDrop, ...taxonomies.futureDrop } : readObjectStore("blossom-future-drop", defaultFutureDrop);
+    siteBanners = isPlainObject(taxonomies.siteBanners) ? { ...defaultSiteBanners, ...taxonomies.siteBanners } : readObjectStore("blossom-site-banners", defaultSiteBanners);
     if (hasShop) { renderFilters(); renderCatalog(); }
     renderHomeSections();
     renderCollections();

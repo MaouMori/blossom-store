@@ -39,7 +39,7 @@ async function replaceTable(table, rows, keyColumn = "id") {
 
 function taxonomiesArrayToObject(rows = []) {
   return rows.reduce((acc, row) => {
-    acc[row.key] = Array.isArray(row.values) ? row.values : [];
+    acc[row.key] = row.values ?? [];
     return acc;
   }, {});
 }
@@ -47,7 +47,7 @@ function taxonomiesArrayToObject(rows = []) {
 function taxonomiesObjectToArray(taxonomies = {}) {
   return Object.entries(taxonomies).map(([key, values]) => ({
     key,
-    values: Array.isArray(values) ? values : [],
+    values: values ?? [],
   }));
 }
 
