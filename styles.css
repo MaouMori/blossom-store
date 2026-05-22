@@ -5884,7 +5884,7 @@ body.nav-scrolled .editorial-header .theme-pill {
 
 .future-drop-card {
   position: relative;
-  width: min(560px, 100%);
+  width: min(640px, 100%);
   aspect-ratio: 1.55;
   overflow: hidden;
   border: 1px solid rgba(255, 156, 188, 0.28);
@@ -5895,7 +5895,13 @@ body.nav-scrolled .editorial-header .theme-pill {
     linear-gradient(135deg, #e45d88, #65142b 58%, #16070d);
   background-size: cover;
   background-position: center;
+  background-repeat: no-repeat;
   box-shadow: 0 28px 90px rgba(0, 0, 0, 0.45), 0 0 60px rgba(240, 111, 159, 0.18);
+}
+
+.future-drop-card.has-upload {
+  background-size: cover !important;
+  background-position: center !important;
 }
 
 .future-drop-card.has-upload::before {
@@ -5919,16 +5925,7 @@ body.nav-scrolled .editorial-header .theme-pill {
 }
 
 .future-drop-card strong {
-  position: absolute;
-  left: 50%;
-  top: 51%;
-  transform: translate(-50%, -50%) rotate(-4deg);
-  color: rgba(255, 255, 255, 0.88);
-  font-family: "Times New Roman", serif;
-  font-size: clamp(58px, 8vw, 116px);
-  font-weight: 400;
-  letter-spacing: -0.04em;
-  text-shadow: 0 6px 28px rgba(0, 0, 0, 0.38);
+  display: none;
 }
 
 .editorial-section-title {
@@ -6324,6 +6321,12 @@ body.nav-scrolled .editorial-header .theme-pill {
 .ambassador-hero.has-upload span,
 .cherry-feature.has-upload span {
   color: transparent;
+}
+
+.ambassador-hero.has-upload strong,
+.cherry-feature.has-upload strong {
+  color: transparent;
+  text-shadow: none;
 }
 
 .cherry-showcase {
@@ -6786,6 +6789,12 @@ body.nav-scrolled .editorial-header .theme-pill {
 .home-editorial.editorial-light .cherry-feature strong,
 .home-editorial.editorial-light .cherry-copy h3 {
   color: #2a101a;
+}
+
+.home-editorial.editorial-light .ambassador-hero.has-upload strong,
+.home-editorial.editorial-light .cherry-feature.has-upload strong {
+  color: transparent;
+  text-shadow: none;
 }
 
 .home-editorial.editorial-light .ambassador-hero::before,

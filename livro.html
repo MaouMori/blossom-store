@@ -927,7 +927,7 @@
     </a>
     <nav class="editorial-nav" aria-label="Navegacao principal">
       <a href="index.html">Inicio</a>
-      <a href="index.html#embaixadores">Embaixadores</a>
+      <a href="index.html#cherrys">Cherrys</a>
       <a href="index.html#influenciadores">Influenciadores</a>
       <a class="active" href="livro.html">Livro</a>
       <a href="colecoes.html">Colecoes</a>
@@ -939,7 +939,7 @@
     <nav class="mobile-nav" aria-label="Navegacao mobile" data-mobile-nav>
       <button class="mobile-nav-close" type="button" aria-label="Fechar menu" data-mobile-nav-close>&times;</button>
       <a href="index.html">Inicio</a>
-      <a href="index.html#embaixadores">Embaixadores</a>
+      <a href="index.html#cherrys">Cherrys</a>
       <a href="index.html#influenciadores">Influenciadores</a>
       <a class="active" href="livro.html">Livro</a>
       <a href="colecoes.html">Colecoes</a>
@@ -968,7 +968,7 @@
 
   <main class="book-main">
     <div class="book-tabs" role="tablist" aria-label="Escolha o livro">
-      <button class="book-tab is-active" type="button" data-book-tab="ambassadors">Embaixadores</button>
+      <button class="book-tab is-active" type="button" data-book-tab="ambassadors">Cherrys</button>
       <button class="book-tab" type="button" data-book-tab="influencers">Influenciadores</button>
     </div>
 
@@ -990,12 +990,12 @@
   <script src="https://cdn.jsdelivr.net/npm/page-flip@2.0.7/dist/js/page-flip.browser.min.js"></script>
   <script>
     const fallbackBookCards = [
-      ["ambassadors", "Luna Vex", "Embaixadora", "Represento a Blossom com orgulho e autenticidade.", "2023", "Global"],
-      ["ambassadors", "Kai Mori", "Embaixador", "Moda e atitude andam juntas.", "2023", "Nacional"],
-      ["ambassadors", "Nikki Bloom", "Embaixadora", "Cada peca conta uma historia.", "2024", "Global"],
-      ["ambassadors", "Drey Saint", "Embaixador", "O estilo e uma extensao de quem somos.", "2024", "Nacional"],
-      ["ambassadors", "Mila Knox", "Embaixadora", "Destaque-se com naturalidade.", "2024", "Global"],
-      ["ambassadors", "Zion Park", "Embaixador", "Atitude em cada detalhe.", "2024", "Nacional"],
+      ["ambassadors", "Luna Vex", "Cherry", "Represento a Blossom com orgulho e autenticidade.", "2023", "Global"],
+      ["ambassadors", "Kai Mori", "Cherry", "Moda e atitude andam juntas.", "2023", "Nacional"],
+      ["ambassadors", "Nikki Bloom", "Cherry", "Cada peca conta uma historia.", "2024", "Global"],
+      ["ambassadors", "Drey Saint", "Cherry", "O estilo e uma extensao de quem somos.", "2024", "Nacional"],
+      ["ambassadors", "Mila Knox", "Cherry", "Destaque-se com naturalidade.", "2024", "Global"],
+      ["ambassadors", "Zion Park", "Cherry", "Atitude em cada detalhe.", "2024", "Nacional"],
       ["influencers", "@babyxgeon", "Creator", "Criando conteudo com estilo Blossom.", "2024", "Digital"],
       ["influencers", "@str4wb3rry", "Creator", "Doce, forte e Blossom.", "2024", "Digital"],
       ["influencers", "@gobbimoon", "Creator", "A lua ilumina, mas o estilo brilha.", "2024", "Nacional"],
@@ -1009,7 +1009,7 @@
       titleLine2: "Comunidade",
       overviewKicker: "Sobre o livro",
       overviewHeading: "Conheca quem faz parte da Blossom",
-      ambassadorsIntro: "Conheca os embaixadores e influenciadores que fazem parte da historia da Blossom. Cada pagina guarda essencia, conexao e inspiracao.",
+      ambassadorsIntro: "Conheca os Cherrys e influenciadores que fazem parte da historia da Blossom. Cada pagina guarda essencia, conexao e inspiracao.",
       influencersIntro: "Conheca os influenciadores que espalham a essencia Blossom, criando conexao, estilo e presenca em cada conteudo.",
       imageLabel: "Imagem preparada",
     };
@@ -1042,7 +1042,7 @@
         id: card.id || `${section}-${position}`,
         section,
         name: card.name || "Blossom",
-        role: card.role || (section === "influencers" ? "Creator" : "Embaixador"),
+        role: card.role || (section === "influencers" ? "Creator" : "Cherry"),
         quote: card.quote || (section === "influencers" ? "Criando conteudo com estilo Blossom." : "Represento a Blossom com orgulho."),
         since: card.since || "2024",
         influence: card.influence || (section === "influencers" ? "Digital" : "Roleplay"),
@@ -1115,7 +1115,7 @@
             <h2>${escapeHtml(bookState.settings.overviewHeading)}</h2>
             <div class="intro-grid">
               <article class="intro-card">
-                <span>Embaixadores</span>
+                <span>Cherrys</span>
                 <p>${escapeHtml(bookState.settings.ambassadorsIntro)}</p>
               </article>
               <article class="intro-card">

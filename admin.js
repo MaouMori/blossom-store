@@ -94,12 +94,12 @@ const taxonomySeed = {
 };
 
 const featuredSeed = [
-  ["ambassadors", "Luna Vex", "Embaixadora", "pink", "sobre.html#time"],
-  ["ambassadors", "Kai Mori", "Embaixador", "dark", "sobre.html#time"],
-  ["ambassadors", "Nikki Bloom", "Embaixadora", "rose", "sobre.html#time"],
-  ["ambassadors", "Drey Saint", "Embaixador", "black", "sobre.html#time"],
-  ["ambassadors", "Mila Knox", "Embaixadora", "pink", "sobre.html#time"],
-  ["ambassadors", "Zion Park", "Embaixador", "dark", "sobre.html#time"],
+  ["ambassadors", "Luna Vex", "Cherry", "pink", "sobre.html#time"],
+  ["ambassadors", "Kai Mori", "Cherry", "dark", "sobre.html#time"],
+  ["ambassadors", "Nikki Bloom", "Cherry", "rose", "sobre.html#time"],
+  ["ambassadors", "Drey Saint", "Cherry", "black", "sobre.html#time"],
+  ["ambassadors", "Mila Knox", "Cherry", "pink", "sobre.html#time"],
+  ["ambassadors", "Zion Park", "Cherry", "dark", "sobre.html#time"],
   ["influencers", "@babyxgeon", "Creator", "soft", "contato.html"],
   ["influencers", "@str4wb3rry", "Creator", "vivid", "contato.html"],
   ["influencers", "@gobbimoon", "Creator", "soft", "contato.html"],
@@ -162,13 +162,13 @@ const bookSettingsSeed = {
   titleLine2: "Comunidade",
   overviewKicker: "Sobre o livro",
   overviewHeading: "Conheca quem faz parte da Blossom",
-  ambassadorsIntro: "Conheca os embaixadores e influenciadores que fazem parte da historia da Blossom. Cada pagina guarda essencia, conexao e inspiracao.",
+  ambassadorsIntro: "Conheca os Cherrys e influenciadores que fazem parte da historia da Blossom. Cada pagina guarda essencia, conexao e inspiracao.",
   influencersIntro: "Conheca os influenciadores que espalham a essencia Blossom, criando conexao, estilo e presenca em cada conteudo.",
   imageLabel: "Imagem preparada",
 };
 
 function featuredSectionLabel(section) {
-  if (section === "ambassadors") return "Embaixadores";
+  if (section === "ambassadors") return "Cherrys";
   if (section === "influencers") return "Influenciadores";
   if (section === "cherrys") return "Cherrys";
   return section || "Destaques";
@@ -1154,7 +1154,7 @@ $("[data-featured-form]")?.addEventListener("submit", async (event) => {
   const card = {
     ...previousCard,
     id, section: data.get("section"), name: data.get("name"),
-    role: data.get("role") || (data.get("section") === "influencers" ? "Creator" : data.get("section") === "cherrys" ? "Cherry" : "Embaixador"),
+    role: data.get("role") || (data.get("section") === "influencers" ? "Creator" : "Cherry"),
     href: data.get("href") || (data.get("section") === "influencers" ? "contato.html" : data.get("section") === "cherrys" ? "livro.html" : "sobre.html#time"),
     visual: data.get("visual"), position: Number(data.get("position") || 0),
     image: images[0] || "", images, created: previousCard.created ?? Date.now(),
@@ -1200,7 +1200,7 @@ $("[data-book-form]")?.addEventListener("submit", async (event) => {
     id,
     section,
     name: data.get("name"),
-    role: data.get("role") || (section === "influencers" ? "Creator" : "Embaixador"),
+    role: data.get("role") || (section === "influencers" ? "Creator" : "Cherry"),
     quote: data.get("quote"),
     since: data.get("since"),
     influence: data.get("influence"),

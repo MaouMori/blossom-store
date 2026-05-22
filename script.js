@@ -249,12 +249,12 @@ const apiEnabled = location.protocol.startsWith("http");
 const legacyDemoAccountName = ["vinicius", "silv-33afab"].join("_");
 
 const defaultFeaturedCards = [
-  ["ambassadors", "Luna Vex", "Embaixadora", "pink", "sobre.html#time"],
-  ["ambassadors", "Kai Mori", "Embaixador", "dark", "sobre.html#time"],
-  ["ambassadors", "Nikki Bloom", "Embaixadora", "rose", "sobre.html#time"],
-  ["ambassadors", "Drey Saint", "Embaixador", "black", "sobre.html#time"],
-  ["ambassadors", "Mila Knox", "Embaixadora", "pink", "sobre.html#time"],
-  ["ambassadors", "Zion Park", "Embaixador", "dark", "sobre.html#time"],
+  ["ambassadors", "Luna Vex", "Cherry", "pink", "sobre.html#time"],
+  ["ambassadors", "Kai Mori", "Cherry", "dark", "sobre.html#time"],
+  ["ambassadors", "Nikki Bloom", "Cherry", "rose", "sobre.html#time"],
+  ["ambassadors", "Drey Saint", "Cherry", "black", "sobre.html#time"],
+  ["ambassadors", "Mila Knox", "Cherry", "pink", "sobre.html#time"],
+  ["ambassadors", "Zion Park", "Cherry", "dark", "sobre.html#time"],
   ["influencers", "@babyxgeon", "Creator", "soft", "contato.html"],
   ["influencers", "@str4wb3rry", "Creator", "vivid", "contato.html"],
   ["influencers", "@gobbimoon", "Creator", "soft", "contato.html"],
@@ -547,7 +547,7 @@ function spotlightCard(card) {
     <a href="#" data-spotlight-card="${card.id}" data-spotlight-name="${card.name || ""}" data-spotlight-role="${card.role || ""}" data-spotlight-image="${image}">
       <div class="${sectionClass} ${visual} ${image ? "has-upload" : ""}" ${image ? `style="background-image:url('${image}')"` : ""}></div>
       <b>${card.name || "Blossom"}</b>
-      <small>${card.role || (card.section === "influencers" ? "Creator" : "Embaixador")}</small>
+      <small>${card.role || (card.section === "influencers" ? "Creator" : "Cherry")}</small>
     </a>
   `;
 }
@@ -581,7 +581,7 @@ function renderAmbassadorShowcase() {
   let index = 0;
   const renderSlide = () => {
     const card = slides[index % Math.max(slides.length, 1)] || {};
-    applySpotlightBackground(hero, { ...card, name: "Embaixadores Blossom", role: card.role || "Comunidade oficial" }, "Embaixadores Blossom");
+    applySpotlightBackground(hero, { ...card, name: "Cherrys Blossom", role: card.role || "Comunidade oficial" }, "Cherrys Blossom");
     hero?.classList.remove("is-switching");
     requestAnimationFrame(() => hero?.classList.add("is-switching"));
   };

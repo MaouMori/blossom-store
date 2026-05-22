@@ -910,7 +910,7 @@
             <div>
               <small>Cards Destaque</small>
               <b data-stat-featured>0</b>
-              <span class="stat-delta">Embaixadores + Influenciadores</span>
+              <span class="stat-delta">Cherrys + Influenciadores</span>
             </div>
             <div class="stat-icon">◇</div>
           </div>
@@ -972,7 +972,7 @@
       <section class="admin-section" data-section="featured">
         <div class="admin-content-panel">
           <div class="admin-panel-header">
-            <h2>Embaixadores e Influenciadores</h2>
+            <h2>Cherrys e Influenciadores</h2>
             <button class="btn-add" type="button" data-new-featured-card>+ Novo card</button>
           </div>
           <div data-featured-list></div>
@@ -1101,7 +1101,7 @@
               <label>Etiqueta da abertura<input name="overviewKicker" required></label>
               <label>Titulo da abertura<input name="overviewHeading" required></label>
             </div>
-            <label>Texto do livro de embaixadores<textarea name="ambassadorsIntro" rows="3" required></textarea></label>
+            <label>Texto do livro de Cherrys<textarea name="ambassadorsIntro" rows="3" required></textarea></label>
             <label>Texto do livro de influenciadores<textarea name="influencersIntro" rows="3" required></textarea></label>
             <label>Legenda sob a imagem<input name="imageLabel" required></label>
             <div class="admin-form-actions"><button class="btn-add" type="submit">Salvar configurações</button></div>
@@ -1112,7 +1112,7 @@
             <h2>Gerenciar Livro</h2>
             <button class="btn-add" type="button" data-new-book-page>+ Nova página</button>
           </div>
-          <p style="font-size:12px;color:var(--admin-muted);margin:-8px 0 14px;">As páginas do livro são sincronizadas com os cards de embaixadores e influenciadores.</p>
+          <p style="font-size:12px;color:var(--admin-muted);margin:-8px 0 14px;">As páginas do livro são sincronizadas com os cards de Cherrys e influenciadores.</p>
           <div data-book-list></div>
         </div>
       </section>
@@ -1186,13 +1186,13 @@
       <input type="hidden" name="id">
       <label>Grupo
         <select name="section" required>
-          <option value="ambassadors">Embaixadores</option>
+          <option value="ambassadors">Cherrys principais</option>
           <option value="influencers">Influenciadores</option>
-          <option value="cherrys">Cherrys</option>
+          <option value="cherrys">Cherry Spotlight</option>
         </select>
       </label>
       <label>Nome ou @<input name="name" required></label>
-      <label>Cargo/Subtítulo<input name="role" placeholder="Creator, Embaixadora..."></label>
+      <label>Cargo/Subtítulo<input name="role" placeholder="Creator, Cherry..."></label>
       <label>Link ao clicar<input name="href" placeholder="sobre.html#time"></label>
       <label>Visual
         <select name="visual">
@@ -1224,7 +1224,7 @@
       <label>Texto do botão<input name="button" required></label>
       <label>Link do botão<input name="href" required></label>
       <label>Selo da imagem<input name="badge" placeholder="Soon"></label>
-      <label>Título na imagem<input name="cardTitle" required></label>
+      <label>Texto interno da imagem (oculto no site)<input name="cardTitle"></label>
       <label>Imagem do anúncio
         <input name="images" type="file" accept="image/png,image/jpeg,image/gif,image/webp">
       </label>
@@ -1240,7 +1240,7 @@
       <input type="hidden" name="id">
       <label>Grupo
         <select name="section" required>
-          <option value="ambassadors">Embaixadores</option>
+          <option value="ambassadors">Cherrys</option>
           <option value="influencers">Influenciadores</option>
         </select>
       </label>
