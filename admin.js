@@ -289,19 +289,19 @@ function isPlainObject(value) {
 function fileToDataUrl(file) {
   return new Promise((resolve, reject) => {
     if (!file) { resolve(""); return; }
-    if (file.size > 5 * 1024 * 1024) { reject(new Error("Use uma imagem menor que 5MB.")); return; }
+    if (file.size > 10 * 1024 * 1024) { reject(new Error("Use uma imagem menor que 10MB.")); return; }
     const reader = new FileReader();
     reader.onload = () => {
       const image = new Image();
       image.onload = () => {
-        const maxSize = 1100;
+        const maxSize = 1980;
         const ratio = Math.min(1, maxSize / Math.max(image.width, image.height));
         const canvas = document.createElement("canvas");
         canvas.width = Math.max(1, Math.round(image.width * ratio));
         canvas.height = Math.max(1, Math.round(image.height * ratio));
         const context = canvas.getContext("2d");
         context.drawImage(image, 0, 0, canvas.width, canvas.height);
-        resolve(canvas.toDataURL("image/jpeg", 0.82));
+        resolve(canvas.toDataURL("image/jpeg", 0.9));
       };
       image.onerror = () => reject(new Error("Não foi possível processar a imagem."));
       image.src = reader.result;
