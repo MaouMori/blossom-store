@@ -375,6 +375,8 @@ const selectors = {
   collectionDetail: document.querySelector("[data-collection-detail]"),
   collectionProducts: document.querySelector("[data-collection-products]"),
   collectionGallery: document.querySelector("[data-collection-gallery]"),
+  collectionAbout: document.querySelector("[data-collection-about]"),
+  collectionCta: document.querySelector("[data-collection-cta]"),
   homeProducts: document.querySelector("[data-home-products]"),
   homeCollections: document.querySelector("[data-home-collections]"),
   futureDrop: document.querySelector("[data-future-drop]"),
@@ -826,6 +828,21 @@ function collectionPrice(collection) {
   return collectionProducts(collection.id).filter((product) => product.visibility !== "collection-only").reduce((sum, product) => sum + Number(product.price || 0), 0);
 }
 
+function collectionDetailProductCard(product) {
+  const image = primaryImage(product);
+  const type = product.type || product.category || "Peca";
+  return `
+    <article class="collection-product-card">
+      <div class="collection-product-media ${product.visual || "hoodie-dark"} ${image ? "has-upload" : ""}" ${image ? `style="background-image:url('${image}')"` : ""}></div>
+      <div>
+        <span>*</span>
+        <h3>${type}</h3>
+        <p>${product.name || "Peca Blossom"}</p>
+      </div>
+    </article>
+  `;
+}
+
 function getFilteredCollections() {
   let filtered = collections.filter((collection) => {
     const related = collectionProducts(collection.id);
@@ -881,26 +898,62 @@ function renderCollectionDetail() {
   const id = params.get("id");
   const collection = collections.find((item) => item.id === id) || collections[0];
   if (!collection) {
-    selectors.collectionDetail.innerHTML = '<p class="empty-products">Nenhuma coleção encontrada.</p>';
+    selectors.collectionDetail.innerHTML = '<p class="empty-products">Nenhuma colecao encontrada.</p>';
     selectors.collectionProducts.innerHTML = "";
     selectors.collectionGallery.innerHTML = "";
+    if (selectors.collectionAbout) selectors.collectionAbout.innerHTML = "";
+    if (selectors.collectionCta) selectors.collectionCta.innerHTML = "";
     return;
   }
   const related = collectionProducts(collection.id);
   const images = itemImages(collection);
+  const heroImage = images[0] || "";
+  const aboutImage = images[1] || heroImage;
+  const pieceText = `${String(related.length).padStart(2, "0")} ${related.length === 1 ? "peca inclusa" : "pecas inclusas"}`;
   selectors.collectionDetail.innerHTML = `
-    <span class="eyebrow">Coleção</span>
-    <h1>${collection.name}</h1>
+    <span class="eyebrow">Colecao</span>
+    <h1>${collection.name || "Colecao Blossom"} <i>*</i></h1>
+    <b>${collection.label || "Blossom Store"}</b>
     <p>${collection.description || collection.label || ""}</p>
     <div class="collection-buy-panel">
-      <span>${String(related.length).padStart(2, "0")} peças inclusas</span>
-      <a class="button primary" href="https://www.patreon.com" target="_blank" rel="noreferrer">Adquirir no Patreon</a>
+      <div>
+        <span>Box</span>
+        <strong>${pieceText}</strong>
+        <small>Todas as pecas desta colecao vem juntas em um pacote unico.</small>
+      </div>
+      <a href="https://www.patreon.com" target="_blank" rel="noreferrer"><span>Patreon</span> Adquirir no Patreon</a>
     </div>
   `;
-  selectors.collectionGallery.innerHTML = images.map((image) => `<div class="collection-photo" style="background-image:url('${image}')"></div>`).join("")
-    || `<div class="template-visual collection-photo ${collection.visual || "essentials"}"></div>`;
-  selectors.collectionProducts.innerHTML = related.map((product) => productCard(product)).join("")
-    || '<p class="empty-products">Nenhuma peça vinculada a esta coleção ainda.</p>';
+  selectors.collectionGallery.innerHTML = heroImage
+    ? `<div class="collection-photo has-upload" style="background-image:url('${heroImage}')"></div>`
+    : `<div class="template-visual collection-photo ${collection.visual || "essentials"}"></div>`;
+  selectors.collectionProducts.innerHTML = related.map(collectionDetailProductCard).join("")
+    || '<p class="empty-products">Nenhuma peca vinculada a esta colecao ainda.</p>';
+  if (selectors.collectionAbout) {
+    selectors.collectionAbout.innerHTML = `
+      <div>
+        <span>Sobre a colecao</span>
+        <h2>${collection.name || "Colecao Blossom"} <i>*</i></h2>
+        <p>${collection.description || "Uma colecao criada para destacar estilo, conforto e atitude dentro da comunidade Blossom."}</p>
+        <ul>
+          <li><b>Design exclusivo</b><small>Pecas unicas e detalhadas.</small></li>
+          <li><b>Alta qualidade</b><small>Texturas e modelagem premium.</small></li>
+          <li><b>Estilo e atitude</b><small>Para quem nao passa despercebido.</small></li>
+        </ul>
+      </div>
+      <div class="collection-about-image ${aboutImage ? "has-upload" : ""}" ${aboutImage ? `style="background-image:url('${aboutImage}')"` : ""}></div>
+    `;
+  }
+  if (selectors.collectionCta) {
+    selectors.collectionCta.innerHTML = `
+      <div class="collection-cta-mark">*</div>
+      <div>
+        <h2>Pronto para se destacar?</h2>
+        <p>Adquira agora a colecao completa no Patreon e eleve o nivel do seu personagem.</p>
+      </div>
+      <a href="https://www.patreon.com" target="_blank" rel="noreferrer"><span>Patreon</span> Adquirir no Patreon</a>
+    `;
+  }
 }
 
 function loadAccount() {
