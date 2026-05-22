@@ -174,6 +174,17 @@ function featuredSectionLabel(section) {
   return section || "Destaques";
 }
 
+function canBeCherrySpotlight(section) {
+  return section === "ambassadors" || section === "cherrys";
+}
+
+function enforceSingleCherrySpotlight(activeId) {
+  adminFeaturedCards = adminFeaturedCards.map((item) => ({
+    ...item,
+    isCherrySpotlight: item.id === activeId && canBeCherrySpotlight(item.section),
+  }));
+}
+
 const $ = (selector) => document.querySelector(selector);
 const $$ = (selector) => document.querySelectorAll(selector);
 const apiEnabled = location.protocol.startsWith("http");
@@ -693,7 +704,7 @@ function renderFeaturedCards() {
                 <div class="cell-thumb" ${primaryImage(item) ? `style="background-image:url('${primaryImage(item)}')"` : ""}></div>
                 <div class="cell-info">
                   <b>${item.name}</b>
-                  <small>${item.role || "Sem subtítulo"}</small>
+                  <small>${item.role || "Sem subtítulo"}${item.isCherrySpotlight ? " • Cherry em destaque" : ""}</small>
                 </div>
               </div>
             </td>
@@ -735,7 +746,7 @@ function renderBookPages() {
                 <div class="cell-thumb" ${primaryImage(item) ? `style="background-image:url('${primaryImage(item)}')"` : ""}></div>
                 <div class="cell-info">
                   <b>${item.name}</b>
-                  <small>${item.role || "Sem cargo"}${item.quote ? ` • ${String(item.quote).slice(0, 48)}` : ""}</small>
+                  <small>${item.role || "Sem cargo"}${item.isCherrySpotlight ? " • Cherry em destaque" : ""}${item.quote ? ` • ${String(item.quote).slice(0, 48)}` : ""}</small>
                 </div>
               </div>
             </td>
@@ -885,6 +896,7 @@ function openFeaturedForm(card = null) {
   field(form, "href").value = card?.href || (card?.section === "influencers" ? "contato.html" : "sobre.html#time");
   field(form, "visual").value = card?.visual || "pink";
   field(form, "position").value = card?.position ?? adminFeaturedCards.length;
+  field(form, "isCherrySpotlight").checked = Boolean(card?.isCherrySpotlight);
   form.dataset.currentImages = JSON.stringify(itemImages(card));
   const count = itemImages(card).length;
   $("[data-featured-image-note]").textContent = count ? `${count} imagem atual. Envie outra para substituir.` : "Nenhuma imagem anexada.";
@@ -909,6 +921,7 @@ function openBookForm(card = null) {
   field(form, "tiktok").value = card?.tiktok || "";
   field(form, "pinterest").value = card?.pinterest || "";
   field(form, "position").value = card?.position ?? adminFeaturedCards.length;
+  field(form, "isCherrySpotlight").checked = Boolean(card?.isCherrySpotlight);
   form.dataset.currentImages = JSON.stringify(itemImages(card));
   const count = itemImages(card).length;
   $("[data-book-image-note]").textContent = count ? `${count} imagem atual. Envie outra para substituir.` : "Nenhuma imagem anexada.";
@@ -1151,15 +1164,18 @@ $("[data-featured-form]")?.addEventListener("submit", async (event) => {
     return;
   }
   const previousCard = adminFeaturedCards.find((item) => item.id === id) || {};
+  const section = data.get("section");
   const card = {
     ...previousCard,
-    id, section: data.get("section"), name: data.get("name"),
-    role: data.get("role") || (data.get("section") === "influencers" ? "Creator" : "Cherry"),
-    href: data.get("href") || (data.get("section") === "influencers" ? "contato.html" : data.get("section") === "cherrys" ? "livro.html" : "sobre.html#time"),
+    id, section, name: data.get("name"),
+    role: data.get("role") || (section === "influencers" ? "Creator" : "Cherry"),
+    href: data.get("href") || (section === "influencers" ? "contato.html" : section === "cherrys" ? "livro.html" : "sobre.html#time"),
     visual: data.get("visual"), position: Number(data.get("position") || 0),
+    isCherrySpotlight: data.has("isCherrySpotlight") && canBeCherrySpotlight(section),
     image: images[0] || "", images, created: previousCard.created ?? Date.now(),
   };
   adminFeaturedCards = adminFeaturedCards.some((item) => item.id === id) ? adminFeaturedCards.map((item) => item.id === id ? card : item) : [card, ...adminFeaturedCards];
+  if (card.isCherrySpotlight) enforceSingleCherrySpotlight(card.id);
   try {
     await saveFeaturedCards();
     form.closest("dialog").close();
@@ -1211,11 +1227,13 @@ $("[data-book-form]")?.addEventListener("submit", async (event) => {
     href: previousCard.href || `livro.html?aba=${section}`,
     visual: previousCard.visual || (section === "influencers" ? "soft" : "pink"),
     position: Number(data.get("position") || 0),
+    isCherrySpotlight: data.has("isCherrySpotlight") && canBeCherrySpotlight(section),
     image: images[0] || "",
     images,
     created: previousCard.created ?? Date.now(),
   };
   adminFeaturedCards = adminFeaturedCards.some((item) => item.id === id) ? adminFeaturedCards.map((item) => item.id === id ? card : item) : [card, ...adminFeaturedCards];
+  if (card.isCherrySpotlight) enforceSingleCherrySpotlight(card.id);
   try {
     await saveFeaturedCards();
     form.closest("dialog").close();

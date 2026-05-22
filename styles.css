@@ -5756,8 +5756,8 @@ body.nav-scrolled .editorial-header .theme-pill {
 .editorial-hero-image.has-upload::before {
   z-index: 2;
   background:
-    linear-gradient(90deg, rgba(5, 3, 5, 0.98) 0%, rgba(5, 3, 5, 0.9) 27%, rgba(5, 3, 5, 0.18) 54%, rgba(5, 3, 5, 0.34) 100%),
-    linear-gradient(180deg, rgba(5, 3, 5, 0.08) 0%, rgba(5, 3, 5, 0.74) 100%);
+    linear-gradient(90deg, rgba(5, 3, 5, 0.9) 0%, rgba(5, 3, 5, 0.58) 28%, rgba(5, 3, 5, 0.04) 58%, rgba(5, 3, 5, 0.18) 100%),
+    linear-gradient(180deg, rgba(5, 3, 5, 0.02) 0%, rgba(5, 3, 5, 0.42) 100%);
 }
 
 .editorial-hero-image.has-upload .figure,
@@ -6293,8 +6293,8 @@ body.nav-scrolled .editorial-header .theme-pill {
   position: absolute;
   inset: 0;
   background:
-    linear-gradient(180deg, rgba(5, 3, 5, 0.05), rgba(5, 3, 5, 0.34) 58%, rgba(5, 3, 5, 0.9)),
-    radial-gradient(circle at 18% 84%, rgba(255, 112, 158, 0.24), transparent 22rem);
+    linear-gradient(180deg, rgba(5, 3, 5, 0.02), rgba(5, 3, 5, 0.14) 56%, rgba(5, 3, 5, 0.5)),
+    radial-gradient(circle at 18% 84%, rgba(255, 112, 158, 0.16), transparent 22rem);
   pointer-events: none;
 }
 
@@ -6352,6 +6352,13 @@ body.nav-scrolled .editorial-header .theme-pill {
 .ambassador-hero.has-upload span,
 .cherry-feature.has-upload span {
   color: transparent;
+}
+
+.cherry-feature.has-upload {
+  background-size: contain;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-color: #09070a;
 }
 
 .ambassador-hero.has-upload strong,
@@ -6831,8 +6838,8 @@ body.nav-scrolled .editorial-header .theme-pill {
 .home-editorial.editorial-light .ambassador-hero::before,
 .home-editorial.editorial-light .cherry-feature::before {
   background:
-    linear-gradient(180deg, rgba(255, 248, 251, 0.02), rgba(255, 238, 245, 0.22) 56%, rgba(40, 12, 24, 0.72)),
-    radial-gradient(circle at 18% 84%, rgba(218, 74, 123, 0.18), transparent 22rem);
+    linear-gradient(180deg, rgba(255, 248, 251, 0.01), rgba(255, 238, 245, 0.08) 56%, rgba(40, 12, 24, 0.42)),
+    radial-gradient(circle at 18% 84%, rgba(218, 74, 123, 0.1), transparent 22rem);
 }
 
 .home-editorial.editorial-light .cherry-copy {

@@ -558,6 +558,12 @@ function featuredBySection(section) {
     .sort((a, b) => Number(a.position || 0) - Number(b.position || 0));
 }
 
+function cherrySpotlightCards() {
+  return featuredCards
+    .filter((card) => card.section === "cherrys" || card.section === "ambassadors")
+    .sort((a, b) => Number(a.position || 0) - Number(b.position || 0));
+}
+
 function applySpotlightBackground(element, card, fallbackLabel) {
   if (!element) return;
   const image = primaryImage(card);
@@ -597,9 +603,11 @@ function renderAmbassadorShowcase() {
 
 function renderCherryShowcase() {
   if (!selectors.cherryShowcase) return;
-  const cherrys = featuredBySection("cherrys");
-  const main = cherrys[0] || { name: "Cherry Blossom", role: "Cherry em destaque", visual: "rose", image: "" };
-  const others = cherrys.slice(1);
+  const cherrys = cherrySpotlightCards();
+  const explicitMain = cherrys.find((card) => card.isCherrySpotlight);
+  const legacyCherrys = featuredBySection("cherrys");
+  const main = explicitMain || legacyCherrys[0] || { name: "Cherry Blossom", role: "Cherry em destaque", visual: "rose", image: "" };
+  const others = cherrys.filter((card) => card.id !== main.id);
   applySpotlightBackground(selectors.cherryFeature, main, "Cherry Blossom");
   if (selectors.cherryGrid) {
     selectors.cherryGrid.innerHTML = others.length
