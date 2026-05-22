@@ -5639,6 +5639,7 @@ body.nav-scrolled .editorial-header .theme-pill {
 .editorial-hero-content {
   position: relative;
   z-index: 5;
+  isolation: isolate;
   max-width: 650px;
   padding: clamp(190px, 22vh, 250px) 0 112px clamp(36px, 5vw, 72px);
   transform: translateY(calc(var(--home-scroll, 0) * -22px));
@@ -7575,8 +7576,30 @@ body.nav-scrolled .editorial-header .theme-pill {
 
 .home-editorial.editorial-light .editorial-hero-image::before {
   background:
-    radial-gradient(circle at 62% 38%, rgba(240, 111, 159, 0.22), transparent 34%),
+    linear-gradient(90deg, rgba(5, 3, 5, 0.82) 0%, rgba(5, 3, 5, 0.42) 28%, rgba(5, 3, 5, 0.06) 58%, rgba(255, 248, 251, 0.04) 100%),
+    radial-gradient(circle at 62% 38%, rgba(240, 111, 159, 0.16), transparent 34%),
     linear-gradient(180deg, transparent 0 54%, rgba(255, 248, 251, 0.88) 100%);
+}
+
+.home-editorial.editorial-light .editorial-hero .editorial-hero-content::before {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  inset: clamp(140px, 18vh, 190px) auto 70px 0;
+  width: min(560px, calc(100% + 24px));
+  background: linear-gradient(90deg, rgba(5, 3, 5, 0.78), rgba(5, 3, 5, 0.34) 68%, transparent);
+  border-radius: 0 28px 28px 0;
+  pointer-events: none;
+}
+
+.home-editorial.editorial-light .editorial-hero h1,
+.home-editorial.editorial-light .editorial-hero p {
+  color: #fff7fa;
+  text-shadow: 0 2px 18px rgba(0, 0, 0, 0.7);
+}
+
+.home-editorial.editorial-light .editorial-hero .editorial-logo {
+  text-shadow: 0 2px 18px rgba(0, 0, 0, 0.72);
 }
 
 .home-editorial.editorial-light .editorial-hero-image .figure,
