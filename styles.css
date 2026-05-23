@@ -8631,6 +8631,12 @@ body.nav-scrolled .editorial-header .theme-pill {
   filter: drop-shadow(0 0 22px rgba(255, 122, 170, 0.52));
 }
 
+.about-editorial-visual.has-upload {
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
 .about-team-section {
   width: min(1240px, calc(100% - 96px));
   margin: 0 auto;
@@ -8664,6 +8670,11 @@ body.nav-scrolled .editorial-header .theme-pill {
   background: #090a0b;
 }
 
+.about-team-card.is-founder {
+  grid-column: span 2;
+  min-height: 560px;
+}
+
 .about-team-card::after {
   content: "";
   position: absolute;
@@ -8683,6 +8694,30 @@ body.nav-scrolled .editorial-header .theme-pill {
   background-size: cover;
   background-position: center top;
   filter: saturate(0.92);
+}
+
+.about-team-photo.has-upload {
+  background-size: cover;
+  background-position: center top;
+  background-repeat: no-repeat;
+}
+
+.about-team-photo.has-upload::before {
+  display: none;
+}
+
+.about-team-card.is-founder .about-team-photo {
+  background-position: center 16%;
+}
+
+.about-team-card.is-founder .about-team-info {
+  left: 30px;
+  right: 30px;
+  bottom: 28px;
+}
+
+.about-team-card.is-founder .about-team-info h2 {
+  font-size: clamp(34px, 4vw, 58px);
 }
 
 .about-team-photo::before {
@@ -8816,6 +8851,10 @@ body.nav-scrolled .editorial-header .theme-pill {
   .about-team-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
+
+  .about-team-card.is-founder {
+    grid-column: span 2;
+  }
 }
 
 @media (max-width: 620px) {
@@ -8829,5 +8868,14 @@ body.nav-scrolled .editorial-header .theme-pill {
 
   .about-team-card {
     min-height: 390px;
+  }
+
+  .about-team-card.is-founder {
+    grid-column: span 1;
+    min-height: 460px;
+  }
+
+  .about-team-card.is-founder .about-team-info h2 {
+    font-size: clamp(30px, 10vw, 42px);
   }
 }

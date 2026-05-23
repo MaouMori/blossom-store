@@ -167,6 +167,42 @@ const bookSettingsSeed = {
   imageLabel: "Imagem preparada",
 };
 
+const aboutSettingsSeed = {
+  heroKicker: "Sobre nos",
+  heroTitle: "Nosso time",
+  heroDescription: "Por tras da Blossom existe um time apaixonado por moda, criatividade e autenticidade. Cada pessoa aqui carrega o proposito de criar mais que roupas: criamos um movimento.",
+  heroImage: "",
+  heroImages: [],
+  teamKicker: "Nossa equipe",
+  newsletterText: "Receba novidades e lancamentos exclusivos.",
+  members: [
+    { id: "madison", name: "Madison Montgomery", role: "Founder & CEO", instagram: "Instagram", isFounder: true, visual: "team-one", image: "", images: [] },
+    { id: "malik", name: "Malik Montgomery", role: "Co-founder", instagram: "Instagram", isFounder: false, visual: "team-two", image: "", images: [] },
+    { id: "aika", name: "Aika Prinxx", role: "Design Director", instagram: "Instagram", isFounder: false, visual: "team-three", image: "", images: [] },
+    { id: "diana", name: "Diana Hyperion", role: "Community Manager", instagram: "Instagram", isFounder: false, visual: "team-four", image: "", images: [] },
+    { id: "paty", name: "Paty Montgomery", role: "Content Creator", instagram: "Instagram", isFounder: false, visual: "team-five", image: "", images: [] },
+    { id: "felipe", name: "Felipe Gilmore", role: "Creative Director", instagram: "Instagram", isFounder: false, visual: "team-six", image: "", images: [] },
+  ],
+};
+
+function normalizeAboutSettings(settings = {}) {
+  const source = isPlainObject(settings) ? settings : {};
+  const members = Array.isArray(source.members) && source.members.length ? source.members : aboutSettingsSeed.members;
+  const founderIndex = Math.max(0, members.findIndex((member) => member?.isFounder));
+  return {
+    ...aboutSettingsSeed,
+    ...source,
+    members: members.map((member, index) => ({
+      ...aboutSettingsSeed.members[index % aboutSettingsSeed.members.length],
+      ...member,
+      id: member?.id || `member-${index}`,
+      isFounder: index === founderIndex,
+      images: Array.isArray(member?.images) ? member.images : [],
+      image: member?.image || "",
+    })),
+  };
+}
+
 function featuredSectionLabel(section) {
   if (section === "ambassadors") return "Cherrys";
   if (section === "influencers") return "Influenciadores";
@@ -192,6 +228,10 @@ let adminSession = readSession();
 
 function field(form, name) {
   return form.elements.namedItem(name);
+}
+
+function escapeAttr(value) {
+  return String(value ?? "").replace(/&/g, "&amp;").replace(/"/g, "&quot;").replace(/</g, "&lt;");
 }
 
 function itemImages(item) {
@@ -403,6 +443,7 @@ let adminFeaturedCards = apiEnabled ? featuredSeed : getData("blossom-featured-c
 let adminFutureDrop = apiEnabled ? futureDropSeed : getObjectData("blossom-future-drop", futureDropSeed);
 let adminSiteBanners = apiEnabled ? siteBannersSeed : getObjectData("blossom-site-banners", siteBannersSeed);
 let adminBookSettings = apiEnabled ? bookSettingsSeed : { ...bookSettingsSeed, ...getObjectData("blossom-book-settings", bookSettingsSeed) };
+let adminAboutSettings = apiEnabled ? aboutSettingsSeed : normalizeAboutSettings(getObjectData("blossom-about-settings", aboutSettingsSeed));
 let adminOrders = [];
 let adminUsers = [];
 
@@ -419,6 +460,7 @@ async function loadApiStore() {
     adminFutureDrop = isPlainObject(adminTaxonomies.futureDrop) ? { ...futureDropSeed, ...adminTaxonomies.futureDrop } : getObjectData("blossom-future-drop", futureDropSeed);
     adminSiteBanners = isPlainObject(adminTaxonomies.siteBanners) ? { ...siteBannersSeed, ...adminTaxonomies.siteBanners } : getObjectData("blossom-site-banners", siteBannersSeed);
     adminBookSettings = isPlainObject(adminTaxonomies.bookSettings) ? { ...bookSettingsSeed, ...adminTaxonomies.bookSettings } : getObjectData("blossom-book-settings", bookSettingsSeed);
+    adminAboutSettings = isPlainObject(adminTaxonomies.aboutSettings) ? normalizeAboutSettings(adminTaxonomies.aboutSettings) : normalizeAboutSettings(getObjectData("blossom-about-settings", aboutSettingsSeed));
     adminOrders = Array.isArray(store.orders) ? store.orders : [];
     renderAll();
   } catch { renderAll(); }
@@ -430,6 +472,7 @@ async function saveApiStore() {
   adminTaxonomies.futureDrop = adminFutureDrop;
   adminTaxonomies.siteBanners = adminSiteBanners;
   adminTaxonomies.bookSettings = adminBookSettings;
+  adminTaxonomies.aboutSettings = adminAboutSettings;
   const response = await fetch("/api/store", {
     method: "PUT",
     headers: { "Content-Type": "application/json" },
@@ -462,12 +505,13 @@ async function updateUserRole(username, role) {
 
 function saveProducts() { setData("blossom-products", adminProducts); return saveApiStore(); }
 function saveCollections() { setData("blossom-collections", adminCollections); return saveApiStore(); }
-function syncAdminTaxonomies() { adminTaxonomies.featuredCards = adminFeaturedCards; adminTaxonomies.futureDrop = adminFutureDrop; adminTaxonomies.siteBanners = adminSiteBanners; adminTaxonomies.bookSettings = adminBookSettings; }
+function syncAdminTaxonomies() { adminTaxonomies.featuredCards = adminFeaturedCards; adminTaxonomies.futureDrop = adminFutureDrop; adminTaxonomies.siteBanners = adminSiteBanners; adminTaxonomies.bookSettings = adminBookSettings; adminTaxonomies.aboutSettings = adminAboutSettings; }
 function saveTaxonomies() { syncAdminTaxonomies(); setData("blossom-taxonomies", adminTaxonomies); return saveApiStore(); }
 function saveFeaturedCards() { syncAdminTaxonomies(); setData("blossom-featured-cards", adminFeaturedCards); return saveApiStore(); }
 function saveFutureDrop() { syncAdminTaxonomies(); setData("blossom-future-drop", adminFutureDrop); return saveApiStore(); }
 function saveSiteBanners() { syncAdminTaxonomies(); setData("blossom-site-banners", adminSiteBanners); return saveApiStore(); }
 function saveBookSettings() { syncAdminTaxonomies(); setData("blossom-book-settings", adminBookSettings); return saveApiStore(); }
+function saveAboutSettings() { adminAboutSettings = normalizeAboutSettings(adminAboutSettings); syncAdminTaxonomies(); setData("blossom-about-settings", adminAboutSettings); return saveApiStore(); }
 
 function optionMarkup(values, selected = "") {
   return [...new Set(values)].map((value) => `<option ${value === selected ? "selected" : ""}>${value}</option>`).join("");
@@ -494,7 +538,7 @@ function populateCollectionSelects(collection = null) {
 function navigateTo(section) {
   $$(".admin-section").forEach((s) => s.classList.toggle("active", s.dataset.section === section));
   $$(".admin-nav-link").forEach((l) => l.classList.toggle("active", l.dataset.nav === section));
-  const titles = { dashboard: "Painel Administrativo", products: "Produtos", collections: "Coleções", featured: "Destaques", book: "Livro", users: "Usuários", taxonomies: "Categorias & Tipos", future: "Drop Futuro", settings: "Configurações" };
+  const titles = { dashboard: "Painel Administrativo", products: "Produtos", collections: "Coleções", featured: "Destaques", book: "Livro", about: "Sobre nos", users: "Usuários", taxonomies: "Categorias & Tipos", future: "Drop Futuro", settings: "Configurações" };
   const t = $("[data-page-title]");
   if (t) t.textContent = titles[section] || "Painel";
   renderAll();
@@ -516,6 +560,7 @@ function renderAll() {
   renderFeaturedCards();
   renderBookPages();
   renderBookSettings();
+  renderAboutSettings();
   renderTaxonomies();
   renderFutureDropPreview();
   renderSiteBannerForms();
@@ -533,6 +578,42 @@ function renderBookSettings() {
   field(form, "ambassadorsIntro").value = adminBookSettings.ambassadorsIntro || "";
   field(form, "influencersIntro").value = adminBookSettings.influencersIntro || "";
   field(form, "imageLabel").value = adminBookSettings.imageLabel || "";
+}
+
+function renderAboutSettings() {
+  const form = $("[data-about-settings-form]");
+  const editor = $("[data-about-team-editor]");
+  if (!form || !editor) return;
+  adminAboutSettings = normalizeAboutSettings(adminAboutSettings);
+  field(form, "heroKicker").value = adminAboutSettings.heroKicker || "";
+  field(form, "heroTitle").value = adminAboutSettings.heroTitle || "";
+  field(form, "heroDescription").value = adminAboutSettings.heroDescription || "";
+  field(form, "teamKicker").value = adminAboutSettings.teamKicker || "";
+  field(form, "newsletterText").value = adminAboutSettings.newsletterText || "";
+  form.dataset.currentHeroImages = JSON.stringify(adminAboutSettings.heroImages?.length ? adminAboutSettings.heroImages : (adminAboutSettings.heroImage ? [adminAboutSettings.heroImage] : []));
+  const heroNote = $("[data-about-hero-note]");
+  const heroCount = JSON.parse(form.dataset.currentHeroImages || "[]").length;
+  if (heroNote) heroNote.textContent = heroCount ? `${heroCount} imagem atual. Envie outra para substituir.` : "Nenhuma imagem anexada.";
+  editor.innerHTML = adminAboutSettings.members.map((member, index) => {
+    const images = itemImages(member);
+    return `
+      <div class="admin-content-panel" data-about-member-row="${index}" data-current-images='${JSON.stringify(images)}' style="margin:0 0 14px;padding:16px;background:var(--admin-bg);">
+        <div class="admin-panel-header">
+          <h2 style="font-size:15px;">Membro ${index + 1}</h2>
+          <label style="display:flex;align-items:center;gap:8px;font-size:12px;color:var(--admin-muted);"><input name="memberFounder${index}" type="checkbox" ${member.isFounder ? "checked" : ""}> Founder em destaque</label>
+        </div>
+        <div class="admin-form-grid">
+          <label>Nome<input name="memberName${index}" value="${escapeAttr(member.name)}" required></label>
+          <label>Cargo<input name="memberRole${index}" value="${escapeAttr(member.role)}" required></label>
+        </div>
+        <div class="admin-form-grid">
+          <label>Instagram ou link<input name="memberInstagram${index}" value="${escapeAttr(member.instagram)}"></label>
+          <label>Imagem<input name="memberImage${index}" type="file" accept="image/png,image/jpeg,image/gif,image/webp"></label>
+        </div>
+        <p class="admin-image-note" data-about-member-note="${index}">${images.length ? `${images.length} imagem atual. Envie outra para substituir.` : "Nenhuma imagem anexada."}</p>
+      </div>
+    `;
+  }).join("");
 }
 
 function updateStats() {
@@ -768,6 +849,7 @@ function renderTaxonomies() {
   Object.entries(adminTaxonomies).forEach(([key, values]) => {
     const list = $(`[data-taxonomy-list="${key}"]`);
     if (!list) return;
+    if (!Array.isArray(values)) return;
     list.innerHTML = values.map((value) => `
       <span class="admin-tag">${value}<button type="button" data-remove-taxonomy="${key}" data-value="${value}">×</button></span>
     `).join("") || '<span style="font-size:12px;color:var(--admin-muted);">Nenhum item cadastrado.</span>';
@@ -961,6 +1043,20 @@ $$("[data-site-banner-form] input[name='images']").forEach((input) => {
     const note = $(`[data-site-banner-note="${form.dataset.siteBannerForm}"]`);
     if (note) note.textContent = event.target.files.length ? `${event.target.files.length} imagem selecionada. Ela sera otimizada ao salvar.` : "Nenhuma imagem anexada.";
   });
+});
+
+$("[data-about-settings-form] input[name='heroImages']")?.addEventListener("change", (event) => {
+  const count = event.target.files.length;
+  const note = $("[data-about-hero-note]");
+  if (note) note.textContent = count ? `${count} imagem selecionada. Ela sera otimizada ao salvar.` : "Nenhuma imagem anexada.";
+});
+
+$("[data-about-team-editor]")?.addEventListener("change", (event) => {
+  const input = event.target.closest("input[type='file']");
+  if (!input) return;
+  const row = input.closest("[data-about-member-row]");
+  const note = row ? $(`[data-about-member-note="${row.dataset.aboutMemberRow}"]`) : null;
+  if (note) note.textContent = input.files.length ? `${input.files.length} imagem selecionada. Ela sera otimizada ao salvar.` : "Nenhuma imagem anexada.";
 });
 
 $("[data-product-form] input[name='images']")?.addEventListener("change", (event) => {
@@ -1353,6 +1449,75 @@ $$("[data-site-banner-form]").forEach((form) => {
   });
 });
 
+$("[data-about-settings-form]")?.addEventListener("submit", async (event) => {
+  event.preventDefault();
+  const form = event.currentTarget;
+  const data = new FormData(form);
+  const submitButton = form.querySelector("[type='submit']");
+  const originalText = submitButton.textContent;
+  submitButton.disabled = true;
+  submitButton.textContent = "Salvando...";
+  let heroImages = JSON.parse(form.dataset.currentHeroImages || "[]");
+  try {
+    const uploadedHero = await filesToDataUrls(field(form, "heroImages").files);
+    heroImages = uploadedHero.length ? uploadedHero : heroImages;
+  } catch (error) {
+    const note = $("[data-about-hero-note]");
+    if (note) note.textContent = error.message;
+    submitButton.disabled = false;
+    submitButton.textContent = originalText;
+    return;
+  }
+
+  const checkedFounder = adminAboutSettings.members.findIndex((_, index) => Boolean(field(form, `memberFounder${index}`)?.checked));
+  const founderIndex = checkedFounder >= 0 ? checkedFounder : 0;
+  const members = [];
+  try {
+    for (const [index, previous] of adminAboutSettings.members.entries()) {
+      const row = form.querySelector(`[data-about-member-row="${index}"]`);
+      const fileInput = field(form, `memberImage${index}`);
+      let images = JSON.parse(row?.dataset.currentImages || "[]");
+      const uploadedImages = await filesToDataUrls(fileInput?.files || []);
+      images = uploadedImages.length ? uploadedImages : images;
+      members.push({
+        ...previous,
+        name: data.get(`memberName${index}`),
+        role: data.get(`memberRole${index}`),
+        instagram: data.get(`memberInstagram${index}`),
+        isFounder: index === founderIndex,
+        image: images[0] || "",
+        images,
+      });
+    }
+  } catch (error) {
+    toast(error.message);
+    submitButton.disabled = false;
+    submitButton.textContent = originalText;
+    return;
+  }
+
+  adminAboutSettings = normalizeAboutSettings({
+    heroKicker: data.get("heroKicker"),
+    heroTitle: data.get("heroTitle"),
+    heroDescription: data.get("heroDescription"),
+    heroImage: heroImages[0] || "",
+    heroImages,
+    teamKicker: data.get("teamKicker"),
+    newsletterText: data.get("newsletterText"),
+    members,
+  });
+  try {
+    await saveAboutSettings();
+    renderAll();
+    toast("Pagina Sobre nos salva.");
+  } catch (error) {
+    toast(errorText(error));
+  } finally {
+    submitButton.disabled = false;
+    submitButton.textContent = originalText;
+  }
+});
+
 $("[data-reset-data]")?.addEventListener("click", () => {
   adminProducts = productSeed;
   adminCollections = collectionSeed;
@@ -1361,6 +1526,7 @@ $("[data-reset-data]")?.addEventListener("click", () => {
   adminFutureDrop = futureDropSeed;
   adminSiteBanners = siteBannersSeed;
   adminBookSettings = bookSettingsSeed;
+  adminAboutSettings = aboutSettingsSeed;
   saveProducts().catch((error) => console.warn(error));
   saveCollections().catch((error) => console.warn(error));
   saveFeaturedCards().catch((error) => console.warn(error));

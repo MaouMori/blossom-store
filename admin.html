@@ -845,6 +845,10 @@
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 016.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15A2.5 2.5 0 016.5 2z"/></svg>
             Livro
           </button>
+          <button class="admin-nav-link" data-nav="about" type="button">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 21s-7-4.4-7-11a7 7 0 1114 0c0 6.6-7 11-7 11z"/><circle cx="12" cy="10" r="2"/></svg>
+            Sobre nos
+          </button>
         </div>
 
         <div class="admin-nav-section">
@@ -1114,6 +1118,34 @@
           </div>
           <p style="font-size:12px;color:var(--admin-muted);margin:-8px 0 14px;">As páginas do livro são sincronizadas com os cards de Cherrys e influenciadores.</p>
           <div data-book-list></div>
+        </div>
+      </section>
+
+      <!-- ABOUT -->
+      <section class="admin-section" data-section="about">
+        <div class="admin-content-panel" style="margin-bottom:18px;">
+          <div class="admin-panel-header">
+            <h2>Pagina Sobre nos</h2>
+          </div>
+          <form class="admin-edit-form" data-about-settings-form>
+            <div class="admin-form-grid">
+              <label>Etiqueta da abertura<input name="heroKicker" required></label>
+              <label>Titulo principal<input name="heroTitle" required></label>
+            </div>
+            <label>Texto de abertura<textarea name="heroDescription" rows="4" required></textarea></label>
+            <label>Imagem da abertura<input name="heroImages" type="file" accept="image/png,image/jpeg,image/gif,image/webp"></label>
+            <p class="admin-image-note" data-about-hero-note>Nenhuma imagem anexada.</p>
+            <div class="admin-form-grid">
+              <label>Etiqueta da equipe<input name="teamKicker" required></label>
+              <label>Texto da newsletter<input name="newsletterText" required></label>
+            </div>
+            <div class="admin-panel-header" style="margin-top:22px;">
+              <h2>Equipe</h2>
+            </div>
+            <p style="font-size:12px;color:var(--admin-muted);margin:-8px 0 14px;">Apenas uma pessoa pode ficar marcada como Founder. Ela aparece maior na pagina.</p>
+            <div data-about-team-editor></div>
+            <div class="admin-form-actions"><button class="btn-add" type="submit">Salvar pagina Sobre nos</button></div>
+          </form>
         </div>
       </section>
     </main>

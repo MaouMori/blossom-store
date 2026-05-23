@@ -245,6 +245,10 @@ function isPlainObject(value) {
   return Boolean(value && typeof value === "object" && !Array.isArray(value));
 }
 
+function escapeHtml(value) {
+  return String(value ?? "").replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+}
+
 const apiEnabled = location.protocol.startsWith("http");
 const legacyDemoAccountName = ["vinicius", "silv-33afab"].join("_");
 
@@ -297,6 +301,42 @@ const defaultSiteBanners = {
   },
 };
 
+const defaultAboutSettings = {
+  heroKicker: "Sobre nos",
+  heroTitle: "Nosso time",
+  heroDescription: "Por tras da Blossom existe um time apaixonado por moda, criatividade e autenticidade. Cada pessoa aqui carrega o proposito de criar mais que roupas: criamos um movimento.",
+  heroImage: "",
+  heroImages: [],
+  teamKicker: "Nossa equipe",
+  newsletterText: "Receba novidades e lancamentos exclusivos.",
+  members: [
+    { id: "madison", name: "Madison Montgomery", role: "Founder & CEO", instagram: "Instagram", isFounder: true, visual: "team-one", image: "", images: [] },
+    { id: "malik", name: "Malik Montgomery", role: "Co-founder", instagram: "Instagram", isFounder: false, visual: "team-two", image: "", images: [] },
+    { id: "aika", name: "Aika Prinxx", role: "Design Director", instagram: "Instagram", isFounder: false, visual: "team-three", image: "", images: [] },
+    { id: "diana", name: "Diana Hyperion", role: "Community Manager", instagram: "Instagram", isFounder: false, visual: "team-four", image: "", images: [] },
+    { id: "paty", name: "Paty Montgomery", role: "Content Creator", instagram: "Instagram", isFounder: false, visual: "team-five", image: "", images: [] },
+    { id: "felipe", name: "Felipe Gilmore", role: "Creative Director", instagram: "Instagram", isFounder: false, visual: "team-six", image: "", images: [] },
+  ],
+};
+
+function normalizeAboutSettings(settings = {}) {
+  const source = isPlainObject(settings) ? settings : {};
+  const members = Array.isArray(source.members) && source.members.length ? source.members : defaultAboutSettings.members;
+  const founderIndex = Math.max(0, members.findIndex((member) => member?.isFounder));
+  return {
+    ...defaultAboutSettings,
+    ...source,
+    members: members.map((member, index) => ({
+      ...defaultAboutSettings.members[index % defaultAboutSettings.members.length],
+      ...member,
+      id: member?.id || `member-${index}`,
+      isFounder: index === founderIndex,
+      images: Array.isArray(member?.images) ? member.images : [],
+      image: member?.image || "",
+    })),
+  };
+}
+
 function recentValue(item) { return Number(item.createdAt || item.created || 0); }
 function recentItems(items, limit) { return [...items].sort((a, b) => recentValue(b) - recentValue(a)).slice(0, limit); }
 
@@ -326,6 +366,7 @@ let futureDrop = apiEnabled ? defaultFutureDrop : readStore("blossom-future-drop
 let siteBanners = apiEnabled ? defaultSiteBanners : (() => {
   try { return { ...defaultSiteBanners, ...JSON.parse(localStorage.getItem("blossom-site-banners") || "{}") }; } catch { return defaultSiteBanners; }
 })();
+let aboutSettings = apiEnabled ? defaultAboutSettings : normalizeAboutSettings(readObjectStore("blossom-about-settings", defaultAboutSettings));
 let taxonomies = (() => {
   if (apiEnabled) return { categories: [], types: [], colors: [], visuals: [] };
   try { const saved = JSON.parse(localStorage.getItem("blossom-taxonomies")); return saved && typeof saved === "object" ? { ...defaultTaxonomies, ...saved } : defaultTaxonomies; } catch { return defaultTaxonomies; }
@@ -416,13 +457,15 @@ async function loadApiStore() {
     featuredCards = Array.isArray(taxonomies.featuredCards) && taxonomies.featuredCards.length ? taxonomies.featuredCards : defaultFeaturedCards;
     futureDrop = isPlainObject(taxonomies.futureDrop) ? { ...defaultFutureDrop, ...taxonomies.futureDrop } : readObjectStore("blossom-future-drop", defaultFutureDrop);
     siteBanners = isPlainObject(taxonomies.siteBanners) ? { ...defaultSiteBanners, ...taxonomies.siteBanners } : readObjectStore("blossom-site-banners", defaultSiteBanners);
+    aboutSettings = isPlainObject(taxonomies.aboutSettings) ? normalizeAboutSettings(taxonomies.aboutSettings) : normalizeAboutSettings(readObjectStore("blossom-about-settings", defaultAboutSettings));
     if (hasShop) { renderFilters(); renderCatalog(); }
     renderHomeSections();
+    renderAboutPage();
     renderCollections();
     renderCollectionDetail();
   } catch {
-    products = []; collections = []; featuredCards = defaultFeaturedCards; futureDrop = defaultFutureDrop; siteBanners = defaultSiteBanners;
-    renderHomeSections(); renderCollections(); renderCollectionDetail();
+    products = []; collections = []; featuredCards = defaultFeaturedCards; futureDrop = defaultFutureDrop; siteBanners = defaultSiteBanners; aboutSettings = defaultAboutSettings;
+    renderHomeSections(); renderAboutPage(); renderCollections(); renderCollectionDetail();
   }
 }
 
@@ -704,6 +747,43 @@ function renderSiteBanners() {
       image.style.backgroundImage = collectionsImage ? `url('${collectionsImage}')` : "";
     }
   }
+}
+
+function renderAboutPage() {
+  const page = document.querySelector("[data-about-page]");
+  if (!page) return;
+  const settings = normalizeAboutSettings(aboutSettings);
+  const heroImages = settings.heroImages?.length ? settings.heroImages : (settings.heroImage ? [settings.heroImage] : []);
+  const heroImage = heroImages[0] || "";
+  const text = (selector, value) => { const element = page.querySelector(selector); if (element) element.textContent = value || ""; };
+  text("[data-about-kicker]", settings.heroKicker);
+  text("[data-about-title]", settings.heroTitle);
+  text("[data-about-description]", settings.heroDescription);
+  text("[data-about-team-kicker]", settings.teamKicker);
+  text("[data-about-newsletter]", settings.newsletterText);
+  const visual = page.querySelector("[data-about-visual]");
+  if (visual) {
+    visual.classList.toggle("has-upload", Boolean(heroImage));
+    visual.style.backgroundImage = heroImage ? `url('${heroImage}')` : "";
+  }
+  const grid = page.querySelector("[data-about-team-grid]");
+  if (!grid) return;
+  grid.innerHTML = settings.members.map((member) => {
+    const image = primaryImage(member);
+    const style = image ? ` style="background-image:url('${image}')"` : "";
+    const externalLink = member.instagram && /^https?:\/\//.test(member.instagram);
+    const instagramHref = externalLink ? member.instagram : "#";
+    return `
+      <article class="about-team-card ${member.isFounder ? "is-founder" : ""}">
+        <div class="about-team-photo ${member.visual || ""} ${image ? "has-upload" : ""}"${style}></div>
+        <div class="about-team-info">
+          <span>${escapeHtml(member.role)}</span>
+          <h2>${escapeHtml(member.name)}</h2>
+          <a href="${escapeHtml(instagramHref)}" ${externalLink ? 'target="_blank" rel="noreferrer"' : ""}>${escapeHtml(member.instagram || "Instagram")}</a>
+        </div>
+      </article>
+    `;
+  }).join("");
 }
 
 function sizeSpotlightCards(track) {
@@ -1237,6 +1317,7 @@ renderAccountUI();
 
 if (hasShop) { renderFilters(); renderCatalog(); }
 renderHomeSections();
+renderAboutPage();
 renderCollections();
 renderCollectionDetail();
 loadApiStore();
