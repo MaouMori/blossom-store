@@ -578,7 +578,7 @@ function spotlightCard(card) {
   const sectionClass = card.section === "influencers" ? "influencer-shot" : "portrait";
   const visual = card.visual || (card.section === "influencers" ? "soft" : "pink");
   return `
-    <a href="#" data-spotlight-card="${card.id}" data-spotlight-name="${card.name || ""}" data-spotlight-role="${card.role || ""}" data-spotlight-image="${image}">
+    <a href="#" data-spotlight-card="${card.id}" data-spotlight-section="${card.section || ""}" data-spotlight-name="${card.name || ""}" data-spotlight-role="${card.role || ""}" data-spotlight-image="${image}">
       <div class="${sectionClass} ${visual} ${image ? "has-upload" : ""}" ${image ? `style="background-image:url('${image}')"` : ""}></div>
       <b>${card.name || "Blossom"}</b>
       <small>${card.role || (card.section === "influencers" ? "Creator" : "Cherry")}</small>
@@ -605,6 +605,7 @@ function applySpotlightBackground(element, card, fallbackLabel) {
   element.style.backgroundImage = image ? `url('${image}')` : "";
   element.dataset.spotlightName = card?.name || fallbackLabel || "Blossom";
   element.dataset.spotlightRole = card?.role || "";
+  element.dataset.spotlightSection = card?.section || "";
   element.dataset.spotlightImage = image || "";
   const label = element.querySelector("span");
   const title = element.querySelector("strong");
@@ -621,7 +622,7 @@ function renderAmbassadorShowcase() {
   let index = 0;
   const renderSlide = () => {
     const card = slides[index % Math.max(slides.length, 1)] || {};
-    applySpotlightBackground(hero, { ...card, name: "Cherrys Blossom", role: card.role || "Comunidade oficial" }, "Cherrys Blossom");
+    applySpotlightBackground(hero, { ...card, role: "Cherry" }, card.name || "Cherry Blossom");
     hero?.classList.remove("is-switching");
     requestAnimationFrame(() => hero?.classList.add("is-switching"));
   };
@@ -1261,12 +1262,12 @@ function createSpotlightPopup() {
   popup.dataset.spotlightPopup = "";
   popup.style.cssText = "position:fixed;inset:0;z-index:100;display:none;align-items:center;justify-content:center;background:rgba(5,3,5,0.85);backdrop-filter:blur(8px);padding:24px;cursor:pointer;";
   popup.innerHTML = `
-    <div style="position:relative;max-width:980px;width:100%;display:grid;grid-template-columns:1.15fr 1fr;gap:32px;align-items:center;background:#0b080b;border:1px solid rgba(255,112,158,0.25);border-radius:16px;padding:32px;cursor:default;">
-      <div data-popup-image style="aspect-ratio:11/6;border-radius:12px;background-color:#09070a;background-image:linear-gradient(135deg,rgba(255,156,188,0.2),transparent),linear-gradient(150deg,#161c22,#070a0d);background-size:cover;background-position:center;background-repeat:no-repeat;"></div>
-      <div style="display:grid;gap:12px;">
-        <h2 data-popup-name style="margin:0;font-size:clamp(28px,4vw,48px);font-family:'Oswald',sans-serif;text-transform:uppercase;color:#fff5f8;"></h2>
-        <p data-popup-role style="margin:0;font-size:14px;color:rgba(232,210,219,0.6);text-transform:uppercase;letter-spacing:0.2em;font-weight:800;"></p>
-        <button type="button" data-popup-close style="justify-self:start;margin-top:12px;min-height:38px;padding:0 22px;border:1px solid rgba(255,112,158,0.48);border-radius:4px;background:transparent;color:var(--ed-pink);font-size:11px;font-weight:800;letter-spacing:0.14em;text-transform:uppercase;cursor:pointer;">Fechar</button>
+    <div style="position:relative;max-width:1240px;width:min(100%,calc(100vw - 72px));display:grid;grid-template-columns:minmax(0,1.22fr) minmax(330px,.78fr);gap:40px;align-items:center;background:#0b080b;border:1px solid rgba(255,112,158,0.28);border-radius:18px;padding:40px;cursor:default;box-shadow:0 34px 110px rgba(0,0,0,.62);">
+      <div data-popup-image style="min-height:min(620px,calc(100vh - 180px));aspect-ratio:4/3;border-radius:14px;background-color:#09070a;background-image:linear-gradient(135deg,rgba(255,156,188,0.2),transparent),linear-gradient(150deg,#161c22,#070a0d);background-size:cover;background-position:center;background-repeat:no-repeat;"></div>
+      <div style="display:grid;gap:14px;">
+        <h2 data-popup-name style="margin:0;font-size:clamp(42px,5.4vw,82px);line-height:.95;font-family:'Oswald',sans-serif;text-transform:uppercase;color:#fff5f8;overflow-wrap:anywhere;"></h2>
+        <p data-popup-role style="margin:0;color:var(--ed-pink);font-size:15px;text-transform:uppercase;letter-spacing:0.2em;font-weight:900;"></p>
+        <button type="button" data-popup-close style="justify-self:start;margin-top:16px;min-height:44px;padding:0 26px;border:1px solid rgba(255,112,158,0.48);border-radius:6px;background:transparent;color:var(--ed-pink);font-size:11px;font-weight:900;letter-spacing:0.14em;text-transform:uppercase;cursor:pointer;">Fechar</button>
       </div>
     </div>
   `;
@@ -1282,7 +1283,10 @@ document.addEventListener("click", (event) => {
     event.preventDefault();
     const popup = createSpotlightPopup();
     const name = cardLink.dataset.spotlightName || "Blossom";
-    const role = cardLink.dataset.spotlightRole || "";
+    const section = cardLink.dataset.spotlightSection || "";
+    const cardId = cardLink.dataset.spotlightCard || "";
+    const rawRole = cardLink.dataset.spotlightRole || "";
+    const role = section === "ambassadors" || section === "cherrys" || cardId.includes("cherry") || cardId.includes("ambassadors") ? "Cherry" : rawRole;
     const image = cardLink.dataset.spotlightImage || "";
     popup.querySelector("[data-popup-name]").textContent = name;
     popup.querySelector("[data-popup-role]").textContent = role;
