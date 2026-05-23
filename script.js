@@ -326,6 +326,7 @@ function normalizeAboutSettings(settings = {}) {
       isFounder: index === founderIndex,
       images: Array.isArray(member?.images) ? member.images : [],
       image: member?.image || "",
+      bio: member?.bio || "",
     })),
   };
 }
@@ -782,6 +783,8 @@ function openAboutMemberModal(index) {
   const media = modal.querySelector("[data-about-modal-image]");
   const title = modal.querySelector("[data-about-modal-name]");
   const role = modal.querySelector("[data-about-modal-role]");
+  const kicker = modal.querySelector("[data-about-modal-kicker]");
+  const bio = modal.querySelector("[data-about-modal-bio]");
   const link = modal.querySelector("[data-about-modal-instagram]");
   if (media) {
     media.className = `about-member-modal-image ${member.visual || ""} ${image ? "has-upload" : ""}`;
@@ -789,6 +792,8 @@ function openAboutMemberModal(index) {
   }
   if (title) title.textContent = member.name || "";
   if (role) role.textContent = member.role || "";
+  if (kicker) kicker.textContent = member.isFounder ? "Founder" : "Blossom team";
+  if (bio) bio.textContent = member.bio || "";
   if (link) {
     link.textContent = member.instagram || "Instagram";
     link.href = externalLink ? member.instagram : "#";

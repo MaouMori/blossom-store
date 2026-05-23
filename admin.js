@@ -176,12 +176,12 @@ const aboutSettingsSeed = {
   teamKicker: "Nossa equipe",
   newsletterText: "Receba novidades e lancamentos exclusivos.",
   members: [
-    { id: "madison", name: "Madison Montgomery", role: "Founder & CEO", instagram: "Instagram", isFounder: true, visual: "team-one", image: "", images: [] },
-    { id: "malik", name: "Malik Montgomery", role: "Co-founder", instagram: "Instagram", isFounder: false, visual: "team-two", image: "", images: [] },
-    { id: "aika", name: "Aika Prinxx", role: "Design Director", instagram: "Instagram", isFounder: false, visual: "team-three", image: "", images: [] },
-    { id: "diana", name: "Diana Hyperion", role: "Community Manager", instagram: "Instagram", isFounder: false, visual: "team-four", image: "", images: [] },
-    { id: "paty", name: "Paty Montgomery", role: "Content Creator", instagram: "Instagram", isFounder: false, visual: "team-five", image: "", images: [] },
-    { id: "felipe", name: "Felipe Gilmore", role: "Creative Director", instagram: "Instagram", isFounder: false, visual: "team-six", image: "", images: [] },
+    { id: "madison", name: "Madison Montgomery", role: "Founder & CEO", instagram: "Instagram", bio: "Madison Montgomery e a mente criativa por tras da Blossom. Lidera o conceito visual, a direcao de moda e a identidade da marca.", isFounder: true, visual: "team-one", image: "", images: [] },
+    { id: "malik", name: "Malik Montgomery", role: "Co-founder", instagram: "Instagram", bio: "Malik cuida da estrategia, conexoes e expansao da Blossom, mantendo cada lancamento alinhado com a comunidade.", isFounder: false, visual: "team-two", image: "", images: [] },
+    { id: "aika", name: "Aika Prinxx", role: "Design Director", instagram: "Instagram", bio: "Aika transforma referencias em pecas digitais com acabamento, atitude e assinatura visual forte.", isFounder: false, visual: "team-three", image: "", images: [] },
+    { id: "diana", name: "Diana Hyperion", role: "Community Manager", instagram: "Instagram", bio: "Diana aproxima a Blossom de quem vive a marca, ouvindo a comunidade e cuidando da experiencia diaria.", isFounder: false, visual: "team-four", image: "", images: [] },
+    { id: "paty", name: "Paty Montgomery", role: "Content Creator", instagram: "Instagram", bio: "Paty cria narrativas, imagens e presenca digital para apresentar a estetica Blossom em cada detalhe.", isFounder: false, visual: "team-five", image: "", images: [] },
+    { id: "felipe", name: "Felipe Gilmore", role: "Creative Director", instagram: "Instagram", bio: "Felipe conduz ideias, campanhas e direcao artistica para manter a Blossom intensa, elegante e memoravel.", isFounder: false, visual: "team-six", image: "", images: [] },
   ],
 };
 
@@ -199,6 +199,7 @@ function normalizeAboutSettings(settings = {}) {
       isFounder: index === founderIndex,
       images: Array.isArray(member?.images) ? member.images : [],
       image: member?.image || "",
+      bio: member?.bio || "",
     })),
   };
 }
@@ -232,6 +233,10 @@ function field(form, name) {
 
 function escapeAttr(value) {
   return String(value ?? "").replace(/&/g, "&amp;").replace(/"/g, "&quot;").replace(/</g, "&lt;");
+}
+
+function escapeHtml(value) {
+  return String(value ?? "").replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
 }
 
 function itemImages(item) {
@@ -610,6 +615,7 @@ function renderAboutSettings() {
           <label>Instagram ou link<input name="memberInstagram${index}" value="${escapeAttr(member.instagram)}"></label>
           <label>Imagem<input name="memberImage${index}" type="file" accept="image/png,image/jpeg,image/gif,image/webp"></label>
         </div>
+        <label>Texto do pop-up<textarea name="memberBio${index}" rows="3">${escapeHtml(member.bio)}</textarea></label>
         <p class="admin-image-note" data-about-member-note="${index}">${images.length ? `${images.length} imagem atual. Envie outra para substituir.` : "Nenhuma imagem anexada."}</p>
       </div>
     `;
@@ -1484,6 +1490,7 @@ $("[data-about-settings-form]")?.addEventListener("submit", async (event) => {
         name: data.get(`memberName${index}`),
         role: data.get(`memberRole${index}`),
         instagram: data.get(`memberInstagram${index}`),
+        bio: data.get(`memberBio${index}`),
         isFounder: index === founderIndex,
         image: images[0] || "",
         images,

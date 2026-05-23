@@ -81,11 +81,16 @@
 
   <dialog class="about-member-modal" data-about-member-modal>
     <button class="about-member-modal-close" type="button" aria-label="Fechar" data-about-modal-close>×</button>
-    <div class="about-member-modal-image" data-about-modal-image></div>
+    <div class="about-member-modal-image" data-about-modal-image>
+      <button class="about-member-arrow prev" type="button" aria-label="Imagem anterior">‹</button>
+      <button class="about-member-arrow next" type="button" aria-label="Proxima imagem">›</button>
+      <div class="about-member-dots" aria-hidden="true"><span></span><span></span></div>
+    </div>
     <div class="about-member-modal-info">
-      <span>Blossom team</span>
+      <span data-about-modal-kicker>Blossom team</span>
       <h2 data-about-modal-name></h2>
       <p data-about-modal-role></p>
+      <div class="about-member-modal-bio" data-about-modal-bio></div>
       <a href="#" data-about-modal-instagram>Instagram</a>
     </div>
   </dialog>
