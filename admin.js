@@ -613,10 +613,10 @@ function renderAboutSettings() {
         </div>
         <div class="admin-form-grid">
           <label>Instagram ou link<input name="memberInstagram${index}" value="${escapeAttr(member.instagram)}"></label>
-          <label>Imagem<input name="memberImage${index}" type="file" accept="image/png,image/jpeg,image/gif,image/webp"></label>
+          <label>Imagens<input name="memberImage${index}" type="file" accept="image/png,image/jpeg,image/gif,image/webp" multiple></label>
         </div>
         <label>Texto do pop-up<textarea name="memberBio${index}" rows="3">${escapeHtml(member.bio)}</textarea></label>
-        <p class="admin-image-note" data-about-member-note="${index}">${images.length ? `${images.length} imagem atual. Envie outra para substituir.` : "Nenhuma imagem anexada."}</p>
+        <p class="admin-image-note" data-about-member-note="${index}">${images.length ? `${images.length} imagem(ns) atual(is). Envie outras para substituir.` : "Nenhuma imagem anexada."}</p>
       </div>
     `;
   }).join("");
@@ -1062,7 +1062,7 @@ $("[data-about-team-editor]")?.addEventListener("change", (event) => {
   if (!input) return;
   const row = input.closest("[data-about-member-row]");
   const note = row ? $(`[data-about-member-note="${row.dataset.aboutMemberRow}"]`) : null;
-  if (note) note.textContent = input.files.length ? `${input.files.length} imagem selecionada. Ela sera otimizada ao salvar.` : "Nenhuma imagem anexada.";
+  if (note) note.textContent = input.files.length ? `${input.files.length} imagem(ns) selecionada(s). Elas serao otimizadas ao salvar.` : "Nenhuma imagem anexada.";
 });
 
 $("[data-product-form] input[name='images']")?.addEventListener("change", (event) => {

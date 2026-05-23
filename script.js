@@ -361,6 +361,8 @@ let siteBanners = apiEnabled ? defaultSiteBanners : (() => {
   try { return { ...defaultSiteBanners, ...JSON.parse(localStorage.getItem("blossom-site-banners") || "{}") }; } catch { return defaultSiteBanners; }
 })();
 let aboutSettings = apiEnabled ? defaultAboutSettings : normalizeAboutSettings(readObjectStore("blossom-about-settings", defaultAboutSettings));
+let aboutModalMemberIndex = -1;
+let aboutModalImageIndex = 0;
 let taxonomies = (() => {
   if (apiEnabled) return { categories: [], types: [], colors: [], visuals: [] };
   try { const saved = JSON.parse(localStorage.getItem("blossom-taxonomies")); return saved && typeof saved === "object" ? { ...defaultTaxonomies, ...saved } : defaultTaxonomies; } catch { return defaultTaxonomies; }
@@ -778,7 +780,10 @@ function openAboutMemberModal(index) {
   if (!modal) return;
   const member = normalizeAboutSettings(aboutSettings).members[index];
   if (!member) return;
-  const image = primaryImage(member);
+  aboutModalMemberIndex = index;
+  aboutModalImageIndex = 0;
+  const images = itemImages(member);
+  const image = images[aboutModalImageIndex] || "";
   const externalLink = member.instagram && /^https?:\/\//.test(member.instagram);
   const media = modal.querySelector("[data-about-modal-image]");
   const title = modal.querySelector("[data-about-modal-name]");
@@ -788,8 +793,9 @@ function openAboutMemberModal(index) {
   const link = modal.querySelector("[data-about-modal-instagram]");
   if (media) {
     media.className = `about-member-modal-image ${member.visual || ""} ${image ? "has-upload" : ""}`;
-    media.style.backgroundImage = image ? `url('${image}')` : "";
+    media.style.backgroundImage = image ? `url("${image}")` : "";
   }
+  renderAboutModalGallery(member);
   if (title) title.textContent = member.name || "";
   if (role) role.textContent = member.role || "";
   if (kicker) kicker.textContent = member.isFounder ? "Founder" : "Blossom team";
@@ -809,9 +815,39 @@ function openAboutMemberModal(index) {
   else modal.setAttribute("open", "");
 }
 
+function renderAboutModalGallery(member) {
+  const modal = document.querySelector("[data-about-member-modal]");
+  const media = modal?.querySelector("[data-about-modal-image]");
+  if (!modal || !media || !member) return;
+  const images = itemImages(member);
+  const currentImage = images[aboutModalImageIndex] || "";
+  media.className = `about-member-modal-image ${member.visual || ""} ${currentImage ? "has-upload" : ""}`;
+  media.style.backgroundImage = currentImage ? `url("${currentImage}")` : "";
+  const hasGallery = images.length > 1;
+  modal.querySelectorAll(".about-member-arrow").forEach((button) => {
+    button.hidden = !hasGallery;
+  });
+  const dots = modal.querySelector("[data-about-modal-dots]");
+  if (dots) {
+    dots.hidden = !hasGallery;
+    dots.innerHTML = images.map((_, index) => `<span class="${index === aboutModalImageIndex ? "active" : ""}"></span>`).join("");
+  }
+}
+
+function changeAboutModalImage(direction) {
+  const members = normalizeAboutSettings(aboutSettings).members;
+  const member = members[aboutModalMemberIndex];
+  const images = itemImages(member);
+  if (!member || images.length < 2) return;
+  aboutModalImageIndex = (aboutModalImageIndex + direction + images.length) % images.length;
+  renderAboutModalGallery(member);
+}
+
 function closeAboutMemberModal() {
   const modal = document.querySelector("[data-about-member-modal]");
   if (!modal) return;
+  aboutModalMemberIndex = -1;
+  aboutModalImageIndex = 0;
   if (typeof modal.close === "function") modal.close();
   else modal.removeAttribute("open");
 }
@@ -1207,6 +1243,14 @@ document.addEventListener("click", (event) => {
 });
 
 document.querySelector("[data-about-member-modal]")?.addEventListener("click", (event) => {
+  if (event.target.closest("[data-about-modal-prev]")) {
+    changeAboutModalImage(-1);
+    return;
+  }
+  if (event.target.closest("[data-about-modal-next]")) {
+    changeAboutModalImage(1);
+    return;
+  }
   if (event.target === event.currentTarget) closeAboutMemberModal();
 });
 /* Spotlight card popup */
