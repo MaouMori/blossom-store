@@ -8690,7 +8690,7 @@ body.nav-scrolled .editorial-header .theme-pill {
   width: 100%;
   border: 0;
   padding: 0;
-  cursor: zoom-in;
+  cursor: pointer;
   background:
     radial-gradient(circle at 50% 34%, rgba(255, 122, 170, 0.18), transparent 28%),
     linear-gradient(145deg, rgba(255, 255, 255, 0.03), rgba(255, 255, 255, 0)),
@@ -8698,6 +8698,33 @@ body.nav-scrolled .editorial-header .theme-pill {
   background-size: cover;
   background-position: center top;
   filter: saturate(0.92);
+}
+
+.about-team-photo::after {
+  content: "Clique para ampliar";
+  position: absolute;
+  left: 18px;
+  top: 18px;
+  z-index: 2;
+  padding: 8px 12px;
+  border: 1px solid rgba(255, 122, 170, 0.42);
+  border-radius: 999px;
+  background: rgba(5, 6, 7, 0.72);
+  color: #fff;
+  font-size: 10px;
+  font-weight: 900;
+  letter-spacing: 0.14em;
+  opacity: 0;
+  pointer-events: none;
+  text-transform: uppercase;
+  transform: translateY(-6px);
+  transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
+.about-team-photo:hover::after,
+.about-team-photo:focus-visible::after {
+  opacity: 1;
+  transform: translateY(0);
 }
 
 .about-team-photo.has-upload {
@@ -8798,9 +8825,8 @@ body.nav-scrolled .editorial-header .theme-pill {
 }
 
 .about-team-info a::before {
-  content: "◎";
-  margin-right: 10px;
-  color: var(--about-pink);
+  content: "";
+  display: none;
 }
 
 .about-editorial-page .editorial-footer {
@@ -8836,7 +8862,8 @@ body.nav-scrolled .editorial-header .theme-pill {
 }
 
 .about-member-modal {
-  width: min(1040px, calc(100% - 36px));
+  width: min(1180px, calc(100% - 36px));
+  max-height: min(820px, calc(100vh - 36px));
   border: 1px solid rgba(255, 122, 170, 0.32);
   border-radius: 10px;
   padding: 0;
@@ -8853,11 +8880,11 @@ body.nav-scrolled .editorial-header .theme-pill {
 
 .about-member-modal[open] {
   display: grid;
-  grid-template-columns: minmax(0, 1.35fr) minmax(280px, 0.65fr);
+  grid-template-columns: minmax(0, 1.45fr) minmax(340px, 0.55fr);
 }
 
 .about-member-modal-image {
-  min-height: 640px;
+  min-height: min(720px, calc(100vh - 36px));
   background:
     radial-gradient(circle at 50% 28%, rgba(255, 122, 170, 0.18), transparent 30%),
     linear-gradient(145deg, rgba(255, 255, 255, 0.03), rgba(255, 255, 255, 0)),
@@ -8872,13 +8899,25 @@ body.nav-scrolled .editorial-header .theme-pill {
   background-repeat: no-repeat;
 }
 
+.about-member-modal-image.team-one,
+.about-member-modal-image.team-three,
+.about-member-modal-image.team-five {
+  background-image:
+    linear-gradient(180deg, rgba(5, 6, 7, 0.08), rgba(5, 6, 7, 0.36)),
+    url("img/mulher.png");
+}
+
+.about-member-modal-image.team-one { background-position: center 18%; }
+.about-member-modal-image.team-three { background-position: center 25%; }
+.about-member-modal-image.team-five { background-position: center 30%; }
+
 .about-member-modal-info {
   display: flex;
   min-height: 420px;
   flex-direction: column;
   justify-content: center;
   gap: 16px;
-  padding: 46px;
+  padding: 40px;
   background: linear-gradient(180deg, rgba(255, 122, 170, 0.08), rgba(255, 255, 255, 0.02));
 }
 
@@ -8895,17 +8934,28 @@ body.nav-scrolled .editorial-header .theme-pill {
 .about-member-modal-info h2 {
   margin: 0;
   font-family: "Oswald", "Archivo", sans-serif;
-  font-size: clamp(42px, 5vw, 72px);
-  line-height: 0.98;
+  font-size: clamp(34px, 4vw, 58px);
+  line-height: 1.04;
+  overflow-wrap: anywhere;
   text-transform: uppercase;
 }
 
 .about-member-modal-info a {
   width: fit-content;
   margin-top: 12px;
+  padding: 10px 14px;
+  border: 1px solid rgba(255, 122, 170, 0.36);
+  border-radius: 999px;
   color: #fff;
+  font-size: 13px;
   font-weight: 800;
   text-decoration: none;
+}
+
+.about-member-modal-info a::before {
+  content: "@";
+  margin-right: 8px;
+  color: var(--about-pink);
 }
 
 .about-member-modal-close {
