@@ -8868,6 +8868,15 @@ body.nav-scrolled .editorial-header .theme-pill {
   border-top-color: rgba(255, 255, 255, 0.08);
 }
 
+.about-editorial-page .editorial-nav {
+  gap: clamp(14px, 1.45vw, 24px);
+}
+
+.about-editorial-page .editorial-nav a {
+  font-size: 10px;
+  letter-spacing: 0.12em;
+}
+
 .about-newsletter {
   margin-top: 18px;
   max-width: 260px;

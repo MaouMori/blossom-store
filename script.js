@@ -309,14 +309,7 @@ const defaultAboutSettings = {
   heroImages: [],
   teamKicker: "Nossa equipe",
   newsletterText: "Receba novidades e lancamentos exclusivos.",
-  members: [
-    { id: "madison", name: "Madison Montgomery", role: "Founder & CEO", instagram: "Instagram", isFounder: true, visual: "team-one", image: "", images: [] },
-    { id: "malik", name: "Malik Montgomery", role: "Co-founder", instagram: "Instagram", isFounder: false, visual: "team-two", image: "", images: [] },
-    { id: "aika", name: "Aika Prinxx", role: "Design Director", instagram: "Instagram", isFounder: false, visual: "team-three", image: "", images: [] },
-    { id: "diana", name: "Diana Hyperion", role: "Community Manager", instagram: "Instagram", isFounder: false, visual: "team-four", image: "", images: [] },
-    { id: "paty", name: "Paty Montgomery", role: "Content Creator", instagram: "Instagram", isFounder: false, visual: "team-five", image: "", images: [] },
-    { id: "felipe", name: "Felipe Gilmore", role: "Creative Director", instagram: "Instagram", isFounder: false, visual: "team-six", image: "", images: [] },
-  ],
+  members: [],
 };
 
 function normalizeAboutSettings(settings = {}) {
