@@ -545,15 +545,14 @@ function collectionCard(collection) {
   const image = primaryImage(collection);
   const imageStyle = image ? `data-src="${image}"` : "";
   return `
-    <article class="collection-card">
+    <a class="collection-card" href="colecao.html?id=${collection.id}" aria-label="Abrir colecao ${collection.name}">
       <div class="template-visual collection-media ${collection.visual || "essentials"} ${image ? "has-upload" : ""}" ${imageStyle}>
         ${collection.badge ? `<span>${collection.badge}</span>` : ""}
       </div>
       <div class="collection-copy">
         <h3>${collection.name}</h3>
-        <a href="colecao.html?id=${collection.id}">Ver peças</a>
       </div>
-    </article>
+    </a>
   `;
 }
 
@@ -957,19 +956,7 @@ function collectionDetailProductCard(product) {
 }
 
 function getFilteredCollections() {
-  let filtered = collections.filter((collection) => {
-    const related = collectionProducts(collection.id);
-    const matchesCategory = state.collectionCategory === "Todas" || related.some((product) => product.category === state.collectionCategory);
-    const matchesType = state.collectionType === "Todos" || related.some((product) => product.type === state.collectionType);
-    const matchesColor = state.collectionColor === "Todas" || related.some((product) => product.color === state.collectionColor);
-    return matchesCategory && matchesType && matchesColor;
-  });
-  filtered = filtered.sort((a, b) => {
-    if (state.collectionSort === "pieces") return collectionPieceCount(b) - collectionPieceCount(a);
-    if (state.collectionSort === "name") return a.name.localeCompare(b.name);
-    return recentValue(b) - recentValue(a);
-  });
-  return filtered;
+  return [...collections].sort((a, b) => recentValue(b) - recentValue(a));
 }
 
 function renderCollectionControls() {
@@ -987,10 +974,9 @@ function renderCollectionControls() {
 
 function renderCollections() {
   if (!hasCollections) return;
-  renderCollectionControls();
   const visibleCollections = getFilteredCollections();
   selectors.collectionsGrid.innerHTML = visibleCollections.map((collection) => `
-    <article>
+    <a href="colecao.html?id=${collection.id}" aria-label="Abrir colecao ${collection.name}">
       <div class="template-visual collection-preview ${collection.visual || "essentials"} ${primaryImage(collection) ? "has-upload" : ""}" ${primaryImage(collection) ? `data-src="${primaryImage(collection)}"` : ""}>
         ${collection.badge ? `<span>${collection.badge}</span>` : ""}
       </div>
@@ -998,10 +984,10 @@ function renderCollections() {
         <h2>${collection.name}</h2>
         <b>${collection.label}</b>
         <p>${collection.description}</p>
-        <footer><span>${String(collectionPieceCount(collection)).padStart(2, "0")} peças</span><a href="colecao.html?id=${collection.id}">Ver coleção</a></footer>
+        <footer><span>${String(collectionPieceCount(collection)).padStart(2, "0")} pecas</span></footer>
       </div>
-    </article>
-  `).join("") || '<p class="empty-products">Nenhuma coleção encontrada com esses filtros.</p>';
+    </a>
+  `).join("") || '<p class="empty-products">Nenhuma colecao cadastrada ainda.</p>';
   refreshLazyImages();
 }
 
