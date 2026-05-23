@@ -187,6 +187,13 @@ button:hover {
     grid-template-columns 260ms ease;
 }
 
+.site-header .main-nav {
+  position: absolute;
+  left: 50%;
+  top: 0;
+  transform: translateX(-50%);
+}
+
 .brand,
 .footer-brand {
   display: inline-flex;
@@ -5829,6 +5836,10 @@ select option:checked {
 }
 
 .editorial-nav {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
   justify-content: center;
   gap: clamp(24px, 2.6vw, 42px);
   min-width: 0;
