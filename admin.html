@@ -495,7 +495,7 @@
 
     .admin-about-member-summary {
       display: grid;
-      grid-template-columns: 70px 1fr auto;
+      grid-template-columns: 70px minmax(0, 1fr) auto auto;
       align-items: center;
       gap: 14px;
     }
@@ -537,6 +537,36 @@
       font-weight: 700;
     }
 
+    .admin-founder-toggle {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      min-height: 38px;
+      padding: 0 12px;
+      border: 1px solid var(--admin-line);
+      border-radius: 999px;
+      color: var(--admin-muted);
+      font-size: 10px;
+      font-weight: 900;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      white-space: nowrap;
+      cursor: pointer;
+    }
+
+    .admin-founder-toggle input {
+      width: 16px;
+      height: 16px;
+      accent-color: var(--admin-pink);
+      cursor: pointer;
+    }
+
+    .admin-founder-toggle:has(input:checked) {
+      border-color: color-mix(in srgb, var(--admin-pink) 62%, transparent);
+      color: var(--admin-pink);
+      background: var(--admin-pink-bg);
+    }
+
     .admin-about-member-fields {
       display: none;
       gap: 12px;
@@ -552,7 +582,8 @@
         grid-template-columns: 54px 1fr;
       }
 
-      .admin-about-member-summary button {
+      .admin-about-member-summary button,
+      .admin-founder-toggle {
         grid-column: 1 / -1;
         justify-self: start;
       }

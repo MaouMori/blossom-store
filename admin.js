@@ -653,7 +653,7 @@ function renderAboutSettings() {
   setAdminImagePreview(field(form, "heroImages"), JSON.parse(form.dataset.currentHeroImages || "[]"));
   editor.innerHTML = adminAboutSettings.members.map((member, index) => {
     const images = itemImages(member);
-    const thumbStyle = images[0] ? ` style="background-image:url('${escapeAttr(images[0])}')"` : "";
+    const thumbStyle = images[0] ? ` style="background-image:url(&quot;${escapeAttr(images[0])}&quot;)"` : "";
     return `
       <div class="admin-about-member-card" data-about-member-row="${index}" data-current-images='${JSON.stringify(images)}'>
         <div class="admin-about-member-summary">
@@ -662,20 +662,20 @@ function renderAboutSettings() {
             <b>${escapeHtml(member.name || `Membro ${index + 1}`)}</b>
             <span>${escapeHtml(member.role || "Cargo")}${images.length ? ` · ${images.length} imagem(ns)` : ""}</span>
           </div>
+          <label class="admin-founder-toggle"><input name="memberFounder${index}" type="checkbox" ${member.isFounder ? "checked" : ""}> Founder</label>
           <button class="btn-add" type="button" data-about-member-edit="${index}" aria-expanded="false">Modificar</button>
         </div>
         <div class="admin-about-member-fields">
-          <label style="display:flex;align-items:center;gap:8px;font-size:12px;color:var(--admin-muted);"><input name="memberFounder${index}" type="checkbox" ${member.isFounder ? "checked" : ""}> Founder em destaque</label>
           <div class="admin-form-grid">
             <label>Nome<input name="memberName${index}" value="${escapeAttr(member.name)}" required></label>
             <label>Cargo<input name="memberRole${index}" value="${escapeAttr(member.role)}" required></label>
           </div>
           <div class="admin-form-grid">
             <label>Instagram ou link<input name="memberInstagram${index}" value="${escapeAttr(member.instagram)}"></label>
-            <label>Imagens<input name="memberImage${index}" type="file" accept="image/png,image/jpeg,image/gif,image/webp" multiple></label>
+            <label>Imagens (minimo 2)<input name="memberImage${index}" type="file" accept="image/png,image/jpeg,image/gif,image/webp" multiple></label>
           </div>
           <label>Texto do pop-up<textarea name="memberBio${index}" rows="3">${escapeHtml(member.bio)}</textarea></label>
-          <p class="admin-image-note" data-about-member-note="${index}">${images.length ? `${images.length} imagem(ns) atual(is). Envie outras para substituir.` : "Nenhuma imagem anexada."}</p>
+          <p class="admin-image-note" data-about-member-note="${index}">${images.length ? `${images.length} imagem(ns) atual(is). Envie 2 ou mais para substituir.` : "Nenhuma imagem anexada. Cada membro precisa de pelo menos 2 imagens."}</p>
         </div>
       </div>
     `;
@@ -1142,8 +1142,22 @@ $("[data-about-team-editor]")?.addEventListener("change", (event) => {
   if (!input) return;
   const row = input.closest("[data-about-member-row]");
   const note = row ? $(`[data-about-member-note="${row.dataset.aboutMemberRow}"]`) : null;
-  if (note) note.textContent = input.files.length ? `${input.files.length} imagem(ns) selecionada(s). Elas serao otimizadas ao salvar.` : "Nenhuma imagem anexada.";
+  if (note) {
+    note.textContent = input.files.length
+      ? `${input.files.length} imagem(ns) selecionada(s). ${input.files.length < 2 ? "Selecione pelo menos 2 imagens para salvar." : "Elas serao otimizadas ao salvar."}`
+      : "Nenhuma imagem anexada. Cada membro precisa de pelo menos 2 imagens.";
+  }
   previewSelectedImages(input);
+  const firstFile = input.files?.[0];
+  const thumb = row?.querySelector(".admin-about-member-thumb");
+  if (firstFile && thumb) {
+    const urls = adminPreviewUrls.get(input) || [];
+    if (urls[0]) thumb.style.backgroundImage = `url("${urls[0]}")`;
+  }
+  const meta = row?.querySelector(".admin-about-member-meta span");
+  if (meta && input.files.length) {
+    meta.textContent = `${input.files.length} imagem(ns) selecionada(s)`;
+  }
 });
 
 $("[data-product-form] input[name='images']")?.addEventListener("change", (event) => {
@@ -1576,6 +1590,17 @@ $("[data-about-settings-form]")?.addEventListener("submit", async (event) => {
       let images = JSON.parse(row?.dataset.currentImages || "[]");
       const uploadedImages = await filesToDataUrls(fileInput?.files || []);
       images = uploadedImages.length ? uploadedImages : images;
+      if (images.length < 2) {
+        row?.classList.add("is-editing");
+        const button = row?.querySelector("[data-about-member-edit]");
+        if (button) {
+          button.textContent = "Fechar";
+          button.setAttribute("aria-expanded", "true");
+        }
+        const note = row ? $(`[data-about-member-note="${row.dataset.aboutMemberRow}"]`) : null;
+        if (note) note.textContent = "Adicione pelo menos 2 imagens para este membro.";
+        throw new Error(`O membro ${data.get(`memberName${index}`) || index + 1} precisa de pelo menos 2 imagens.`);
+      }
       members.push({
         ...previous,
         name: data.get(`memberName${index}`),
