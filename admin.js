@@ -231,6 +231,10 @@ function field(form, name) {
   return form.elements.namedItem(name);
 }
 
+function scopedField(scope, name) {
+  return scope?.querySelector(`[name="${CSS.escape(name)}"]`);
+}
+
 function escapeAttr(value) {
   return String(value ?? "").replace(/&/g, "&amp;").replace(/"/g, "&quot;").replace(/</g, "&lt;");
 }
@@ -569,6 +573,20 @@ function saveSiteBanners() { syncAdminTaxonomies(); setData("blossom-site-banner
 function saveBookSettings() { syncAdminTaxonomies(); setData("blossom-book-settings", adminBookSettings); return saveApiStore(); }
 function saveAboutSettings() { adminAboutSettings = normalizeAboutSettings(adminAboutSettings); syncAdminTaxonomies(); setData("blossom-about-settings", adminAboutSettings); return saveApiStore(); }
 
+function blankAboutMember() {
+  return {
+    id: `membro-${Date.now()}`,
+    name: "Novo membro",
+    role: "Cargo",
+    instagram: "Instagram",
+    bio: "",
+    isFounder: !adminAboutSettings.members?.some((member) => member.isFounder),
+    visual: `team-${(adminAboutSettings.members?.length || 0) + 1}`,
+    image: "",
+    images: [],
+  };
+}
+
 function optionMarkup(values, selected = "") {
   return [...new Set(values)].map((value) => `<option ${value === selected ? "selected" : ""}>${value}</option>`).join("");
 }
@@ -653,7 +671,7 @@ function renderAboutSettings() {
   setAdminImagePreview(field(form, "heroImages"), JSON.parse(form.dataset.currentHeroImages || "[]"));
   editor.innerHTML = adminAboutSettings.members.map((member, index) => {
     const images = itemImages(member);
-    const thumbStyle = images[0] ? ` style="background-image:url(&quot;${escapeAttr(images[0])}&quot;)"` : "";
+    const thumbStyle = images[0] ? ` style="--member-thumb:url(&quot;${escapeAttr(images[0])}&quot;)"` : "";
     return `
       <div class="admin-about-member-card" data-about-member-row="${index}" data-current-images='${JSON.stringify(images)}'>
         <div class="admin-about-member-summary">
@@ -676,6 +694,10 @@ function renderAboutSettings() {
           </div>
           <label>Texto do pop-up<textarea name="memberBio${index}" rows="3">${escapeHtml(member.bio)}</textarea></label>
           <p class="admin-image-note" data-about-member-note="${index}">${images.length ? `${images.length} imagem(ns) atual(is). Envie 2 ou mais para substituir.` : "Nenhuma imagem anexada. Cada membro precisa de pelo menos 2 imagens."}</p>
+          <div class="admin-about-member-actions">
+            <button class="admin-member-save" type="button" data-about-member-save="${index}">Salvar membro</button>
+            <button class="admin-member-delete" type="button" data-about-member-delete="${index}">Deletar membro</button>
+          </div>
         </div>
       </div>
     `;
@@ -1104,6 +1126,56 @@ function openFutureForm() {
   dialog.showModal();
 }
 
+async function memberImagesFromRow(row, index) {
+  const fileInput = scopedField(row, `memberImage${index}`);
+  let images = JSON.parse(row?.dataset.currentImages || "[]");
+  const uploadedImages = await filesToDataUrls(fileInput?.files || []);
+  images = uploadedImages.length ? uploadedImages : images;
+  if (images.length < 2) {
+    row?.classList.add("is-editing");
+    const button = row?.querySelector("[data-about-member-edit]");
+    if (button) {
+      button.textContent = "Fechar";
+      button.setAttribute("aria-expanded", "true");
+    }
+    const note = row ? $(`[data-about-member-note="${row.dataset.aboutMemberRow}"]`) : null;
+    if (note) note.textContent = "Adicione pelo menos 2 imagens para este membro.";
+    throw new Error("Cada membro precisa de pelo menos 2 imagens.");
+  }
+  return images;
+}
+
+async function readAboutMemberFromRow(row, index) {
+  if (!row) throw new Error("Membro nao encontrado.");
+  const images = await memberImagesFromRow(row, index);
+  return {
+    ...(adminAboutSettings.members[index] || blankAboutMember()),
+    name: scopedField(row, `memberName${index}`)?.value || "Novo membro",
+    role: scopedField(row, `memberRole${index}`)?.value || "Cargo",
+    instagram: scopedField(row, `memberInstagram${index}`)?.value || "Instagram",
+    bio: scopedField(row, `memberBio${index}`)?.value || "",
+    isFounder: Boolean(scopedField(row, `memberFounder${index}`)?.checked),
+    image: images[0] || "",
+    images,
+  };
+}
+
+async function saveAboutMember(index) {
+  const form = $("[data-about-settings-form]");
+  const row = form?.querySelector(`[data-about-member-row="${index}"]`);
+  const member = await readAboutMemberFromRow(row, index);
+  adminAboutSettings = normalizeAboutSettings(adminAboutSettings);
+  adminAboutSettings.members[index] = member;
+  if (member.isFounder) {
+    adminAboutSettings.members = adminAboutSettings.members.map((item, itemIndex) => ({ ...item, isFounder: itemIndex === index }));
+  } else if (!adminAboutSettings.members.some((item) => item.isFounder)) {
+    adminAboutSettings.members[index].isFounder = true;
+  }
+  await saveAboutSettings();
+  renderAboutSettings();
+  toast("Membro salvo.");
+}
+
 /* Event listeners */
 $("[data-new-product]")?.addEventListener("click", () => openProductForm());
 $("[data-new-collection]")?.addEventListener("click", () => openCollectionForm());
@@ -1130,11 +1202,66 @@ $("[data-about-settings-form] input[name='heroImages']")?.addEventListener("chan
 
 $("[data-about-team-editor]")?.addEventListener("click", (event) => {
   const button = event.target.closest("[data-about-member-edit]");
+  const saveButton = event.target.closest("[data-about-member-save]");
+  const deleteButton = event.target.closest("[data-about-member-delete]");
+  if (saveButton) {
+    saveButton.disabled = true;
+    const originalText = saveButton.textContent;
+    saveButton.textContent = "Salvando...";
+    saveAboutMember(Number(saveButton.dataset.aboutMemberSave))
+      .catch((error) => toast(error.message))
+      .finally(() => {
+        saveButton.disabled = false;
+        saveButton.textContent = originalText;
+      });
+    return;
+  }
+  if (deleteButton) {
+    const index = Number(deleteButton.dataset.aboutMemberDelete);
+    if (adminAboutSettings.members.length <= 1) {
+      toast("Mantenha pelo menos um membro na equipe.");
+      return;
+    }
+    const removedFounder = Boolean(adminAboutSettings.members[index]?.isFounder);
+    adminAboutSettings.members = adminAboutSettings.members.filter((_, itemIndex) => itemIndex !== index);
+    if (removedFounder && adminAboutSettings.members[0]) adminAboutSettings.members[0].isFounder = true;
+    saveAboutSettings()
+      .then(() => {
+        renderAboutSettings();
+        toast("Membro deletado.");
+      })
+      .catch((error) => toast(errorText(error)));
+    return;
+  }
   if (!button) return;
   const row = button.closest("[data-about-member-row]");
   const isEditing = row.classList.toggle("is-editing");
   button.setAttribute("aria-expanded", String(isEditing));
   button.textContent = isEditing ? "Fechar" : "Modificar";
+});
+
+$("[data-about-member-add]")?.addEventListener("click", () => {
+  adminAboutSettings = normalizeAboutSettings(adminAboutSettings);
+  adminAboutSettings.members = [...adminAboutSettings.members, blankAboutMember()];
+  renderAboutSettings();
+  const lastIndex = adminAboutSettings.members.length - 1;
+  const row = $(`[data-about-member-row="${lastIndex}"]`);
+  row?.classList.add("is-editing");
+  const button = row?.querySelector("[data-about-member-edit]");
+  if (button) {
+    button.textContent = "Fechar";
+    button.setAttribute("aria-expanded", "true");
+  }
+  row?.scrollIntoView({ behavior: "smooth", block: "center" });
+});
+
+$("[data-about-team-editor]")?.addEventListener("change", (event) => {
+  const founder = event.target.closest(".admin-founder-toggle input");
+  if (!founder) return;
+  $("[data-about-team-editor]").querySelectorAll(".admin-founder-toggle input").forEach((input) => {
+    if (input !== founder) input.checked = false;
+  });
+  if (!$("[data-about-team-editor]").querySelector(".admin-founder-toggle input:checked")) founder.checked = true;
 });
 
 $("[data-about-team-editor]")?.addEventListener("change", (event) => {
@@ -1152,7 +1279,7 @@ $("[data-about-team-editor]")?.addEventListener("change", (event) => {
   const thumb = row?.querySelector(".admin-about-member-thumb");
   if (firstFile && thumb) {
     const urls = adminPreviewUrls.get(input) || [];
-    if (urls[0]) thumb.style.backgroundImage = `url("${urls[0]}")`;
+    if (urls[0]) thumb.style.setProperty("--member-thumb", `url("${urls[0]}")`);
   }
   const meta = row?.querySelector(".admin-about-member-meta span");
   if (meta && input.files.length) {
@@ -1580,46 +1707,8 @@ $("[data-about-settings-form]")?.addEventListener("submit", async (event) => {
     return;
   }
 
-  const checkedFounder = adminAboutSettings.members.findIndex((_, index) => Boolean(field(form, `memberFounder${index}`)?.checked));
-  const founderIndex = checkedFounder >= 0 ? checkedFounder : 0;
-  const members = [];
-  try {
-    for (const [index, previous] of adminAboutSettings.members.entries()) {
-      const row = form.querySelector(`[data-about-member-row="${index}"]`);
-      const fileInput = field(form, `memberImage${index}`);
-      let images = JSON.parse(row?.dataset.currentImages || "[]");
-      const uploadedImages = await filesToDataUrls(fileInput?.files || []);
-      images = uploadedImages.length ? uploadedImages : images;
-      if (images.length < 2) {
-        row?.classList.add("is-editing");
-        const button = row?.querySelector("[data-about-member-edit]");
-        if (button) {
-          button.textContent = "Fechar";
-          button.setAttribute("aria-expanded", "true");
-        }
-        const note = row ? $(`[data-about-member-note="${row.dataset.aboutMemberRow}"]`) : null;
-        if (note) note.textContent = "Adicione pelo menos 2 imagens para este membro.";
-        throw new Error(`O membro ${data.get(`memberName${index}`) || index + 1} precisa de pelo menos 2 imagens.`);
-      }
-      members.push({
-        ...previous,
-        name: data.get(`memberName${index}`),
-        role: data.get(`memberRole${index}`),
-        instagram: data.get(`memberInstagram${index}`),
-        bio: data.get(`memberBio${index}`),
-        isFounder: index === founderIndex,
-        image: images[0] || "",
-        images,
-      });
-    }
-  } catch (error) {
-    toast(error.message);
-    submitButton.disabled = false;
-    submitButton.textContent = originalText;
-    return;
-  }
-
   adminAboutSettings = normalizeAboutSettings({
+    ...adminAboutSettings,
     heroKicker: data.get("heroKicker"),
     heroTitle: data.get("heroTitle"),
     heroDescription: data.get("heroDescription"),
@@ -1627,7 +1716,6 @@ $("[data-about-settings-form]")?.addEventListener("submit", async (event) => {
     heroImages,
     teamKicker: data.get("teamKicker"),
     newsletterText: data.get("newsletterText"),
-    members,
   });
   try {
     await saveAboutSettings();
