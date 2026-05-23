@@ -100,12 +100,12 @@ const featuredSeed = [
   ["ambassadors", "Drey Saint", "Cherry", "black", "sobre.html#time"],
   ["ambassadors", "Mila Knox", "Cherry", "pink", "sobre.html#time"],
   ["ambassadors", "Zion Park", "Cherry", "dark", "sobre.html#time"],
-  ["influencers", "@babyxgeon", "Creator", "soft", "contato.html"],
-  ["influencers", "@str4wb3rry", "Creator", "vivid", "contato.html"],
-  ["influencers", "@gobbimoon", "Creator", "soft", "contato.html"],
-  ["influencers", "@otaviokim", "Creator", "mono", "contato.html"],
-  ["influencers", "@dudamills", "Creator", "vivid", "contato.html"],
-  ["influencers", "@heartzui", "Creator", "soft", "contato.html"],
+  ["influencers", "@babyxgeon", "Creator", "soft", "livro.html?aba=influencers"],
+  ["influencers", "@str4wb3rry", "Creator", "vivid", "livro.html?aba=influencers"],
+  ["influencers", "@gobbimoon", "Creator", "soft", "livro.html?aba=influencers"],
+  ["influencers", "@otaviokim", "Creator", "mono", "livro.html?aba=influencers"],
+  ["influencers", "@dudamills", "Creator", "vivid", "livro.html?aba=influencers"],
+  ["influencers", "@heartzui", "Creator", "soft", "livro.html?aba=influencers"],
 ].map(([section, name, role, visual, href], index) => ({
   id: `${section}-${index}`,
   section,
@@ -975,7 +975,7 @@ function openFeaturedForm(card = null) {
   field(form, "section").value = card?.section || "ambassadors";
   field(form, "name").value = card?.name || "";
   field(form, "role").value = card?.role || "";
-  field(form, "href").value = card?.href || (card?.section === "influencers" ? "contato.html" : "sobre.html#time");
+  field(form, "href").value = card?.href || (card?.section === "influencers" ? "livro.html?aba=influencers" : "sobre.html#time");
   field(form, "visual").value = card?.visual || "pink";
   field(form, "position").value = card?.position ?? adminFeaturedCards.length;
   field(form, "isCherrySpotlight").checked = Boolean(card?.isCherrySpotlight);
@@ -1265,7 +1265,7 @@ $("[data-featured-form]")?.addEventListener("submit", async (event) => {
     ...previousCard,
     id, section, name: data.get("name"),
     role: data.get("role") || (section === "influencers" ? "Creator" : "Cherry"),
-    href: data.get("href") || (section === "influencers" ? "contato.html" : section === "cherrys" ? "livro.html" : "sobre.html#time"),
+    href: data.get("href") || (section === "influencers" ? "livro.html?aba=influencers" : section === "cherrys" ? "livro.html" : "sobre.html#time"),
     visual: data.get("visual"), position: Number(data.get("position") || 0),
     isCherrySpotlight: data.has("isCherrySpotlight") && canBeCherrySpotlight(section),
     image: images[0] || "", images, created: previousCard.created ?? Date.now(),

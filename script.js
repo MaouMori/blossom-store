@@ -259,12 +259,12 @@ const defaultFeaturedCards = [
   ["ambassadors", "Drey Saint", "Cherry", "black", "sobre.html#time"],
   ["ambassadors", "Mila Knox", "Cherry", "pink", "sobre.html#time"],
   ["ambassadors", "Zion Park", "Cherry", "dark", "sobre.html#time"],
-  ["influencers", "@babyxgeon", "Creator", "soft", "contato.html"],
-  ["influencers", "@str4wb3rry", "Creator", "vivid", "contato.html"],
-  ["influencers", "@gobbimoon", "Creator", "soft", "contato.html"],
-  ["influencers", "@otaviokim", "Creator", "mono", "contato.html"],
-  ["influencers", "@dudamills", "Creator", "vivid", "contato.html"],
-  ["influencers", "@heartzui", "Creator", "soft", "contato.html"],
+  ["influencers", "@babyxgeon", "Creator", "soft", "livro.html?aba=influencers"],
+  ["influencers", "@str4wb3rry", "Creator", "vivid", "livro.html?aba=influencers"],
+  ["influencers", "@gobbimoon", "Creator", "soft", "livro.html?aba=influencers"],
+  ["influencers", "@otaviokim", "Creator", "mono", "livro.html?aba=influencers"],
+  ["influencers", "@dudamills", "Creator", "vivid", "livro.html?aba=influencers"],
+  ["influencers", "@heartzui", "Creator", "soft", "livro.html?aba=influencers"],
 ].map(([section, name, role, visual, href], index) => ({
   id: `${section}-${index}`, section, name, role, visual, href, image: "", images: [], position: index, created: index,
 }));
@@ -430,11 +430,6 @@ const selectors = {
   cherryToggle: document.querySelector("[data-cherry-toggle]"),
   spotlightTracks: document.querySelectorAll("[data-spotlight-track]"),
   lookbookTrack: document.querySelector("[data-lookbook-track]"),
-  contactForm: document.querySelector("[data-contact-form]"),
-  contactMessage: document.querySelector("[data-message]"),
-  contactMessageCount: document.querySelector("[data-message-count]"),
-  contactFile: document.querySelector("[data-contact-file]"),
-  contactFileLabel: document.querySelector("[data-file-label]"),
   cartSummary: document.querySelector(".cart-summary"),
 };
 
@@ -474,7 +469,6 @@ const hasCollections = Boolean(selectors.collectionsGrid);
 const hasCollectionDetail = Boolean(selectors.collectionDetail);
 const hasHomeProducts = Boolean(selectors.homeProducts);
 const hasHomeCollections = Boolean(selectors.homeCollections);
-const hasContact = Boolean(selectors.contactForm);
 
 function countBy(key) {
   return products.filter((product) => product.visibility !== "collection-only").reduce((acc, product) => {
@@ -768,14 +762,14 @@ function renderAboutPage() {
   }
   const grid = page.querySelector("[data-about-team-grid]");
   if (!grid) return;
-  grid.innerHTML = settings.members.map((member) => {
+  grid.innerHTML = settings.members.map((member, index) => {
     const image = primaryImage(member);
     const style = image ? ` style="background-image:url('${image}')"` : "";
     const externalLink = member.instagram && /^https?:\/\//.test(member.instagram);
     const instagramHref = externalLink ? member.instagram : "#";
     return `
       <article class="about-team-card ${member.isFounder ? "is-founder" : ""}">
-        <div class="about-team-photo ${member.visual || ""} ${image ? "has-upload" : ""}"${style}></div>
+        <button class="about-team-photo ${member.visual || ""} ${image ? "has-upload" : ""}" type="button" data-about-member-index="${index}" aria-label="Abrir imagem de ${escapeHtml(member.name)}"${style}></button>
         <div class="about-team-info">
           <span>${escapeHtml(member.role)}</span>
           <h2>${escapeHtml(member.name)}</h2>
@@ -784,6 +778,45 @@ function renderAboutPage() {
       </article>
     `;
   }).join("");
+}
+
+function openAboutMemberModal(index) {
+  const modal = document.querySelector("[data-about-member-modal]");
+  if (!modal) return;
+  const member = normalizeAboutSettings(aboutSettings).members[index];
+  if (!member) return;
+  const image = primaryImage(member);
+  const externalLink = member.instagram && /^https?:\/\//.test(member.instagram);
+  const media = modal.querySelector("[data-about-modal-image]");
+  const title = modal.querySelector("[data-about-modal-name]");
+  const role = modal.querySelector("[data-about-modal-role]");
+  const link = modal.querySelector("[data-about-modal-instagram]");
+  if (media) {
+    media.className = `about-member-modal-image ${member.visual || ""} ${image ? "has-upload" : ""}`;
+    media.style.backgroundImage = image ? `url('${image}')` : "";
+  }
+  if (title) title.textContent = member.name || "";
+  if (role) role.textContent = member.role || "";
+  if (link) {
+    link.textContent = member.instagram || "Instagram";
+    link.href = externalLink ? member.instagram : "#";
+    if (externalLink) {
+      link.target = "_blank";
+      link.rel = "noreferrer";
+    } else {
+      link.removeAttribute("target");
+      link.removeAttribute("rel");
+    }
+  }
+  if (typeof modal.showModal === "function") modal.showModal();
+  else modal.setAttribute("open", "");
+}
+
+function closeAboutMemberModal() {
+  const modal = document.querySelector("[data-about-member-modal]");
+  if (!modal) return;
+  if (typeof modal.close === "function") modal.close();
+  else modal.removeAttribute("open");
 }
 
 function sizeSpotlightCards(track) {
@@ -1121,17 +1154,6 @@ function showToast(message) {
   setTimeout(() => { el.style.opacity = "0"; el.style.transform = "translateY(12px)"; setTimeout(() => el.remove(), 300); }, 3000);
 }
 
-function fileToDataUrl(file) {
-  return new Promise((resolve, reject) => {
-    if (!file) { resolve(null); return; }
-    if (file.size > 10 * 1024 * 1024) { reject(new Error("A imagem precisa ter no máximo 10MB.")); return; }
-    const reader = new FileReader();
-    reader.onload = () => resolve({ name: file.name, type: file.type || "application/octet-stream", dataUrl: reader.result });
-    reader.onerror = () => reject(new Error("Não foi possível ler a imagem."));
-    reader.readAsDataURL(file);
-  });
-}
-
 if (hasShop) {
   selectors.categoryList.addEventListener("click", (event) => {
     const button = event.target.closest("[data-category]");
@@ -1191,34 +1213,18 @@ selectors.cherryToggle?.addEventListener("click", () => {
   selectors.cherryToggle.innerHTML = open ? 'Ocultar outros Cherrys <span>↗</span>' : 'Mostrar outros Cherrys <span>↗</span>';
 });
 
-if (hasContact) {
-  selectors.contactMessage.addEventListener("input", () => { selectors.contactMessageCount.textContent = selectors.contactMessage.value.length; });
-  selectors.contactFile.addEventListener("change", () => {
-    const file = selectors.contactFile.files[0];
-    selectors.contactFileLabel.textContent = file ? file.name : "Clique ou arraste arquivos para enviar";
-  });
-  selectors.contactForm.addEventListener("submit", async (event) => {
-    event.preventDefault();
-    const submitButton = selectors.contactForm.querySelector("[type='submit']");
-    const originalText = submitButton.querySelector("span")?.textContent || submitButton.textContent;
-    const data = new FormData(selectors.contactForm);
-    submitButton.disabled = true;
-    if (submitButton.querySelector("span")) submitButton.querySelector("span").textContent = "Enviando...";
-    try {
-      const attachment = await fileToDataUrl(selectors.contactFile.files[0]);
-      const response = await fetch("/api/contact", {
-        method: "POST", headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ name: data.get("name"), email: data.get("email"), discord: data.get("discord"), category: data.get("category"), type: data.get("type"), message: data.get("message"), attachment }),
-      });
-      const body = await response.json().catch(() => ({}));
-      if (!response.ok) throw new Error(body.error || "Não foi possível enviar para o Discord.");
-      selectors.contactForm.reset(); selectors.contactMessageCount.textContent = "0";
-      selectors.contactFileLabel.textContent = "Clique ou arraste arquivos para enviar";
-    } catch (error) { selectors.contactFileLabel.textContent = error.message; }
-    finally { submitButton.disabled = false; if (submitButton.querySelector("span")) submitButton.querySelector("span").textContent = originalText; }
-  });
-}
+document.addEventListener("click", (event) => {
+  const memberImage = event.target.closest("[data-about-member-index]");
+  if (memberImage) {
+    openAboutMemberModal(Number(memberImage.dataset.aboutMemberIndex));
+    return;
+  }
+  if (event.target.closest("[data-about-modal-close]")) closeAboutMemberModal();
+});
 
+document.querySelector("[data-about-member-modal]")?.addEventListener("click", (event) => {
+  if (event.target === event.currentTarget) closeAboutMemberModal();
+});
 /* Spotlight card popup */
 function createSpotlightPopup() {
   let popup = document.querySelector("[data-spotlight-popup]");

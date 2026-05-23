@@ -45,10 +45,9 @@ As imagens enviadas pelo admin são salvas como base64 dentro desse arquivo. Par
 
 ## Integracoes no Vercel
 
-Configure estas variaveis de ambiente para ativar Discord e contato:
+Configure estas variaveis de ambiente para ativar o login com Discord:
 
 ```text
-DISCORD_CONTACT_WEBHOOK_URL=https://discord.com/api/webhooks/...
 DISCORD_CLIENT_ID=seu_client_id
 DISCORD_CLIENT_SECRET=seu_client_secret
 DISCORD_REDIRECT_URI=https://seu-site.vercel.app/api/discord-auth?action=callback
