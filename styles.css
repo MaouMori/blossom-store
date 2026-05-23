@@ -194,6 +194,12 @@ button:hover {
   transform: translateX(-50%);
 }
 
+.site-header > .account,
+.site-header > .header-actions {
+  justify-self: end;
+  grid-column: 3;
+}
+
 .brand,
 .footer-brand {
   display: inline-flex;
@@ -5830,6 +5836,7 @@ select option:checked {
 }
 
 .editorial-corner-logo {
+  justify-self: start;
   color: var(--ed-pink);
   font-size: 28px;
   line-height: 1;
@@ -5847,6 +5854,8 @@ select option:checked {
 }
 
 .editorial-utilities {
+  justify-self: end;
+  grid-column: 3;
   justify-content: flex-end;
   gap: 8px;
   min-width: 0;
@@ -5972,11 +5981,16 @@ body.nav-scrolled .editorial-header .theme-pill {
 }
 
 .home-editorial .account {
+  width: auto;
   margin-left: 16px;
+  display: flex;
+  grid-template-columns: none;
+  gap: 0;
 }
 
 .home-editorial .account-toggle {
   width: auto;
+  height: 28px;
   min-width: 0;
   padding: 0;
   border: 0;
