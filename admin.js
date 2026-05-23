@@ -363,6 +363,57 @@ async function filesToDataUrls(files) {
   return images.filter(Boolean);
 }
 
+const adminPreviewUrls = new WeakMap();
+
+function clearAdminPreviewUrls(input) {
+  const urls = adminPreviewUrls.get(input) || [];
+  urls.forEach((url) => URL.revokeObjectURL(url));
+  adminPreviewUrls.delete(input);
+}
+
+function findImagePreviewHost(input, noteSelector = ".admin-image-note") {
+  const scope = input.closest("[data-about-member-row], form, .admin-content-panel") || input.parentElement;
+  const note = scope?.querySelector(noteSelector);
+  if (!note) return null;
+  let preview = note.nextElementSibling?.classList?.contains("admin-image-preview") ? note.nextElementSibling : null;
+  if (!preview) {
+    preview = document.createElement("div");
+    preview.className = "admin-image-preview";
+    note.insertAdjacentElement("afterend", preview);
+  }
+  preview.classList.toggle("is-member-preview", /^memberImage/.test(input.name || ""));
+  return preview;
+}
+
+function setAdminImagePreview(input, images = [], noteSelector) {
+  if (!input) return;
+  clearAdminPreviewUrls(input);
+  const preview = findImagePreviewHost(input, noteSelector);
+  if (!preview) return;
+  preview.innerHTML = images.map((src, index) => `
+    <figure>
+      <img src="${escapeAttr(src)}" alt="Preview ${index + 1}">
+      <figcaption>Imagem ${index + 1}</figcaption>
+    </figure>
+  `).join("");
+}
+
+function previewSelectedImages(input, noteSelector) {
+  if (!input) return;
+  clearAdminPreviewUrls(input);
+  const files = Array.from(input.files || []);
+  const urls = files.map((file) => URL.createObjectURL(file));
+  adminPreviewUrls.set(input, urls);
+  const preview = findImagePreviewHost(input, noteSelector);
+  if (!preview) return;
+  preview.innerHTML = files.map((file, index) => `
+    <figure>
+      <img src="${escapeAttr(urls[index])}" alt="Preview ${index + 1}">
+      <figcaption>${escapeHtml(file.name || `Imagem ${index + 1}`)}</figcaption>
+    </figure>
+  `).join("");
+}
+
 function toast(message) {
   const existing = document.querySelector(".toast");
   if (existing) existing.remove();
@@ -599,27 +650,39 @@ function renderAboutSettings() {
   const heroNote = $("[data-about-hero-note]");
   const heroCount = JSON.parse(form.dataset.currentHeroImages || "[]").length;
   if (heroNote) heroNote.textContent = heroCount ? `${heroCount} imagem atual. Envie outra para substituir.` : "Nenhuma imagem anexada.";
+  setAdminImagePreview(field(form, "heroImages"), JSON.parse(form.dataset.currentHeroImages || "[]"));
   editor.innerHTML = adminAboutSettings.members.map((member, index) => {
     const images = itemImages(member);
+    const thumbStyle = images[0] ? ` style="background-image:url('${escapeAttr(images[0])}')"` : "";
     return `
-      <div class="admin-content-panel" data-about-member-row="${index}" data-current-images='${JSON.stringify(images)}' style="margin:0 0 14px;padding:16px;background:var(--admin-bg);">
-        <div class="admin-panel-header">
-          <h2 style="font-size:15px;">Membro ${index + 1}</h2>
+      <div class="admin-about-member-card" data-about-member-row="${index}" data-current-images='${JSON.stringify(images)}'>
+        <div class="admin-about-member-summary">
+          <div class="admin-about-member-thumb"${thumbStyle}></div>
+          <div class="admin-about-member-meta">
+            <b>${escapeHtml(member.name || `Membro ${index + 1}`)}</b>
+            <span>${escapeHtml(member.role || "Cargo")}${images.length ? ` · ${images.length} imagem(ns)` : ""}</span>
+          </div>
+          <button class="btn-add" type="button" data-about-member-edit="${index}" aria-expanded="false">Modificar</button>
+        </div>
+        <div class="admin-about-member-fields">
           <label style="display:flex;align-items:center;gap:8px;font-size:12px;color:var(--admin-muted);"><input name="memberFounder${index}" type="checkbox" ${member.isFounder ? "checked" : ""}> Founder em destaque</label>
+          <div class="admin-form-grid">
+            <label>Nome<input name="memberName${index}" value="${escapeAttr(member.name)}" required></label>
+            <label>Cargo<input name="memberRole${index}" value="${escapeAttr(member.role)}" required></label>
+          </div>
+          <div class="admin-form-grid">
+            <label>Instagram ou link<input name="memberInstagram${index}" value="${escapeAttr(member.instagram)}"></label>
+            <label>Imagens<input name="memberImage${index}" type="file" accept="image/png,image/jpeg,image/gif,image/webp" multiple></label>
+          </div>
+          <label>Texto do pop-up<textarea name="memberBio${index}" rows="3">${escapeHtml(member.bio)}</textarea></label>
+          <p class="admin-image-note" data-about-member-note="${index}">${images.length ? `${images.length} imagem(ns) atual(is). Envie outras para substituir.` : "Nenhuma imagem anexada."}</p>
         </div>
-        <div class="admin-form-grid">
-          <label>Nome<input name="memberName${index}" value="${escapeAttr(member.name)}" required></label>
-          <label>Cargo<input name="memberRole${index}" value="${escapeAttr(member.role)}" required></label>
-        </div>
-        <div class="admin-form-grid">
-          <label>Instagram ou link<input name="memberInstagram${index}" value="${escapeAttr(member.instagram)}"></label>
-          <label>Imagens<input name="memberImage${index}" type="file" accept="image/png,image/jpeg,image/gif,image/webp" multiple></label>
-        </div>
-        <label>Texto do pop-up<textarea name="memberBio${index}" rows="3">${escapeHtml(member.bio)}</textarea></label>
-        <p class="admin-image-note" data-about-member-note="${index}">${images.length ? `${images.length} imagem(ns) atual(is). Envie outras para substituir.` : "Nenhuma imagem anexada."}</p>
       </div>
     `;
   }).join("");
+  adminAboutSettings.members.forEach((member, index) => {
+    setAdminImagePreview(field(form, `memberImage${index}`), itemImages(member));
+  });
 }
 
 function updateStats() {
@@ -894,6 +957,7 @@ function renderSiteBannerForms() {
     form.dataset.currentImages = JSON.stringify(itemImages(banner));
     const note = $(`[data-site-banner-note="${key}"]`);
     if (note) note.textContent = itemImages(banner).length ? `${itemImages(banner).length} imagem atual. Envie outra para substituir.` : "Nenhuma imagem anexada.";
+    setAdminImagePreview(field(form, "images"), itemImages(banner));
   });
 }
 
@@ -949,6 +1013,7 @@ function openProductForm(product = null) {
   form.dataset.currentImages = JSON.stringify(itemImages(product));
   const count = itemImages(product).length;
   $("[data-product-image-note]").textContent = count ? `${count} imagem(ns) atuais. Envie outras para substituir.` : "Nenhuma imagem anexada.";
+  setAdminImagePreview(field(form, "images"), itemImages(product));
   dialog.showModal();
 }
 
@@ -968,6 +1033,7 @@ function openCollectionForm(collection = null) {
   form.dataset.currentImages = JSON.stringify(itemImages(collection));
   const count = itemImages(collection).length;
   $("[data-collection-image-note]").textContent = count ? `${count} imagem(ns) atuais. Envie outras para substituir.` : "Nenhuma imagem anexada.";
+  setAdminImagePreview(field(form, "images"), itemImages(collection));
   dialog.showModal();
 }
 
@@ -988,6 +1054,7 @@ function openFeaturedForm(card = null) {
   form.dataset.currentImages = JSON.stringify(itemImages(card));
   const count = itemImages(card).length;
   $("[data-featured-image-note]").textContent = count ? `${count} imagem atual. Envie outra para substituir.` : "Nenhuma imagem anexada.";
+  setAdminImagePreview(field(form, "images"), itemImages(card));
   dialog.showModal();
 }
 
@@ -1013,6 +1080,7 @@ function openBookForm(card = null) {
   form.dataset.currentImages = JSON.stringify(itemImages(card));
   const count = itemImages(card).length;
   $("[data-book-image-note]").textContent = count ? `${count} imagem atual. Envie outra para substituir.` : "Nenhuma imagem anexada.";
+  setAdminImagePreview(field(form, "images"), itemImages(card));
   dialog.showModal();
 }
 
@@ -1032,6 +1100,7 @@ function openFutureForm() {
   form.dataset.currentImages = JSON.stringify(itemImages(drop));
   const count = itemImages(drop).length;
   $("[data-future-image-note]").textContent = count ? `${count} imagem atual. Envie outra para substituir.` : "Nenhuma imagem anexada.";
+  setAdminImagePreview(field(form, "images"), itemImages(drop));
   dialog.showModal();
 }
 
@@ -1048,6 +1117,7 @@ $$("[data-site-banner-form] input[name='images']").forEach((input) => {
     const form = event.target.closest("[data-site-banner-form]");
     const note = $(`[data-site-banner-note="${form.dataset.siteBannerForm}"]`);
     if (note) note.textContent = event.target.files.length ? `${event.target.files.length} imagem selecionada. Ela sera otimizada ao salvar.` : "Nenhuma imagem anexada.";
+    previewSelectedImages(event.target);
   });
 });
 
@@ -1055,6 +1125,16 @@ $("[data-about-settings-form] input[name='heroImages']")?.addEventListener("chan
   const count = event.target.files.length;
   const note = $("[data-about-hero-note]");
   if (note) note.textContent = count ? `${count} imagem selecionada. Ela sera otimizada ao salvar.` : "Nenhuma imagem anexada.";
+  previewSelectedImages(event.target);
+});
+
+$("[data-about-team-editor]")?.addEventListener("click", (event) => {
+  const button = event.target.closest("[data-about-member-edit]");
+  if (!button) return;
+  const row = button.closest("[data-about-member-row]");
+  const isEditing = row.classList.toggle("is-editing");
+  button.setAttribute("aria-expanded", String(isEditing));
+  button.textContent = isEditing ? "Fechar" : "Modificar";
 });
 
 $("[data-about-team-editor]")?.addEventListener("change", (event) => {
@@ -1063,26 +1143,37 @@ $("[data-about-team-editor]")?.addEventListener("change", (event) => {
   const row = input.closest("[data-about-member-row]");
   const note = row ? $(`[data-about-member-note="${row.dataset.aboutMemberRow}"]`) : null;
   if (note) note.textContent = input.files.length ? `${input.files.length} imagem(ns) selecionada(s). Elas serao otimizadas ao salvar.` : "Nenhuma imagem anexada.";
+  previewSelectedImages(input);
 });
 
 $("[data-product-form] input[name='images']")?.addEventListener("change", (event) => {
   const count = event.target.files.length;
   $("[data-product-image-note]").textContent = count ? `${count} imagem(ns) selecionada(s). Elas serão otimizadas ao salvar.` : "Nenhuma imagem anexada.";
+  previewSelectedImages(event.target);
 });
 
 $("[data-collection-form] input[name='images']")?.addEventListener("change", (event) => {
   const count = event.target.files.length;
   $("[data-collection-image-note]").textContent = count ? `${count} imagem(ns) selecionada(s). Elas serão otimizadas ao salvar.` : "Nenhuma imagem anexada.";
+  previewSelectedImages(event.target);
 });
 
 $("[data-featured-form] input[name='images']")?.addEventListener("change", (event) => {
   const count = event.target.files.length;
   $("[data-featured-image-note]").textContent = count ? `${count} imagem selecionada. Ela será otimizada ao salvar.` : "Nenhuma imagem anexada.";
+  previewSelectedImages(event.target);
 });
 
 $("[data-book-form] input[name='images']")?.addEventListener("change", (event) => {
   const count = event.target.files.length;
   $("[data-book-image-note]").textContent = count ? `${count} imagem selecionada. Ela será otimizada ao salvar.` : "Nenhuma imagem anexada.";
+  previewSelectedImages(event.target);
+});
+
+$("[data-future-form] input[name='images']")?.addEventListener("change", (event) => {
+  const count = event.target.files.length;
+  $("[data-future-image-note]").textContent = count ? `${count} imagem selecionada. Ela sera otimizada ao salvar.` : "Nenhuma imagem anexada.";
+  previewSelectedImages(event.target);
 });
 
 document.addEventListener("click", (event) => {

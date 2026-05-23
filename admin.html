@@ -441,6 +441,127 @@
       line-height: 1.5;
     }
 
+    .admin-image-preview {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(118px, 1fr));
+      gap: 10px;
+      margin: 4px 0 0;
+    }
+
+    .admin-image-preview:empty {
+      display: none;
+    }
+
+    .admin-image-preview figure {
+      margin: 0;
+      overflow: hidden;
+      border: 1px solid var(--admin-line);
+      border-radius: 10px;
+      background: var(--admin-bg);
+    }
+
+    .admin-image-preview img {
+      display: block;
+      width: 100%;
+      aspect-ratio: 16 / 9;
+      object-fit: cover;
+      background: rgba(255, 255, 255, 0.04);
+    }
+
+    .admin-image-preview figcaption {
+      padding: 7px 8px;
+      color: var(--admin-muted);
+      font-size: 10px;
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .admin-image-preview.is-member-preview img {
+      aspect-ratio: 4 / 5;
+      object-position: center top;
+    }
+
+    .admin-about-member-card {
+      margin: 0 0 14px;
+      padding: 16px;
+      border: 1px solid var(--admin-line);
+      border-radius: 12px;
+      background: var(--admin-bg);
+    }
+
+    .admin-about-member-summary {
+      display: grid;
+      grid-template-columns: 70px 1fr auto;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .admin-about-member-thumb {
+      width: 70px;
+      aspect-ratio: 1;
+      border-radius: 10px;
+      background:
+        linear-gradient(135deg, rgba(255, 134, 181, 0.18), transparent),
+        linear-gradient(150deg, #1a1118, #09070a);
+      background-size: cover;
+      background-position: center;
+      border: 1px solid var(--admin-line);
+    }
+
+    .admin-about-member-meta {
+      min-width: 0;
+    }
+
+    .admin-about-member-meta b,
+    .admin-about-member-meta span {
+      display: block;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .admin-about-member-meta b {
+      color: var(--admin-text);
+      font-size: 14px;
+      font-weight: 900;
+    }
+
+    .admin-about-member-meta span {
+      margin-top: 4px;
+      color: var(--admin-muted);
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .admin-about-member-fields {
+      display: none;
+      gap: 12px;
+      margin-top: 16px;
+    }
+
+    .admin-about-member-card.is-editing .admin-about-member-fields {
+      display: grid;
+    }
+
+    @media (max-width: 620px) {
+      .admin-about-member-summary {
+        grid-template-columns: 54px 1fr;
+      }
+
+      .admin-about-member-summary button {
+        grid-column: 1 / -1;
+        justify-self: start;
+      }
+
+      .admin-about-member-thumb {
+        width: 54px;
+      }
+    }
+
     .admin-panel-header a,
     .admin-panel-header button {
       font-size: 12px;
