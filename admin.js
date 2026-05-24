@@ -335,22 +335,61 @@ function isPlainObject(value) {
   return Boolean(value && typeof value === "object" && !Array.isArray(value));
 }
 
-function fileToDataUrl(file) {
+const imageUploadDefaults = {
+  maxSize: 1320,
+  quality: 0.78,
+  minQuality: 0.52,
+  maxBytes: 520 * 1024,
+};
+
+const bannerImageUploadOptions = {
+  maxSize: 1600,
+  quality: 0.76,
+  minQuality: 0.5,
+  maxBytes: 620 * 1024,
+};
+
+function dataUrlBytes(dataUrl) {
+  const base64 = String(dataUrl || "").split(",")[1] || "";
+  return Math.ceil(base64.length * 0.75);
+}
+
+function fileToDataUrl(file, options = {}) {
   return new Promise((resolve, reject) => {
     if (!file) { resolve(""); return; }
     if (file.size > 10 * 1024 * 1024) { reject(new Error("Use uma imagem menor que 10MB.")); return; }
+    const settings = { ...imageUploadDefaults, ...options };
     const reader = new FileReader();
     reader.onload = () => {
       const image = new Image();
       image.onload = () => {
-        const maxSize = 1980;
-        const ratio = Math.min(1, maxSize / Math.max(image.width, image.height));
-        const canvas = document.createElement("canvas");
-        canvas.width = Math.max(1, Math.round(image.width * ratio));
-        canvas.height = Math.max(1, Math.round(image.height * ratio));
-        const context = canvas.getContext("2d");
-        context.drawImage(image, 0, 0, canvas.width, canvas.height);
-        resolve(canvas.toDataURL("image/jpeg", 0.9));
+        let maxSize = settings.maxSize;
+        let quality = settings.quality;
+        let dataUrl = "";
+        for (let attempt = 0; attempt < 14; attempt += 1) {
+          const ratio = Math.min(1, maxSize / Math.max(image.width, image.height));
+          const canvas = document.createElement("canvas");
+          canvas.width = Math.max(1, Math.round(image.width * ratio));
+          canvas.height = Math.max(1, Math.round(image.height * ratio));
+          const context = canvas.getContext("2d");
+          context.drawImage(image, 0, 0, canvas.width, canvas.height);
+          dataUrl = canvas.toDataURL("image/jpeg", quality);
+          if (dataUrlBytes(dataUrl) <= settings.maxBytes) {
+            resolve(dataUrl);
+            return;
+          }
+          if (quality > settings.minQuality) {
+            quality = Math.max(settings.minQuality, quality - 0.08);
+          } else {
+            maxSize = Math.max(720, Math.round(maxSize * 0.82));
+            quality = settings.quality;
+          }
+        }
+        if (dataUrlBytes(dataUrl) > settings.maxBytes * 1.25) {
+          reject(new Error("Essa imagem ainda ficou pesada demais. Tente uma imagem menor ou em JPG/WebP."));
+          return;
+        }
+        resolve(dataUrl);
       };
       image.onerror = () => reject(new Error("Não foi possível processar a imagem."));
       image.src = reader.result;
@@ -360,10 +399,10 @@ function fileToDataUrl(file) {
   });
 }
 
-async function filesToDataUrls(files) {
+async function filesToDataUrls(files, options = {}) {
   const selected = Array.from(files || []);
   const images = [];
-  for (const file of selected) { images.push(await fileToDataUrl(file)); }
+  for (const file of selected) { images.push(await fileToDataUrl(file, options)); }
   return images.filter(Boolean);
 }
 
@@ -1658,7 +1697,7 @@ $$("[data-site-banner-form]").forEach((form) => {
     submitButton.textContent = "Salvando...";
     let images = JSON.parse(form.dataset.currentImages || "[]");
     try {
-      const uploadedImages = await filesToDataUrls(field(form, "images").files);
+      const uploadedImages = await filesToDataUrls(field(form, "images").files, bannerImageUploadOptions);
       images = uploadedImages.length ? uploadedImages : images;
     } catch (error) {
       const note = $(`[data-site-banner-note="${key}"]`);
