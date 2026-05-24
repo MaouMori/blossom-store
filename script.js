@@ -1262,9 +1262,9 @@ function createSpotlightPopup() {
   popup.dataset.spotlightPopup = "";
   popup.style.cssText = "position:fixed;inset:0;z-index:100;display:none;align-items:center;justify-content:center;background:rgba(5,3,5,0.85);backdrop-filter:blur(8px);padding:24px;cursor:pointer;";
   popup.innerHTML = `
-    <div style="position:relative;max-width:1240px;width:min(100%,calc(100vw - 72px));display:grid;grid-template-columns:minmax(0,1.22fr) minmax(330px,.78fr);gap:40px;align-items:center;background:#0b080b;border:1px solid rgba(255,112,158,0.28);border-radius:18px;padding:40px;cursor:default;box-shadow:0 34px 110px rgba(0,0,0,.62);">
-      <div data-popup-image style="min-height:min(620px,calc(100vh - 180px));aspect-ratio:4/3;border-radius:14px;background-color:#09070a;background-image:linear-gradient(135deg,rgba(255,156,188,0.2),transparent),linear-gradient(150deg,#161c22,#070a0d);background-size:cover;background-position:center;background-repeat:no-repeat;"></div>
-      <div style="display:grid;gap:14px;">
+    <div style="position:relative;max-width:1240px;width:min(100%,calc(100vw - 72px));display:grid;grid-template-columns:minmax(0,1fr) minmax(300px,380px);gap:24px;align-items:stretch;background:#0b080b;border:1px solid rgba(255,112,158,0.28);border-radius:18px;padding:28px;cursor:default;box-shadow:0 34px 110px rgba(0,0,0,.62);overflow:hidden;">
+      <div data-popup-image style="width:100%;height:min(620px,calc(100vh - 180px));min-height:420px;border-radius:14px;background-color:#09070a;background-image:linear-gradient(135deg,rgba(255,156,188,0.2),transparent),linear-gradient(150deg,#161c22,#070a0d);background-size:contain;background-position:center;background-repeat:no-repeat;"></div>
+      <div style="position:relative;z-index:2;display:grid;align-content:center;gap:14px;padding:28px;border:1px solid rgba(255,112,158,0.18);border-radius:14px;background:linear-gradient(180deg,rgba(10,7,10,.96),rgba(10,7,10,.88));">
         <h2 data-popup-name style="margin:0;font-size:clamp(42px,5.4vw,82px);line-height:.95;font-family:'Oswald',sans-serif;text-transform:uppercase;color:#fff5f8;overflow-wrap:anywhere;"></h2>
         <p data-popup-role style="margin:0;color:var(--ed-pink);font-size:15px;text-transform:uppercase;letter-spacing:0.2em;font-weight:900;"></p>
         <button type="button" data-popup-close style="justify-self:start;margin-top:16px;min-height:44px;padding:0 26px;border:1px solid rgba(255,112,158,0.48);border-radius:6px;background:transparent;color:var(--ed-pink);font-size:11px;font-weight:900;letter-spacing:0.14em;text-transform:uppercase;cursor:pointer;">Fechar</button>
@@ -1291,7 +1291,7 @@ document.addEventListener("click", (event) => {
     popup.querySelector("[data-popup-name]").textContent = name;
     popup.querySelector("[data-popup-role]").textContent = role;
     const imgDiv = popup.querySelector("[data-popup-image]");
-    imgDiv.style.backgroundSize = "cover";
+    imgDiv.style.backgroundSize = "contain";
     imgDiv.style.backgroundPosition = "center";
     imgDiv.style.backgroundRepeat = "no-repeat";
     imgDiv.style.backgroundColor = "#09070a";
