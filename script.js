@@ -648,6 +648,10 @@ function renderCherryShowcase() {
   const main = explicitMain || legacyCherrys[0] || { name: "Cherry Blossom", role: "Cherry em destaque", visual: "rose", image: "" };
   const others = cherrys.filter((card) => card.id !== main.id);
   applySpotlightBackground(selectors.cherryFeature, main, "Cherry Blossom");
+  const label = selectors.cherryFeature?.querySelector("span");
+  const text = selectors.cherryFeature?.querySelector("[data-cherry-feature-text]");
+  if (label) label.textContent = "Cherry em destaque";
+  if (text) text.textContent = main.quote || main.role || "A Cherry escolhida no painel aparece aqui com destaque especial.";
   if (selectors.cherryGrid) {
     selectors.cherryGrid.innerHTML = others.length
       ? others.map((card) => spotlightCard({ ...card, section: "cherrys" })).join("")
