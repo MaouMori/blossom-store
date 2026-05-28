@@ -622,7 +622,11 @@ function renderAmbassadorShowcase() {
   let index = 0;
   const renderSlide = () => {
     const card = slides[index % Math.max(slides.length, 1)] || {};
-    applySpotlightBackground(hero, { ...card, role: "Cherry" }, card.name || "Cherry Blossom");
+    const image = primaryImage(card);
+    if (hero) {
+      hero.classList.toggle("has-upload", Boolean(image));
+      hero.style.backgroundImage = image ? `url('${image}')` : "";
+    }
     hero?.classList.remove("is-switching");
     requestAnimationFrame(() => hero?.classList.add("is-switching"));
   };
