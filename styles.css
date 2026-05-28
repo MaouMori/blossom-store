@@ -6642,6 +6642,15 @@ body.nav-scrolled .editorial-header .theme-pill {
   overflow: hidden;
 }
 
+#cherrys {
+  padding-top: 0;
+}
+
+#cherrys > .spotlight-head,
+#cherrys > .see-all {
+  display: none;
+}
+
 .spotlight-strip::before,
 .spotlight-strip::after {
   content: "";
@@ -6740,10 +6749,10 @@ body.nav-scrolled .editorial-header .theme-pill {
   align-items: flex-start;
   justify-content: flex-end;
   flex-direction: column;
-  min-height: clamp(460px, 45vw, 760px);
+  min-height: clamp(560px, 48vw, 820px);
   border: 0;
   border-radius: 0;
-  padding: clamp(48px, 7vw, 120px) max(28px, calc((100vw - 1240px) / 2 + 48px));
+  padding: clamp(48px, 7vw, 120px) clamp(32px, 5vw, 96px);
   text-align: left;
   text-decoration: none;
   background-position: center;

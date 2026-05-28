@@ -570,6 +570,7 @@ function homeCollectionCard(collection) {
 }
 
 const spotlightLoops = new WeakMap();
+let ambassadorShowcaseTimer = null;
 
 function spotlightCard(card) {
   const images = Array.isArray(card.images) && card.images.length ? card.images : (card.image ? [card.image] : []);
@@ -618,11 +619,24 @@ function renderAmbassadorShowcase() {
   const hero = selectors.ambassadorShowcase.querySelector(".ambassador-hero");
   const fallback = defaultFeaturedCards.filter((card) => card.section === "ambassadors");
   const slides = (cards.length ? cards : fallback).filter(Boolean);
-  const card = slides[0] || {};
-  const image = primaryImage(card);
-  if (hero) {
-    hero.classList.toggle("has-upload", Boolean(image));
-    hero.style.backgroundImage = image ? `url('${image}')` : "";
+  let index = 0;
+  const renderSlide = () => {
+    const card = slides[index % Math.max(slides.length, 1)] || {};
+    const image = primaryImage(card);
+    if (hero) {
+      hero.classList.toggle("has-upload", Boolean(image));
+      hero.style.backgroundImage = image ? `url('${image}')` : "";
+      hero.classList.remove("is-switching");
+      requestAnimationFrame(() => hero.classList.add("is-switching"));
+    }
+  };
+  if (ambassadorShowcaseTimer) clearInterval(ambassadorShowcaseTimer);
+  renderSlide();
+  if (slides.length > 1) {
+    ambassadorShowcaseTimer = setInterval(() => {
+      index = (index + 1) % slides.length;
+      renderSlide();
+    }, 5000);
   }
 }
 
