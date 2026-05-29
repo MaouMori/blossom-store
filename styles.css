@@ -6749,7 +6749,8 @@ body.nav-scrolled .editorial-header .theme-pill {
   align-items: flex-start;
   justify-content: flex-end;
   flex-direction: column;
-  min-height: clamp(560px, 48vw, 820px);
+  aspect-ratio: 16 / 9;
+  min-height: min(1080px, 56.25vw);
   border: 0;
   border-radius: 0;
   padding: clamp(48px, 7vw, 120px) clamp(32px, 5vw, 96px);
@@ -7005,7 +7006,8 @@ body.nav-scrolled .editorial-header .theme-pill {
 
 .cherry-feature {
   width: 100%;
-  min-height: clamp(520px, 46vw, 780px);
+  aspect-ratio: 16 / 9;
+  min-height: min(1080px, 56.25vw);
   border: 0;
   border-radius: 0;
   align-items: flex-start;
@@ -8524,6 +8526,13 @@ body.nav-scrolled .editorial-header .theme-pill {
   }
 
   .ambassador-hero {
+    aspect-ratio: auto;
+    min-height: 520px;
+    padding: 36px 20px;
+  }
+
+  .cherry-feature {
+    aspect-ratio: auto;
     min-height: 520px;
     padding: 36px 20px;
   }
