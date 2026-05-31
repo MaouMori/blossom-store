@@ -8841,6 +8841,21 @@ body.nav-scrolled .editorial-header .theme-pill {
   color: #30131f;
 }
 
+.about-editorial-page.editorial-light .about-team-card .about-team-info h2 {
+  color: #fff7fb;
+  text-shadow: 0 3px 18px rgba(0, 0, 0, 0.78);
+}
+
+.about-editorial-page.editorial-light .about-team-card .about-team-info a {
+  color: rgba(255, 246, 250, 0.76);
+  text-shadow: 0 2px 12px rgba(0, 0, 0, 0.68);
+}
+
+.about-editorial-page.editorial-light .about-team-card .about-team-info span {
+  color: #ff8fbd;
+  text-shadow: 0 2px 12px rgba(0, 0, 0, 0.72);
+}
+
 .about-editorial-page.editorial-light .about-editorial-hero {
   border-bottom-color: rgba(218, 74, 123, 0.14);
 }
