@@ -490,14 +490,20 @@ async function compactObjectImages(value, options = existingImageCompactOptions)
   }
 }
 
-async function compactAdminImagesBeforeSave() {
-  for (const item of adminProducts) await compactItemImages(item);
-  for (const item of adminCollections) await compactItemImages(item, collectionImageUploadOptions);
-  for (const item of adminFeaturedCards) await compactItemImages(item);
-  await compactObjectImages(adminFutureDrop, bannerImageUploadOptions);
-  await compactObjectImages(adminSiteBanners, bannerImageUploadOptions);
-  await compactObjectImages(adminBookSettings);
-  await compactObjectImages(adminAboutSettings);
+async function compactAdminImagesBeforeSave(scope = "all") {
+  if (scope === "products" || scope === "all") {
+    for (const item of adminProducts) await compactItemImages(item);
+  }
+  if (scope === "collections" || scope === "all") {
+    for (const item of adminCollections) await compactItemImages(item, collectionImageUploadOptions);
+  }
+  if (scope === "featuredCards" || scope === "bookPages" || scope === "all") {
+    for (const item of adminFeaturedCards) await compactItemImages(item);
+  }
+  if (scope === "futureDrop" || scope === "all") await compactObjectImages(adminFutureDrop, bannerImageUploadOptions);
+  if (scope === "siteBanners" || scope === "all") await compactObjectImages(adminSiteBanners, bannerImageUploadOptions);
+  if (scope === "bookSettings" || scope === "all") await compactObjectImages(adminBookSettings);
+  if (scope === "aboutSettings" || scope === "all") await compactObjectImages(adminAboutSettings);
 }
 
 const adminPreviewUrls = new WeakMap();
@@ -596,7 +602,7 @@ $$("[data-auth-form]").forEach((form) => {
       authMessage(action === "register" ? "Conta criada com sucesso." : "Login realizado.", "success");
       window.location.href = result.user.role === "admin" ? "admin.html" : "index.html";
     } catch (error) {
-      if (data.get("username") === ADMIN_USER && data.get("password") === ADMIN_PASS) {
+      if (!apiEnabled && data.get("username") === ADMIN_USER && data.get("password") === ADMIN_PASS) {
         writeSession({ username: ADMIN_USER, role: "admin" });
         window.location.href = "admin.html";
         return;
@@ -614,7 +620,7 @@ if (loginForm) {
   loginForm.addEventListener("submit", (event) => {
     event.preventDefault();
     const data = new FormData(loginForm);
-    if (data.get("user") === ADMIN_USER && data.get("password") === ADMIN_PASS) {
+    if (!apiEnabled && data.get("user") === ADMIN_USER && data.get("password") === ADMIN_PASS) {
       writeSession({ username: ADMIN_USER, role: "admin" });
       window.location.href = "admin.html";
       return;
@@ -659,21 +665,55 @@ async function loadApiStore() {
   } catch { renderAll(); }
 }
 
-async function saveApiStore() {
+function baseTaxonomiesPayload() {
+  return {
+    categories: Array.isArray(adminTaxonomies.categories) ? adminTaxonomies.categories : [],
+    types: Array.isArray(adminTaxonomies.types) ? adminTaxonomies.types : [],
+    colors: Array.isArray(adminTaxonomies.colors) ? adminTaxonomies.colors : [],
+    visuals: Array.isArray(adminTaxonomies.visuals) ? adminTaxonomies.visuals : [],
+  };
+}
+
+function taxonomyPayloadForScope(scope) {
+  if (scope === "taxonomies") return baseTaxonomiesPayload();
+  if (scope === "featuredCards" || scope === "bookPages") return { featuredCards: adminFeaturedCards };
+  if (scope === "futureDrop") return { futureDrop: adminFutureDrop };
+  if (scope === "siteBanners") return { siteBanners: adminSiteBanners };
+  if (scope === "bookSettings") return { bookSettings: adminBookSettings };
+  if (scope === "aboutSettings") return { aboutSettings: adminAboutSettings };
+  return {};
+}
+
+function buildApiPayload(scope) {
+  if (scope === "products") return { scope, products: adminProducts };
+  if (scope === "collections") return { scope, collections: adminCollections };
+  if (scope === "all") return {
+    scope,
+    products: adminProducts,
+    collections: adminCollections,
+    taxonomies: {
+      ...baseTaxonomiesPayload(),
+      featuredCards: adminFeaturedCards,
+      futureDrop: adminFutureDrop,
+      siteBanners: adminSiteBanners,
+      bookSettings: adminBookSettings,
+      aboutSettings: adminAboutSettings,
+    },
+    orders: adminOrders,
+  };
+  return { scope, taxonomies: taxonomyPayloadForScope(scope) };
+}
+
+async function saveApiStore(scope = "all") {
   if (!apiEnabled) return;
-  await compactAdminImagesBeforeSave();
-  adminTaxonomies.featuredCards = adminFeaturedCards;
-  adminTaxonomies.futureDrop = adminFutureDrop;
-  adminTaxonomies.siteBanners = adminSiteBanners;
-  adminTaxonomies.bookSettings = adminBookSettings;
-  adminTaxonomies.aboutSettings = adminAboutSettings;
-  const payload = JSON.stringify({ products: adminProducts, collections: adminCollections, taxonomies: adminTaxonomies, orders: adminOrders });
+  await compactAdminImagesBeforeSave(scope);
+  const payload = JSON.stringify(buildApiPayload(scope));
   if (payload.length > 3.5 * 1024 * 1024) {
-    throw new Error("O site ja tem imagens demais para salvar em uma unica vez. Remova algumas imagens antigas ou use imagens menores.");
+    throw new Error("Esse envio ainda ficou grande demais. Use uma imagem menor ou comprima antes de anexar.");
   }
   const response = await fetch("/api/store", {
     method: "PUT",
-    headers: { "Content-Type": "application/json" },
+    headers: { "Content-Type": "application/json", "x-blossom-role": adminSession?.role || "" },
     body: payload,
   });
   if (!response.ok) { const detail = await response.text(); throw new Error(detail || "Nao foi possivel salvar no servidor."); }
@@ -701,15 +741,15 @@ async function updateUserRole(username, role) {
   return body.user;
 }
 
-function saveProducts() { setData("blossom-products", adminProducts); return saveApiStore(); }
-function saveCollections() { setData("blossom-collections", adminCollections); return saveApiStore(); }
+function saveProducts() { setData("blossom-products", adminProducts); return saveApiStore("products"); }
+function saveCollections() { setData("blossom-collections", adminCollections); return saveApiStore("collections"); }
 function syncAdminTaxonomies() { adminTaxonomies.featuredCards = adminFeaturedCards; adminTaxonomies.futureDrop = adminFutureDrop; adminTaxonomies.siteBanners = adminSiteBanners; adminTaxonomies.bookSettings = adminBookSettings; adminTaxonomies.aboutSettings = adminAboutSettings; }
-function saveTaxonomies() { syncAdminTaxonomies(); setData("blossom-taxonomies", adminTaxonomies); return saveApiStore(); }
-function saveFeaturedCards() { syncAdminTaxonomies(); setData("blossom-featured-cards", adminFeaturedCards); return saveApiStore(); }
-function saveFutureDrop() { syncAdminTaxonomies(); setData("blossom-future-drop", adminFutureDrop); return saveApiStore(); }
-function saveSiteBanners() { syncAdminTaxonomies(); setData("blossom-site-banners", adminSiteBanners); return saveApiStore(); }
-function saveBookSettings() { syncAdminTaxonomies(); setData("blossom-book-settings", adminBookSettings); return saveApiStore(); }
-function saveAboutSettings() { adminAboutSettings = normalizeAboutSettings(adminAboutSettings); syncAdminTaxonomies(); setData("blossom-about-settings", adminAboutSettings); return saveApiStore(); }
+function saveTaxonomies() { syncAdminTaxonomies(); setData("blossom-taxonomies", adminTaxonomies); return saveApiStore("taxonomies"); }
+function saveFeaturedCards() { syncAdminTaxonomies(); setData("blossom-featured-cards", adminFeaturedCards); return saveApiStore("featuredCards"); }
+function saveFutureDrop() { syncAdminTaxonomies(); setData("blossom-future-drop", adminFutureDrop); return saveApiStore("futureDrop"); }
+function saveSiteBanners() { syncAdminTaxonomies(); setData("blossom-site-banners", adminSiteBanners); return saveApiStore("siteBanners"); }
+function saveBookSettings() { syncAdminTaxonomies(); setData("blossom-book-settings", adminBookSettings); return saveApiStore("bookSettings"); }
+function saveAboutSettings() { adminAboutSettings = normalizeAboutSettings(adminAboutSettings); syncAdminTaxonomies(); setData("blossom-about-settings", adminAboutSettings); return saveApiStore("aboutSettings"); }
 
 function blankAboutMember() {
   return {

@@ -25,6 +25,11 @@ function publicUser(user) {
   };
 }
 
+function allowFallbackAdmin(req) {
+  const host = String(req.headers.host || "");
+  return process.env.ALLOW_DEV_ADMIN === "true" || host.startsWith("localhost") || host.startsWith("127.0.0.1");
+}
+
 async function findUser(username) {
   const rows = await supabase(`admin_users?username=eq.${encodeURIComponent(username)}&select=*`);
   return Array.isArray(rows) ? rows[0] : null;
@@ -63,7 +68,7 @@ module.exports = async function handler(req, res) {
 
     if (action === "login") {
       const user = await findUser(username);
-      if (!user && username === "admin" && password === "admin123") {
+      if (!user && allowFallbackAdmin(req) && username === "admin" && password === "admin123") {
         res.status(200).json({
           ok: true,
           user: publicUser({ id: "fallback-admin", username: "admin", role: "admin" }),

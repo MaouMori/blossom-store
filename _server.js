@@ -198,14 +198,46 @@ const server = http.createServer(async (req, res) => {
     }
 
     if (url.pathname === "/api/store" && req.method === "PUT") {
+      if (req.headers["x-blossom-role"] !== "admin") {
+        sendJson(res, 403, { error: "Apenas contas admin podem salvar alteracoes." });
+        return;
+      }
+
       const nextStore = await readBody(req);
+      const currentStore = readStore();
+      const scope = String(nextStore.scope || "all");
+
+      if (scope === "products") {
+        writeStore({ ...currentStore, products: Array.isArray(nextStore.products) ? nextStore.products : [] });
+        sendJson(res, 200, { ok: true, scope });
+        return;
+      }
+
+      if (scope === "collections") {
+        writeStore({ ...currentStore, collections: Array.isArray(nextStore.collections) ? nextStore.collections : [] });
+        sendJson(res, 200, { ok: true, scope });
+        return;
+      }
+
+      if (["taxonomies", "featuredCards", "futureDrop", "siteBanners", "bookSettings", "aboutSettings"].includes(scope)) {
+        writeStore({
+          ...currentStore,
+          taxonomies: {
+            ...(currentStore.taxonomies || {}),
+            ...(nextStore.taxonomies || {}),
+          },
+        });
+        sendJson(res, 200, { ok: true, scope });
+        return;
+      }
+
       writeStore({
-        products: Array.isArray(nextStore.products) ? nextStore.products : [],
-        collections: Array.isArray(nextStore.collections) ? nextStore.collections : [],
-        taxonomies: nextStore.taxonomies || initialStore.taxonomies,
-        orders: Array.isArray(nextStore.orders) ? nextStore.orders : [],
+        products: Array.isArray(nextStore.products) ? nextStore.products : currentStore.products || [],
+        collections: Array.isArray(nextStore.collections) ? nextStore.collections : currentStore.collections || [],
+        taxonomies: nextStore.taxonomies || currentStore.taxonomies || initialStore.taxonomies,
+        orders: Array.isArray(nextStore.orders) ? nextStore.orders : currentStore.orders || [],
       });
-      sendJson(res, 200, { ok: true });
+      sendJson(res, 200, { ok: true, scope });
       return;
     }
 

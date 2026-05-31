@@ -37,6 +37,16 @@ async function replaceTable(table, rows, keyColumn = "id") {
   });
 }
 
+async function upsertRows(table, rows, conflictColumn = "id") {
+  if (!Array.isArray(rows) || !rows.length) return [];
+
+  return supabase(`${table}?on_conflict=${encodeURIComponent(conflictColumn)}`, {
+    method: "POST",
+    headers: { Prefer: "resolution=merge-duplicates,return=representation" },
+    body: JSON.stringify(rows),
+  });
+}
+
 function taxonomiesArrayToObject(rows = []) {
   return rows.reduce((acc, row) => {
     acc[row.key] = row.values ?? [];
@@ -54,6 +64,7 @@ function taxonomiesObjectToArray(taxonomies = {}) {
 module.exports = {
   replaceTable,
   supabase,
+  upsertRows,
   taxonomiesArrayToObject,
   taxonomiesObjectToArray,
 };

@@ -188,10 +188,9 @@ button:hover {
 }
 
 .site-header .main-nav {
-  position: absolute;
-  left: 50%;
-  top: 0;
-  transform: translateX(-50%);
+  grid-column: 2;
+  justify-self: center;
+  min-width: 0;
 }
 
 .site-header > .account,
@@ -965,6 +964,7 @@ body.nav-scrolled .site-header .account-toggle {
 
 .message-types,
 .message-field,
+.contact-form-full,
 .upload-box,
 .privacy-check,
 .auth-submit {
@@ -5846,10 +5846,8 @@ select option:checked {
 }
 
 .editorial-nav {
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  transform: translate(-50%, -50%);
+  grid-column: 2;
+  justify-self: center;
   justify-content: center;
   gap: clamp(24px, 2.6vw, 42px);
   min-width: 0;
