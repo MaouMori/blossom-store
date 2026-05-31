@@ -336,22 +336,77 @@ function isPlainObject(value) {
 }
 
 const imageUploadDefaults = {
-  maxSize: 1320,
-  quality: 0.78,
-  minQuality: 0.52,
-  maxBytes: 520 * 1024,
+  maxSize: 1100,
+  quality: 0.72,
+  minQuality: 0.46,
+  maxBytes: 260 * 1024,
 };
 
 const bannerImageUploadOptions = {
-  maxSize: 1600,
-  quality: 0.76,
+  maxSize: 1400,
+  quality: 0.72,
   minQuality: 0.5,
-  maxBytes: 620 * 1024,
+  maxBytes: 420 * 1024,
+};
+
+const collectionImageUploadOptions = {
+  maxSize: 1200,
+  quality: 0.7,
+  minQuality: 0.46,
+  maxBytes: 280 * 1024,
+};
+
+const existingImageCompactOptions = {
+  maxSize: 1050,
+  quality: 0.66,
+  minQuality: 0.42,
+  maxBytes: 190 * 1024,
 };
 
 function dataUrlBytes(dataUrl) {
   const base64 = String(dataUrl || "").split(",")[1] || "";
   return Math.ceil(base64.length * 0.75);
+}
+
+function imageSourceToDataUrl(source, options = {}) {
+  const settings = { ...imageUploadDefaults, ...options };
+  return new Promise((resolve, reject) => {
+    const sourceText = String(source || "");
+    if (!sourceText) { resolve(""); return; }
+    if (!sourceText.startsWith("data:image/")) { resolve(sourceText); return; }
+    const image = new Image();
+    image.onload = () => {
+      let maxSize = settings.maxSize;
+      let quality = settings.quality;
+      let dataUrl = "";
+      for (let attempt = 0; attempt < 16; attempt += 1) {
+        const ratio = Math.min(1, maxSize / Math.max(image.width, image.height));
+        const canvas = document.createElement("canvas");
+        canvas.width = Math.max(1, Math.round(image.width * ratio));
+        canvas.height = Math.max(1, Math.round(image.height * ratio));
+        const context = canvas.getContext("2d");
+        context.drawImage(image, 0, 0, canvas.width, canvas.height);
+        dataUrl = canvas.toDataURL("image/jpeg", quality);
+        if (dataUrlBytes(dataUrl) <= settings.maxBytes) {
+          resolve(dataUrl);
+          return;
+        }
+        if (quality > settings.minQuality) {
+          quality = Math.max(settings.minQuality, quality - 0.08);
+        } else {
+          maxSize = Math.max(640, Math.round(maxSize * 0.82));
+          quality = settings.quality;
+        }
+      }
+      if (dataUrlBytes(dataUrl) > settings.maxBytes * 1.35) {
+        reject(new Error("Essa imagem ainda ficou pesada demais. Tente uma imagem menor ou em JPG/WebP."));
+        return;
+      }
+      resolve(dataUrl);
+    };
+    image.onerror = () => reject(new Error("Nao foi possivel processar a imagem."));
+    image.src = sourceText;
+  });
 }
 
 function fileToDataUrl(file, options = {}) {
@@ -361,6 +416,10 @@ function fileToDataUrl(file, options = {}) {
     const settings = { ...imageUploadDefaults, ...options };
     const reader = new FileReader();
     reader.onload = () => {
+      if (reader.result) {
+        imageSourceToDataUrl(reader.result, settings).then(resolve).catch(reject);
+        return;
+      }
       const image = new Image();
       image.onload = () => {
         let maxSize = settings.maxSize;
@@ -404,6 +463,41 @@ async function filesToDataUrls(files, options = {}) {
   const images = [];
   for (const file of selected) { images.push(await fileToDataUrl(file, options)); }
   return images.filter(Boolean);
+}
+
+async function compactItemImages(item, options = existingImageCompactOptions) {
+  if (!item || typeof item !== "object") return item;
+  const images = itemImages(item);
+  if (!images.length) return item;
+  const compacted = [];
+  for (const image of images) {
+    compacted.push(await imageSourceToDataUrl(image, options));
+  }
+  item.images = compacted.filter(Boolean);
+  item.image = item.images[0] || "";
+  return item;
+}
+
+async function compactObjectImages(value, options = existingImageCompactOptions) {
+  if (!value || typeof value !== "object") return;
+  if (Array.isArray(value)) {
+    for (const item of value) await compactObjectImages(item, options);
+    return;
+  }
+  await compactItemImages(value, options);
+  for (const item of Object.values(value)) {
+    if (item && typeof item === "object") await compactObjectImages(item, options);
+  }
+}
+
+async function compactAdminImagesBeforeSave() {
+  for (const item of adminProducts) await compactItemImages(item);
+  for (const item of adminCollections) await compactItemImages(item, collectionImageUploadOptions);
+  for (const item of adminFeaturedCards) await compactItemImages(item);
+  await compactObjectImages(adminFutureDrop, bannerImageUploadOptions);
+  await compactObjectImages(adminSiteBanners, bannerImageUploadOptions);
+  await compactObjectImages(adminBookSettings);
+  await compactObjectImages(adminAboutSettings);
 }
 
 const adminPreviewUrls = new WeakMap();
@@ -567,15 +661,20 @@ async function loadApiStore() {
 
 async function saveApiStore() {
   if (!apiEnabled) return;
+  await compactAdminImagesBeforeSave();
   adminTaxonomies.featuredCards = adminFeaturedCards;
   adminTaxonomies.futureDrop = adminFutureDrop;
   adminTaxonomies.siteBanners = adminSiteBanners;
   adminTaxonomies.bookSettings = adminBookSettings;
   adminTaxonomies.aboutSettings = adminAboutSettings;
+  const payload = JSON.stringify({ products: adminProducts, collections: adminCollections, taxonomies: adminTaxonomies, orders: adminOrders });
+  if (payload.length > 3.5 * 1024 * 1024) {
+    throw new Error("O site ja tem imagens demais para salvar em uma unica vez. Remova algumas imagens antigas ou use imagens menores.");
+  }
   const response = await fetch("/api/store", {
     method: "PUT",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ products: adminProducts, collections: adminCollections, taxonomies: adminTaxonomies, orders: adminOrders }),
+    body: payload,
   });
   if (!response.ok) { const detail = await response.text(); throw new Error(detail || "Nao foi possivel salvar no servidor."); }
 }
@@ -1488,7 +1587,7 @@ $("[data-collection-form]")?.addEventListener("submit", async (event) => {
   const id = data.get("id") || slugify(data.get("name"));
   let images = JSON.parse(form.dataset.currentImages || "[]");
   try {
-    const uploadedImages = await filesToDataUrls(field(form, "images").files);
+    const uploadedImages = await filesToDataUrls(field(form, "images").files, collectionImageUploadOptions);
     images = uploadedImages.length ? uploadedImages : images;
   } catch (error) {
     $("[data-collection-image-note]").textContent = error.message;
