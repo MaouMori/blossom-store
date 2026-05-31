@@ -6736,6 +6736,7 @@ body.nav-scrolled .editorial-header .theme-pill {
     #09070a;
   background-position: center;
   background-size: cover;
+  background-repeat: no-repeat;
   color: #fff6fa;
   cursor: pointer;
   text-align: left;
@@ -6755,6 +6756,7 @@ body.nav-scrolled .editorial-header .theme-pill {
   text-align: left;
   text-decoration: none;
   background-position: center;
+  background-repeat: no-repeat;
 }
 
 .ambassador-hero strong {
@@ -7439,6 +7441,9 @@ body.nav-scrolled .editorial-header .theme-pill {
     radial-gradient(circle at 75% 22%, rgba(218, 74, 123, 0.18), transparent 22rem),
     linear-gradient(135deg, rgba(255, 218, 232, 0.78), rgba(255, 248, 251, 0.94)),
     #fff5f9;
+  background-position: center;
+  background-size: cover;
+  background-repeat: no-repeat;
   border-color: rgba(218, 74, 123, 0.24);
 }
 
