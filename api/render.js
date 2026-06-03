@@ -3,7 +3,7 @@ const path = require("path");
 const { injectPreloadedStore } = require("./_html-data");
 const { readStoreData } = require("./_store-data");
 
-const root = path.join(__dirname, "..");
+const root = process.cwd();
 const allowedPages = new Set([
   "index.html",
   "index2.html",

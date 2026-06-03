@@ -1,17 +1,7 @@
 {
   "functions": {
-    "api/render.js": {
-      "includeFiles": [
-        "index.html",
-        "index2.html",
-        "colecoes.html",
-        "colecao.html",
-        "loja.html",
-        "loja2.html",
-        "livro.html",
-        "produto.html",
-        "sobre.html"
-      ]
+    "api/*.js": {
+      "includeFiles": "*.html"
     }
   },
   "routes": [
