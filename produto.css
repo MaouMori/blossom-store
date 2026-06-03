@@ -1139,3 +1139,110 @@
     gap: 32px;
   }
 }
+
+/* Mobile hardening for product pages. */
+@media (max-width: 760px) {
+  .produto-v2 {
+    overflow-x: hidden;
+  }
+
+  .produto-v2 .site-header,
+  .produto-v2 .site-header.scrolled {
+    height: 64px;
+    padding: 0 14px;
+    grid-template-columns: minmax(0, 1fr) auto auto;
+  }
+
+  .produto-v2 .main-nav,
+  .produto-v2 .header-actions .theme-switch,
+  .produto-v2 .header-actions .header-icon,
+  .produto-v2 .header-actions .discord-header {
+    display: none;
+  }
+
+  .produto-v2 .mobile-menu-toggle {
+    display: inline-grid;
+  }
+
+  .p2-product-page,
+  .p2-related,
+  .p2-preview,
+  .p2-benefits-bar,
+  .produto-v2 .v2-footer {
+    padding-left: 18px;
+    padding-right: 18px;
+  }
+
+  .p2-product-grid,
+  .p2-info-grid,
+  .p2-benefits-bar-grid,
+  .p2-preview-grid,
+  .p2-footer-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .p2-gallery {
+    gap: 12px;
+  }
+
+  .p2-main-media {
+    min-height: 360px;
+  }
+
+  .p2-thumbs {
+    overflow-x: auto;
+    justify-content: flex-start;
+    padding-bottom: 4px;
+  }
+
+  .p2-actions,
+  .p2-option-group,
+  .p2-quantity-row,
+  .p2-related-header,
+  .p2-preview-header {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .p2-actions button,
+  .p2-option,
+  .p2-related-header a {
+    width: 100%;
+  }
+
+  .p2-carousel {
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+  }
+
+  .p2-carousel-card {
+    flex: 0 0 min(78vw, 260px);
+    scroll-snap-align: center;
+  }
+
+  .cart-drawer,
+  .checkout-modal {
+    width: min(100vw - 24px, 420px);
+    max-width: calc(100vw - 24px);
+  }
+
+  .checkout-modal {
+    max-height: calc(100dvh - 24px);
+    overflow-y: auto;
+  }
+}
+
+@media (max-width: 420px) {
+  .produto-v2 .site-header,
+  .produto-v2 .site-header.scrolled {
+    padding-inline: 10px;
+  }
+
+  .p2-title {
+    font-size: clamp(34px, 14vw, 54px);
+  }
+
+  .p2-main-media {
+    min-height: 300px;
+  }
+}

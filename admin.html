@@ -1009,6 +1009,138 @@
         justify-content: flex-start;
       }
     }
+
+    @media (max-width: 760px) {
+      html,
+      body.admin-new-body {
+        max-width: 100%;
+        overflow-x: hidden;
+      }
+
+      .admin-layout {
+        display: block;
+      }
+
+      .admin-sidebar {
+        position: sticky;
+        top: 0;
+        z-index: 30;
+        width: 100%;
+        height: auto;
+        min-height: 0;
+        display: block;
+        border-right: 0;
+        border-bottom: 1px solid var(--admin-line);
+        overflow: visible;
+      }
+
+      .admin-sidebar-brand,
+      .admin-sidebar-footer {
+        display: none;
+      }
+
+      .admin-sidebar nav {
+        display: flex;
+        gap: 8px;
+        padding: 10px;
+        overflow-x: auto;
+        scrollbar-width: none;
+      }
+
+      .admin-sidebar nav::-webkit-scrollbar {
+        display: none;
+      }
+
+      .admin-nav-section {
+        display: contents;
+      }
+
+      .admin-nav-label {
+        display: none;
+      }
+
+      .admin-nav-link {
+        flex: 0 0 auto;
+        min-height: 40px;
+        white-space: nowrap;
+      }
+
+      .admin-main {
+        width: 100%;
+        min-width: 0;
+        padding: 14px;
+        overflow: hidden;
+      }
+
+      .admin-topbar {
+        gap: 12px;
+      }
+
+      .admin-topbar h1 {
+        font-size: 22px;
+      }
+
+      .admin-topbar-actions {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 8px;
+      }
+
+      .admin-theme-control {
+        grid-column: 1 / -1;
+        justify-content: center;
+      }
+
+      .admin-content-panel,
+      .admin-stat-card,
+      .admin-dialog {
+        max-width: 100%;
+      }
+
+      .admin-panel-header {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 10px;
+      }
+
+      .admin-panel-header a,
+      .admin-panel-header button,
+      .admin-form-actions button,
+      .btn-add {
+        width: 100%;
+      }
+
+      .admin-table {
+        min-width: 720px;
+      }
+
+      .admin-table-wrap,
+      [data-products-list],
+      [data-collections-list],
+      [data-users-list],
+      [data-featured-list],
+      [data-book-list] {
+        width: 100%;
+        overflow-x: auto;
+      }
+
+      .admin-featured-row {
+        grid-template-columns: 56px minmax(0, 1fr);
+        gap: 10px;
+      }
+
+      .admin-featured-row > div:last-child,
+      .admin-featured-actions {
+        grid-column: 1 / -1;
+      }
+
+      .admin-image-grid,
+      .admin-about-grid,
+      .admin-form-grid,
+      .admin-form-grid.three-col {
+        grid-template-columns: 1fr;
+      }
+    }
   </style>
 </head>
 <body class="admin-new-body">

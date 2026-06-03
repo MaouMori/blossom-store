@@ -9561,3 +9561,311 @@ body.nav-scrolled .editorial-header .theme-pill {
     font-size: clamp(31px, 12vw, 46px);
   }
 }
+
+/* Mobile hardening shared by every server-rendered page. */
+@media (max-width: 760px) {
+  html,
+  body {
+    max-width: 100%;
+    overflow-x: hidden;
+  }
+
+  img,
+  video,
+  canvas,
+  svg {
+    max-width: 100%;
+  }
+
+  .container,
+  .section,
+  .shop-section,
+  .footer-inner,
+  .editorial-strip,
+  .future-drop,
+  .movement-banner,
+  .collections-editorial-hero,
+  .collections-toolbar,
+  .collections-editorial-grid,
+  .collection-detail-main,
+  .collection-detail-hero,
+  .collection-products,
+  .about-team-section,
+  .about-editorial-hero,
+  .about-member-modal {
+    width: min(100% - 28px, 100%);
+    max-width: none;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .site-header,
+  .editorial-header,
+  body.nav-scrolled .site-header,
+  body.nav-scrolled .editorial-header {
+    top: 0;
+    left: 0;
+    right: 0;
+    width: 100%;
+    min-width: 0;
+    height: 64px;
+    padding: 0 14px;
+    transform: none;
+    border-radius: 0;
+    grid-template-columns: minmax(0, 1fr) auto auto;
+    column-gap: 10px;
+  }
+
+  .site-header .main-nav,
+  .editorial-header .editorial-nav,
+  .editorial-header .editorial-utilities > span,
+  .site-header .account-toggle > span:nth-child(2),
+  .editorial-header .account-toggle > span:nth-child(2),
+  .site-header .chevron,
+  .editorial-header .chevron {
+    display: none;
+  }
+
+  .mobile-menu-toggle {
+    display: inline-grid;
+    place-items: center;
+    width: 42px;
+    height: 42px;
+    min-width: 42px;
+  }
+
+  .mobile-nav {
+    width: min(86vw, 360px);
+    max-width: calc(100vw - 28px);
+    padding: 78px 18px 24px;
+    overflow-y: auto;
+  }
+
+  .brand,
+  .editorial-corner-logo {
+    min-width: 0;
+  }
+
+  .brand b,
+  .editorial-corner-logo strong,
+  body.nav-scrolled .editorial-header .collections-logo strong {
+    font-size: clamp(18px, 7vw, 24px);
+  }
+
+  .brand small,
+  .editorial-corner-logo span,
+  body.nav-scrolled .editorial-header .collections-logo span {
+    font-size: 7px;
+    letter-spacing: 0.32em;
+    padding-left: 22px;
+  }
+
+  .account,
+  .header-actions,
+  .editorial-utilities {
+    min-width: 0;
+    gap: 6px;
+  }
+
+  .account-menu {
+    right: 0;
+    width: min(260px, calc(100vw - 24px));
+  }
+
+  .hero,
+  .shop-hero,
+  .collections-hero,
+  .about-hero,
+  .editorial-hero,
+  .collections-editorial-hero,
+  .about-editorial-hero {
+    min-height: auto;
+  }
+
+  .editorial-hero {
+    transform: none;
+  }
+
+  .editorial-hero-content {
+    max-width: none;
+    padding: 108px 20px 56px;
+    transform: none;
+    opacity: 1;
+  }
+
+  .editorial-logo strong {
+    font-size: clamp(42px, 15vw, 64px);
+  }
+
+  .editorial-logo span {
+    padding-left: 64px;
+    font-size: 15px;
+    letter-spacing: 0.44em;
+  }
+
+  .editorial-actions,
+  .collections-toolbar-header,
+  .collection-filters,
+  .editorial-section-title,
+  .spotlight-head,
+  .about-member-modal-actions {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .editorial-actions a,
+  .movement-banner a,
+  .see-all,
+  .collections-hero-copy > a,
+  .about-team-info a {
+    width: 100%;
+    min-width: 0;
+  }
+
+  .future-drop,
+  .editorial-feature,
+  .collections-editorial-hero,
+  .collection-detail-hero,
+  .collection-about,
+  .about-editorial-hero,
+  .about-member-modal[open],
+  .checkout-modal {
+    grid-template-columns: 1fr;
+  }
+
+  .collections-editorial-hero,
+  .about-editorial-hero {
+    padding-top: 74px;
+  }
+
+  .collections-hero-copy,
+  .about-editorial-copy {
+    padding: 42px 20px;
+  }
+
+  .collections-hero-copy h1,
+  .about-editorial-copy h1 {
+    font-size: clamp(46px, 16vw, 76px);
+    overflow-wrap: anywhere;
+  }
+
+  .collections-editorial-grid,
+  .collection-products-grid,
+  .product-grid,
+  .collection-grid,
+  .about-team-grid,
+  .editorial-collections-grid,
+  .home-products-grid,
+  .lookbook-grid,
+  .footer-inner,
+  .editorial-footer,
+  .editorial-footer-inner {
+    grid-template-columns: 1fr;
+  }
+
+  .collections-toolbar .collection-filters,
+  .filters,
+  .shop-filters {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 10px;
+    width: 100%;
+  }
+
+  .collections-toolbar select,
+  .filters select,
+  .shop-filters select,
+  .search-input,
+  .auth-card input,
+  .login-card input {
+    width: 100%;
+    min-width: 0;
+  }
+
+  .spotlight-carousel,
+  .ambassador-row,
+  .influencer-row {
+    --spotlight-card-width: min(78vw, 280px);
+    width: 100%;
+    overflow-x: auto;
+    padding-inline: 18px;
+    scroll-snap-type: x mandatory;
+  }
+
+  .spotlight-carousel a,
+  .ambassador-row a,
+  .influencer-row a {
+    scroll-snap-align: center;
+  }
+
+  .movement-banner {
+    padding: 56px 20px;
+  }
+
+  .movement-banner h2 {
+    font-size: clamp(34px, 13vw, 62px);
+  }
+
+  .login-page,
+  .auth-page {
+    min-height: 100dvh;
+    padding: 18px;
+    display: grid;
+    place-items: center;
+  }
+
+  .login-card,
+  .auth-card {
+    width: min(100%, 440px);
+    padding: 24px;
+  }
+
+  .auth-tabs {
+    display: grid;
+    grid-template-columns: 1fr;
+  }
+
+  .about-member-modal {
+    max-height: calc(100dvh - 28px);
+  }
+
+  .about-member-modal-image {
+    min-height: 320px;
+  }
+
+  .about-member-modal-info {
+    padding: 24px;
+  }
+}
+
+@media (max-width: 420px) {
+  .site-header,
+  .editorial-header,
+  body.nav-scrolled .site-header,
+  body.nav-scrolled .editorial-header {
+    padding-inline: 10px;
+  }
+
+  .brand small,
+  .editorial-corner-logo span,
+  body.nav-scrolled .editorial-header .collections-logo span {
+    letter-spacing: 0.24em;
+  }
+
+  .account {
+    display: none;
+  }
+
+  .mobile-menu-toggle {
+    width: 40px;
+    height: 40px;
+    min-width: 40px;
+  }
+
+  .editorial-hero-content,
+  .collections-hero-copy,
+  .about-editorial-copy {
+    padding-left: 16px;
+    padding-right: 16px;
+  }
+}
