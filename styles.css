@@ -7740,6 +7740,14 @@ body.nav-scrolled .editorial-header .theme-pill {
   overflow: hidden;
 }
 
+.collections-editorial-hero.has-upload {
+  grid-template-columns: 1fr;
+  background-image: var(--collections-hero-bg);
+  background-size: cover;
+  background-position: center top;
+  background-repeat: no-repeat;
+}
+
 .collections-editorial-hero::before,
 .collections-editorial-hero::after {
   content: "";
@@ -7753,6 +7761,12 @@ body.nav-scrolled .editorial-header .theme-pill {
     radial-gradient(circle at 73% 45%, rgba(255, 112, 158, 0.28), transparent 25rem),
     linear-gradient(90deg, rgba(3, 4, 5, 0.96), rgba(3, 4, 5, 0.28) 45%, rgba(3, 4, 5, 0.82));
   z-index: 1;
+}
+
+.collections-editorial-hero.has-upload::before {
+  background:
+    linear-gradient(90deg, rgba(3, 4, 5, 0.96) 0%, rgba(3, 4, 5, 0.72) 34%, rgba(3, 4, 5, 0.22) 68%, rgba(3, 4, 5, 0.62) 100%),
+    linear-gradient(180deg, rgba(3, 4, 5, 0.22) 0%, rgba(3, 4, 5, 0.05) 48%, rgba(3, 4, 5, 0.9) 100%);
 }
 
 .collections-editorial-hero::after {
@@ -7859,6 +7873,10 @@ body.nav-scrolled .editorial-header .theme-pill {
     linear-gradient(135deg, rgba(72, 11, 33, 0.78), rgba(3, 4, 5, 0.82)),
     #0a0508;
   box-shadow: inset 0 0 0 1px rgba(255, 143, 190, 0.16), 0 40px 110px rgba(0, 0, 0, 0.38);
+}
+
+.collections-editorial-hero.has-upload .collections-hero-art {
+  display: none;
 }
 
 .collections-hero-art.has-upload {
@@ -8058,6 +8076,12 @@ body.nav-scrolled .editorial-header .theme-pill {
 .home-editorial.editorial-light .collections-editorial-hero::before {
   background:
     linear-gradient(90deg, rgba(255, 248, 251, 0.96), rgba(255, 248, 251, 0.36) 48%, rgba(255, 248, 251, 0.78));
+}
+
+.home-editorial.editorial-light .collections-editorial-hero.has-upload::before {
+  background:
+    linear-gradient(90deg, rgba(255, 248, 251, 0.96) 0%, rgba(255, 248, 251, 0.74) 36%, rgba(255, 248, 251, 0.22) 72%, rgba(255, 248, 251, 0.58) 100%),
+    linear-gradient(180deg, rgba(255, 248, 251, 0.16) 0%, rgba(255, 248, 251, 0.02) 48%, rgba(255, 248, 251, 0.9) 100%);
 }
 
 .home-editorial.editorial-light .collections-hero-copy h1,

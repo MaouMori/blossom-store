@@ -727,6 +727,12 @@ function renderSiteBanners() {
   const collectionsBanner = { ...defaultSiteBanners.collectionsHero, ...(siteBanners.collectionsHero || {}) };
   const collectionsImage = primaryImage(collectionsBanner);
   if (selectors.collectionsHero) {
+    selectors.collectionsHero.classList.toggle("has-upload", Boolean(collectionsImage));
+    if (collectionsImage) {
+      selectors.collectionsHero.style.setProperty("--collections-hero-bg", `url('${collectionsImage}')`);
+    } else {
+      selectors.collectionsHero.style.removeProperty("--collections-hero-bg");
+    }
     const eyebrow = selectors.collectionsHero.querySelector("[data-collections-hero-eyebrow]");
     const title = selectors.collectionsHero.querySelector("[data-collections-hero-title]");
     const highlight = selectors.collectionsHero.querySelector("[data-collections-hero-highlight]");
