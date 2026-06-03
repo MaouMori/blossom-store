@@ -37,6 +37,11 @@ function passwordMatches(savedPassword, password) {
   return false;
 }
 
+function findUserByUsername(users, username) {
+  const normalized = String(username || "").trim().toLowerCase();
+  return users.find((item) => String(item.username || "").trim().toLowerCase() === normalized);
+}
+
 const mime = {
   ".html": "text/html; charset=utf-8",
   ".css": "text/css; charset=utf-8",
@@ -338,10 +343,10 @@ const server = http.createServer(async (req, res) => {
       const username = String(body.username || "").trim();
       const password = String(body.password || "");
       const action = body.action || "login";
-      const user = users.find((item) => item.username === username);
+      const user = findUserByUsername(users, username);
 
       if (action === "login") {
-        if (!user && username === "admin" && password === "admin123") {
+        if (!user && username.toLowerCase() === "admin" && password === "admin123") {
           return sendJson(res, 200, { ok: true, user: publicUser({ id: "fallback-admin", username: "admin", role: "admin", createdAt: new Date().toISOString() }) });
         }
         if (!user || !passwordMatches(user.password, password)) return sendJson(res, 401, { error: "Usuário ou senha inválidos." });
@@ -353,6 +358,8 @@ const server = http.createServer(async (req, res) => {
       }
 
       if (action === "register") {
+        if (!username) return sendJson(res, 400, { error: "Informe o usuario." });
+        if (password.length < 4) return sendJson(res, 400, { error: "Use uma senha com pelo menos 4 caracteres." });
         if (user) return sendJson(res, 409, { error: "Esse usuário já existe." });
         const nextUser = { id: `local-${Date.now()}`, username, email: "", password: hashPassword(password), role: "cliente", createdAt: new Date().toISOString() };
         users.unshift(nextUser);
@@ -361,6 +368,8 @@ const server = http.createServer(async (req, res) => {
       }
 
       if (action === "reset") {
+        if (!username) return sendJson(res, 400, { error: "Informe o usuario." });
+        if (password.length < 4) return sendJson(res, 400, { error: "Use uma senha com pelo menos 4 caracteres." });
         if (!user) return sendJson(res, 404, { error: "Usuário não encontrado." });
         user.password = hashPassword(password);
         writeUsers(users);

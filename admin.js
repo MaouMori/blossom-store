@@ -225,6 +225,7 @@ function enforceSingleCherrySpotlight(activeId) {
 const $ = (selector) => document.querySelector(selector);
 const $$ = (selector) => document.querySelectorAll(selector);
 const apiEnabled = location.protocol.startsWith("http");
+const isAdminPage = document.body.classList.contains("admin-new-body") && location.pathname.endsWith("admin.html");
 let adminSession = readSession();
 
 function field(form, name) {
@@ -271,16 +272,17 @@ function readSession() {
 }
 
 function writeSession(user) {
-  adminSession = user;
-  localStorage.setItem("blossom-user-account", JSON.stringify({
+  const session = {
     logged: true,
     id: user.id,
     name: user.username,
     username: user.username,
     email: user.email || "",
     role: user.role || "cliente",
-  }));
-  if ((user.role || "cliente") === "admin") {
+  };
+  adminSession = session;
+  localStorage.setItem("blossom-user-account", JSON.stringify(session));
+  if (session.role === "admin") {
     localStorage.setItem("blossom-admin-session", "active");
   } else {
     localStorage.removeItem("blossom-admin-session");
@@ -292,6 +294,24 @@ function authMessage(text, type = "info") {
   if (!target) return;
   target.textContent = text;
   target.dataset.type = type;
+}
+
+function authPayload(form) {
+  const data = new FormData(form);
+  return {
+    action: form.dataset.authForm === "forgot" ? "reset" : form.dataset.authForm,
+    username: String(data.get("username") || "").trim(),
+    password: String(data.get("password") || ""),
+  };
+}
+
+function validateAuthPayload(payload) {
+  if (!payload.username) return "Informe o usuario.";
+  if (!payload.password) return "Informe a senha.";
+  if ((payload.action === "register" || payload.action === "reset") && payload.password.length < 4) {
+    return "Use uma senha com pelo menos 4 caracteres.";
+  }
+  return "";
 }
 
 async function apiPost(path, payload) {
@@ -602,25 +622,29 @@ $$("[data-toggle-password]").forEach((button) => {
 $$("[data-auth-form]").forEach((form) => {
   form.addEventListener("submit", async (event) => {
     event.preventDefault();
-    const data = new FormData(form);
-    const action = form.dataset.authForm === "forgot" ? "reset" : form.dataset.authForm;
+    const payload = authPayload(form);
+    const validationError = validateAuthPayload(payload);
+    if (validationError) {
+      authMessage(validationError, "error");
+      return;
+    }
     const submitButton = form.querySelector("[type='submit']");
     const label = submitButton.querySelector("span");
     const originalText = label.textContent;
     submitButton.disabled = true;
     label.textContent = "Aguarde...";
     try {
-      const result = await apiPost("/api/auth", { action, username: data.get("username"), password: data.get("password") });
+      const result = await apiPost("/api/auth", payload);
       writeSession(result.user);
-      authMessage(action === "register" ? "Conta criada com sucesso." : "Login realizado.", "success");
+      authMessage(payload.action === "register" ? "Conta criada com sucesso." : "Login realizado.", "success");
       window.location.href = result.user.role === "admin" ? "admin.html" : "index.html";
     } catch (error) {
-      if (!apiEnabled && data.get("username") === ADMIN_USER && data.get("password") === ADMIN_PASS) {
+      if (!apiEnabled && payload.action === "login" && payload.username.toLowerCase() === ADMIN_USER && payload.password === ADMIN_PASS) {
         writeSession({ username: ADMIN_USER, role: "admin" });
         window.location.href = "admin.html";
         return;
       }
-      authMessage(error.message, "error");
+      authMessage(errorText(error), "error");
     } finally {
       submitButton.disabled = false;
       label.textContent = originalText;
@@ -643,9 +667,13 @@ if (loginForm) {
 }
 
 /* Admin guard */
-if (document.body.classList.contains("admin-new-body") && location.pathname.endsWith("admin.html")) {
+if (isAdminPage) {
   const isAdmin = adminSession?.role === "admin";
-  if (!isAdmin) { window.location.href = "login.html"; }
+  if (!isAdmin) {
+    document.body.hidden = true;
+    window.location.replace("login.html");
+    throw new Error("Admin session required.");
+  }
 }
 
 let adminProducts = apiEnabled ? [] : getData("blossom-products", productSeed);
@@ -1958,6 +1986,8 @@ $("[data-logout]")?.addEventListener("click", () => {
 });
 
 /* Init */
-renderAll();
-loadApiStore();
-loadUsers();
+if (isAdminPage) {
+  renderAll();
+  loadApiStore();
+  loadUsers();
+}

@@ -21,8 +21,10 @@ async function findUserById(id) {
 }
 
 async function findUserByUsername(username) {
-  const rows = await supabase(`admin_users?username=eq.${encodeURIComponent(username)}&select=*`);
-  return Array.isArray(rows) ? rows[0] : null;
+  const exactRows = await supabase(`admin_users?username=eq.${encodeURIComponent(username)}&select=*`);
+  if (Array.isArray(exactRows) && exactRows[0]) return exactRows[0];
+  const matchRows = await supabase(`admin_users?username=ilike.${encodeURIComponent(username)}&select=*`);
+  return Array.isArray(matchRows) ? matchRows[0] : null;
 }
 
 module.exports = async function handler(req, res) {

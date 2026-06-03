@@ -25,14 +25,24 @@ function publicUser(user) {
   };
 }
 
+function normalizeUsername(value) {
+  return String(value || "").trim();
+}
+
+function validPassword(value) {
+  return String(value || "").length >= 4;
+}
+
 function allowFallbackAdmin(req) {
   const host = String(req.headers.host || "");
   return process.env.ALLOW_DEV_ADMIN === "true" || host.startsWith("localhost") || host.startsWith("127.0.0.1");
 }
 
 async function findUser(username) {
-  const rows = await supabase(`admin_users?username=eq.${encodeURIComponent(username)}&select=*`);
-  return Array.isArray(rows) ? rows[0] : null;
+  const exactRows = await supabase(`admin_users?username=eq.${encodeURIComponent(username)}&select=*`);
+  if (Array.isArray(exactRows) && exactRows[0]) return exactRows[0];
+  const matchRows = await supabase(`admin_users?username=ilike.${encodeURIComponent(username)}&select=*`);
+  return Array.isArray(matchRows) ? matchRows[0] : null;
 }
 
 async function createUser(username, password) {
@@ -58,7 +68,7 @@ module.exports = async function handler(req, res) {
 
     const body = req.body || {};
     const action = body.action || "login";
-    const username = String(body.username || "").trim();
+    const username = normalizeUsername(body.username);
     const password = String(body.password || "");
 
     if (!username) {
@@ -68,7 +78,7 @@ module.exports = async function handler(req, res) {
 
     if (action === "login") {
       const user = await findUser(username);
-      if (!user && allowFallbackAdmin(req) && username === "admin" && password === "admin123") {
+      if (!user && allowFallbackAdmin(req) && username.toLowerCase() === "admin" && password === "admin123") {
         res.status(200).json({
           ok: true,
           user: publicUser({ id: "fallback-admin", username: "admin", role: "admin" }),
@@ -90,7 +100,7 @@ module.exports = async function handler(req, res) {
     }
 
     if (action === "register") {
-      if (password.length < 4) {
+      if (!validPassword(password)) {
         res.status(400).json({ error: "Use uma senha com pelo menos 4 caracteres." });
         return;
       }
@@ -105,7 +115,7 @@ module.exports = async function handler(req, res) {
     }
 
     if (action === "reset") {
-      if (password.length < 4) {
+      if (!validPassword(password)) {
         res.status(400).json({ error: "Use uma senha com pelo menos 4 caracteres." });
         return;
       }
