@@ -8867,6 +8867,12 @@ body.nav-scrolled .editorial-header .theme-pill {
     url("img/fundo.png") center / cover no-repeat;
 }
 
+.about-editorial-page.editorial-light .about-editorial-visual.has-upload {
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
 .about-editorial-page.editorial-light .about-team-card {
   background: #fff3f8;
   border-color: rgba(218, 74, 123, 0.18);
