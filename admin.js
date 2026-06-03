@@ -319,7 +319,19 @@ function getData(key, seed) {
 }
 
 function setData(key, value) {
-  localStorage.setItem(key, JSON.stringify(value));
+  const serialized = JSON.stringify(value);
+  const previous = localStorage.getItem(key);
+  try {
+    localStorage.setItem(key, serialized);
+  } catch (error) {
+    localStorage.removeItem(key);
+    try {
+      localStorage.setItem(key, serialized);
+    } catch (retryError) {
+      if (previous !== null) localStorage.setItem(key, previous);
+      throw retryError;
+    }
+  }
 }
 
 function getObjectData(key, seed) {
@@ -741,15 +753,15 @@ async function updateUserRole(username, role) {
   return body.user;
 }
 
-function saveProducts() { setData("blossom-products", adminProducts); return saveApiStore("products"); }
-function saveCollections() { setData("blossom-collections", adminCollections); return saveApiStore("collections"); }
 function syncAdminTaxonomies() { adminTaxonomies.featuredCards = adminFeaturedCards; adminTaxonomies.futureDrop = adminFutureDrop; adminTaxonomies.siteBanners = adminSiteBanners; adminTaxonomies.bookSettings = adminBookSettings; adminTaxonomies.aboutSettings = adminAboutSettings; }
-function saveTaxonomies() { syncAdminTaxonomies(); setData("blossom-taxonomies", adminTaxonomies); return saveApiStore("taxonomies"); }
-function saveFeaturedCards() { syncAdminTaxonomies(); setData("blossom-featured-cards", adminFeaturedCards); return saveApiStore("featuredCards"); }
-function saveFutureDrop() { syncAdminTaxonomies(); setData("blossom-future-drop", adminFutureDrop); return saveApiStore("futureDrop"); }
-function saveSiteBanners() { syncAdminTaxonomies(); setData("blossom-site-banners", adminSiteBanners); return saveApiStore("siteBanners"); }
-function saveBookSettings() { syncAdminTaxonomies(); setData("blossom-book-settings", adminBookSettings); return saveApiStore("bookSettings"); }
-function saveAboutSettings() { adminAboutSettings = normalizeAboutSettings(adminAboutSettings); syncAdminTaxonomies(); setData("blossom-about-settings", adminAboutSettings); return saveApiStore("aboutSettings"); }
+async function saveProducts() { await compactAdminImagesBeforeSave("products"); setData("blossom-products", adminProducts); return saveApiStore("products"); }
+async function saveCollections() { await compactAdminImagesBeforeSave("collections"); setData("blossom-collections", adminCollections); return saveApiStore("collections"); }
+async function saveTaxonomies() { await compactAdminImagesBeforeSave("all"); syncAdminTaxonomies(); setData("blossom-taxonomies", adminTaxonomies); return saveApiStore("taxonomies"); }
+async function saveFeaturedCards() { await compactAdminImagesBeforeSave("featuredCards"); syncAdminTaxonomies(); setData("blossom-featured-cards", adminFeaturedCards); return saveApiStore("featuredCards"); }
+async function saveFutureDrop() { await compactAdminImagesBeforeSave("futureDrop"); syncAdminTaxonomies(); setData("blossom-future-drop", adminFutureDrop); return saveApiStore("futureDrop"); }
+async function saveSiteBanners() { await compactAdminImagesBeforeSave("siteBanners"); syncAdminTaxonomies(); setData("blossom-site-banners", adminSiteBanners); return saveApiStore("siteBanners"); }
+async function saveBookSettings() { await compactAdminImagesBeforeSave("bookSettings"); syncAdminTaxonomies(); setData("blossom-book-settings", adminBookSettings); return saveApiStore("bookSettings"); }
+async function saveAboutSettings() { adminAboutSettings = normalizeAboutSettings(adminAboutSettings); await compactAdminImagesBeforeSave("aboutSettings"); syncAdminTaxonomies(); setData("blossom-about-settings", adminAboutSettings); return saveApiStore("aboutSettings"); }
 
 function blankAboutMember() {
   return {
