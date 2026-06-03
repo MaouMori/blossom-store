@@ -78,7 +78,28 @@
     }
 
     .book-page-body.editorial-light .editorial-header {
-      background: linear-gradient(180deg, rgba(255, 248, 251, 0.9), transparent);
+      background: linear-gradient(180deg, rgba(255, 248, 251, 0.96), rgba(255, 248, 251, 0.72) 72%, transparent);
+      backdrop-filter: blur(14px);
+    }
+
+    .book-page-body.editorial-light.nav-scrolled .editorial-header {
+      background: rgba(255, 248, 251, 0.82);
+      border-color: rgba(218, 74, 123, 0.22);
+      box-shadow: 0 18px 48px rgba(90, 24, 46, 0.14);
+    }
+
+    .book-page-body.editorial-light .editorial-header .editorial-nav a,
+    .book-page-body.editorial-light .editorial-header .editorial-utilities > span,
+    .book-page-body.editorial-light .editorial-header .user-icon,
+    .book-page-body.editorial-light .editorial-header .collections-logo span {
+      color: rgba(42, 18, 26, 0.82);
+      text-shadow: none;
+    }
+
+    .book-page-body.editorial-light .editorial-header .editorial-nav a.active,
+    .book-page-body.editorial-light .editorial-header .editorial-nav a:hover {
+      color: #e84f8d;
+      text-shadow: none;
     }
 
     .book-page-body.editorial-light .book-stage::before {
