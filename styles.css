@@ -8211,6 +8211,25 @@ body.nav-scrolled .editorial-header .theme-pill {
   backdrop-filter: none;
 }
 
+.home-editorial.editorial-light .editorial-header .editorial-nav a,
+.home-editorial.editorial-light .editorial-header .editorial-utilities > span,
+.home-editorial.editorial-light .editorial-header .user-icon {
+  color: rgba(255, 247, 251, 0.92);
+  text-shadow: 0 2px 14px rgba(0, 0, 0, 0.72);
+}
+
+.home-editorial.editorial-light .editorial-header .theme-pill {
+  background: rgba(255, 248, 251, 0.34);
+  border-color: rgba(255, 248, 251, 0.44);
+}
+
+.home-editorial.editorial-light.nav-scrolled .editorial-header .editorial-nav a,
+.home-editorial.editorial-light.nav-scrolled .editorial-header .editorial-utilities > span,
+.home-editorial.editorial-light.nav-scrolled .editorial-header .user-icon {
+  color: var(--ed-text);
+  text-shadow: none;
+}
+
 .home-editorial.editorial-light .editorial-nav a,
 .home-editorial.editorial-light .editorial-utilities > span,
 .home-editorial.editorial-light .editorial-hero h1,
