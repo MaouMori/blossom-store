@@ -8814,7 +8814,7 @@ body.nav-scrolled .editorial-header .theme-pill {
   z-index: 2;
   display: grid;
   align-content: center;
-  padding: clamp(70px, 10vw, 130px) 0 clamp(70px, 10vw, 130px) max(48px, calc((100vw - 1240px) / 2));
+  padding: clamp(70px, 10vw, 130px) 0 clamp(70px, 10vw, 130px) max(32px, calc((100vw - 1360px) / 2));
 }
 
 .about-editorial-copy > span,
@@ -8911,9 +8911,7 @@ body.nav-scrolled .editorial-header .theme-pill {
   content: "";
   position: absolute;
   inset: 0;
-  background:
-    radial-gradient(circle at 48% 20%, rgba(255, 122, 170, 0.22), transparent 12rem),
-    linear-gradient(90deg, rgba(5, 6, 7, 0), #050607 100%);
+  background: radial-gradient(circle at 48% 20%, rgba(255, 122, 170, 0.18), transparent 12rem);
 }
 
 .about-editorial-visual span {
