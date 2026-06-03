@@ -5,11 +5,14 @@ const crypto = require("crypto");
 const {
   supabase,
 } = require("./api/_supabase");
+const { injectPreloadedStore } = require("./api/_html-data");
+const { readStoreData } = require("./api/_store-data");
 const apiHandlers = {
   "/api/account": require("./api/account"),
   "/api/auth": require("./api/auth"),
   "/api/discord-auth": require("./api/discord-auth"),
   "/api/orders": require("./api/orders"),
+  "/api/render": require("./api/render"),
   "/api/store": require("./api/store"),
   "/api/users": require("./api/users"),
 };
@@ -246,7 +249,7 @@ async function runApiHandler(handler, req, res) {
   await handler(req, res);
 }
 
-function serveStatic(req, res) {
+async function serveStatic(req, res) {
   const url = new URL(req.url, `http://${req.headers.host}`);
   const requested = decodeURIComponent(url.pathname === "/" ? "/index.html" : url.pathname);
   const filePath = path.normalize(path.join(root, requested));
@@ -257,15 +260,18 @@ function serveStatic(req, res) {
     return;
   }
 
-  fs.readFile(filePath, (error, content) => {
-    if (error) {
-      res.writeHead(404);
-      res.end("Not found");
-      return;
+  try {
+    let content = await fs.promises.readFile(filePath);
+    const type = mime[path.extname(filePath)] || "application/octet-stream";
+    if (path.extname(filePath) === ".html" && content.includes("script.js")) {
+      content = injectPreloadedStore(content.toString("utf8"), await readStoreData());
     }
-    res.writeHead(200, { "Content-Type": mime[path.extname(filePath)] || "application/octet-stream" });
+    res.writeHead(200, { "Content-Type": type });
     res.end(content);
-  });
+  } catch {
+    res.writeHead(404);
+    res.end("Not found");
+  }
 }
 
 const server = http.createServer(async (req, res) => {
@@ -480,7 +486,7 @@ const server = http.createServer(async (req, res) => {
       return;
     }
 
-    serveStatic(req, res);
+    await serveStatic(req, res);
   } catch (error) {
     sendJson(res, 500, { error: error.message });
   }

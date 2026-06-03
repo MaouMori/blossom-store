@@ -1,10 +1,9 @@
 const {
   replaceTable,
-  supabase,
-  taxonomiesArrayToObject,
   taxonomiesObjectToArray,
   upsertRows,
 } = require("./_supabase");
+const { clearStoreDataCache, readStoreData } = require("./_store-data");
 
 const TAXONOMY_SCOPES = new Set([
   "taxonomies",
@@ -36,19 +35,7 @@ function requireArray(value, name) {
 module.exports = async function handler(req, res) {
   try {
     if (req.method === "GET") {
-      const [products, collections, taxonomyRows, orders] = await Promise.all([
-        supabase("products?select=*&order=created.desc"),
-        supabase("collections?select=*"),
-        supabase("taxonomies?select=*"),
-        supabase("orders?select=*&order=createdAt.desc"),
-      ]);
-
-      res.status(200).json({
-        products: products || [],
-        collections: collections || [],
-        taxonomies: taxonomiesArrayToObject(taxonomyRows),
-        orders: orders || [],
-      });
+      res.status(200).json(await readStoreData());
       return;
     }
 
@@ -60,18 +47,21 @@ module.exports = async function handler(req, res) {
 
       if (scope === "products") {
         await replaceTable("products", requireArray(body.products, "products"));
+        clearStoreDataCache();
         res.status(200).json({ ok: true, scope });
         return;
       }
 
       if (scope === "collections") {
         await replaceTable("collections", requireArray(body.collections, "collections"));
+        clearStoreDataCache();
         res.status(200).json({ ok: true, scope });
         return;
       }
 
       if (TAXONOMY_SCOPES.has(scope)) {
         await saveTaxonomyObject(body.taxonomies || {});
+        clearStoreDataCache();
         res.status(200).json({ ok: true, scope });
         return;
       }
@@ -87,6 +77,7 @@ module.exports = async function handler(req, res) {
           replaceTable("taxonomies", taxonomies, "key"),
         ]);
 
+        clearStoreDataCache();
         res.status(200).json({ ok: true, scope });
         return;
       }

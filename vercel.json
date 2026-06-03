@@ -1,0 +1,7 @@
+{
+  "routes": [
+    { "src": "^/$", "dest": "/api/render?path=/index.html" },
+    { "src": "^/(index|index2|colecoes|colecao|loja|loja2|livro|produto|sobre)\\.html$", "dest": "/api/render?path=/$1.html" },
+    { "handle": "filesystem" }
+  ]
+}

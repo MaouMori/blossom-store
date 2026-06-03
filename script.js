@@ -353,6 +353,30 @@ function itemImages(item) {
 
 function primaryImage(item) { return itemImages(item)[0] || ""; }
 
+function normalizeRemoteStore(store = {}) {
+  const source = isPlainObject(store) ? store : {};
+  const remoteTaxonomies = isPlainObject(source.taxonomies) ? source.taxonomies : {};
+  return {
+    products: Array.isArray(source.products) ? source.products : [],
+    collections: Array.isArray(source.collections) ? source.collections : [],
+    taxonomies: Object.keys(remoteTaxonomies).length ? remoteTaxonomies : { categories: [], types: [], colors: [], visuals: [] },
+    orders: Array.isArray(source.orders) ? source.orders : [],
+  };
+}
+
+function applyStoreState(store) {
+  const normalized = normalizeRemoteStore(store);
+  products = normalized.products;
+  collections = normalized.collections;
+  taxonomies = normalized.taxonomies;
+  featuredCards = Array.isArray(taxonomies.featuredCards) && taxonomies.featuredCards.length ? taxonomies.featuredCards : defaultFeaturedCards;
+  futureDrop = isPlainObject(taxonomies.futureDrop) ? { ...defaultFutureDrop, ...taxonomies.futureDrop } : readObjectStore("blossom-future-drop", defaultFutureDrop);
+  siteBanners = isPlainObject(taxonomies.siteBanners) ? { ...defaultSiteBanners, ...taxonomies.siteBanners } : readObjectStore("blossom-site-banners", defaultSiteBanners);
+  aboutSettings = isPlainObject(taxonomies.aboutSettings) ? normalizeAboutSettings(taxonomies.aboutSettings) : normalizeAboutSettings(readObjectStore("blossom-about-settings", defaultAboutSettings));
+}
+
+const preloadedStore = apiEnabled && isPlainObject(window.__BLOSSOM_PRELOADED_STORE__) ? window.__BLOSSOM_PRELOADED_STORE__ : null;
+
 let products = apiEnabled ? [] : readStore("blossom-products", []);
 let collections = apiEnabled ? [] : readStore("blossom-collections", []);
 let featuredCards = apiEnabled ? defaultFeaturedCards : readStore("blossom-featured-cards", defaultFeaturedCards);
@@ -367,6 +391,8 @@ let taxonomies = (() => {
   if (apiEnabled) return { categories: [], types: [], colors: [], visuals: [] };
   try { const saved = JSON.parse(localStorage.getItem("blossom-taxonomies")); return saved && typeof saved === "object" ? { ...defaultTaxonomies, ...saved } : defaultTaxonomies; } catch { return defaultTaxonomies; }
 })();
+
+if (preloadedStore) applyStoreState(preloadedStore);
 
 const selectors = {
   cartOpen: document.querySelector("[data-cart-open]"),
@@ -437,18 +463,11 @@ const state = {
 let account = loadAccount();
 
 async function loadApiStore() {
-  if (!apiEnabled) return;
+  if (!apiEnabled || preloadedStore) return;
   try {
     const response = await fetch("/api/store");
     if (!response.ok) return;
-    const store = await response.json();
-    products = Array.isArray(store.products) ? store.products : [];
-    collections = Array.isArray(store.collections) ? store.collections : [];
-    taxonomies = store.taxonomies && Object.keys(store.taxonomies).length ? store.taxonomies : { categories: [], types: [], colors: [], visuals: [] };
-    featuredCards = Array.isArray(taxonomies.featuredCards) && taxonomies.featuredCards.length ? taxonomies.featuredCards : defaultFeaturedCards;
-    futureDrop = isPlainObject(taxonomies.futureDrop) ? { ...defaultFutureDrop, ...taxonomies.futureDrop } : readObjectStore("blossom-future-drop", defaultFutureDrop);
-    siteBanners = isPlainObject(taxonomies.siteBanners) ? { ...defaultSiteBanners, ...taxonomies.siteBanners } : readObjectStore("blossom-site-banners", defaultSiteBanners);
-    aboutSettings = isPlainObject(taxonomies.aboutSettings) ? normalizeAboutSettings(taxonomies.aboutSettings) : normalizeAboutSettings(readObjectStore("blossom-about-settings", defaultAboutSettings));
+    applyStoreState(await response.json());
     if (hasShop) { renderFilters(); renderCatalog(); }
     renderHomeSections();
     renderAboutPage();
