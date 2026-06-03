@@ -2,12 +2,19 @@ const http = require("http");
 const fs = require("fs");
 const path = require("path");
 const crypto = require("crypto");
+const {
+  replaceTable,
+  supabase,
+  taxonomiesArrayToObject,
+  taxonomiesObjectToArray,
+} = require("./api/_supabase");
 
 const root = __dirname;
 const dataDir = path.join(root, "data");
 const storePath = path.join(dataDir, "store.json");
 const usersPath = path.join(dataDir, "users.json");
 const port = process.env.PORT || 3000;
+const TAXONOMY_SCOPES = new Set(["taxonomies", "featuredCards", "futureDrop", "siteBanners", "bookSettings", "aboutSettings"]);
 
 function hashPassword(password) {
   return crypto.createHash("sha256").update(password).digest("hex");
@@ -73,7 +80,7 @@ const initialStore = {
 
 function ensureStore() {
   if (!fs.existsSync(dataDir)) fs.mkdirSync(dataDir, { recursive: true });
-  if (!fs.existsSync(storePath)) writeStore(readInitialStore());
+  if (!fs.existsSync(storePath)) writeLocalStore(readInitialStore());
 }
 
 function readInitialStore() {
@@ -111,9 +118,29 @@ function extractConstObject(source, name) {
   return Function(`return (${code});`)();
 }
 
-function readStore() {
+function readLocalStore() {
   ensureStore();
   return JSON.parse(fs.readFileSync(storePath, "utf8"));
+}
+
+async function readStore() {
+  try {
+    const [products, collections, taxonomyRows, orders] = await Promise.all([
+      supabase("products?select=*&order=created.desc"),
+      supabase("collections?select=*"),
+      supabase("taxonomies?select=*"),
+      supabase("orders?select=*&order=createdAt.desc"),
+    ]);
+    return {
+      products: products || [],
+      collections: collections || [],
+      taxonomies: taxonomiesArrayToObject(taxonomyRows),
+      orders: orders || [],
+    };
+  } catch (error) {
+    console.warn(`Supabase indisponivel, usando JSON local: ${error.message}`);
+    return readLocalStore();
+  }
 }
 
 function readUsers() {
@@ -141,9 +168,37 @@ function publicUser(user) {
   };
 }
 
-function writeStore(store) {
+function writeLocalStore(store) {
   if (!fs.existsSync(dataDir)) fs.mkdirSync(dataDir, { recursive: true });
   fs.writeFileSync(storePath, JSON.stringify(store, null, 2));
+}
+
+async function writeStore(nextStore, currentStore = {}, scope = "all") {
+  try {
+    if (scope === "products") {
+      await replaceTable("products", Array.isArray(nextStore.products) ? nextStore.products : []);
+      return;
+    }
+
+    if (scope === "collections") {
+      await replaceTable("collections", Array.isArray(nextStore.collections) ? nextStore.collections : []);
+      return;
+    }
+
+    if (TAXONOMY_SCOPES.has(scope)) {
+      await replaceTable("taxonomies", taxonomiesObjectToArray(nextStore.taxonomies || {}), "key");
+      return;
+    }
+
+    await Promise.all([
+      replaceTable("products", Array.isArray(nextStore.products) ? nextStore.products : currentStore.products || []),
+      replaceTable("collections", Array.isArray(nextStore.collections) ? nextStore.collections : currentStore.collections || []),
+      replaceTable("taxonomies", taxonomiesObjectToArray(nextStore.taxonomies || currentStore.taxonomies || initialStore.taxonomies), "key"),
+    ]);
+  } catch (error) {
+    console.warn(`Nao foi possivel salvar no Supabase, usando JSON local: ${error.message}`);
+    writeLocalStore(nextStore);
+  }
 }
 
 function sendJson(res, status, payload) {
@@ -193,7 +248,7 @@ const server = http.createServer(async (req, res) => {
     const url = new URL(req.url, `http://${req.headers.host}`);
 
     if (url.pathname === "/api/store" && req.method === "GET") {
-      sendJson(res, 200, readStore());
+      sendJson(res, 200, await readStore());
       return;
     }
 
@@ -204,39 +259,39 @@ const server = http.createServer(async (req, res) => {
       }
 
       const nextStore = await readBody(req);
-      const currentStore = readStore();
+      const currentStore = await readStore();
       const scope = String(nextStore.scope || "all");
 
       if (scope === "products") {
-        writeStore({ ...currentStore, products: Array.isArray(nextStore.products) ? nextStore.products : [] });
+        await writeStore({ ...currentStore, products: Array.isArray(nextStore.products) ? nextStore.products : [] }, currentStore, scope);
         sendJson(res, 200, { ok: true, scope });
         return;
       }
 
       if (scope === "collections") {
-        writeStore({ ...currentStore, collections: Array.isArray(nextStore.collections) ? nextStore.collections : [] });
+        await writeStore({ ...currentStore, collections: Array.isArray(nextStore.collections) ? nextStore.collections : [] }, currentStore, scope);
         sendJson(res, 200, { ok: true, scope });
         return;
       }
 
       if (["taxonomies", "featuredCards", "futureDrop", "siteBanners", "bookSettings", "aboutSettings"].includes(scope)) {
-        writeStore({
+        await writeStore({
           ...currentStore,
           taxonomies: {
             ...(currentStore.taxonomies || {}),
             ...(nextStore.taxonomies || {}),
           },
-        });
+        }, currentStore, scope);
         sendJson(res, 200, { ok: true, scope });
         return;
       }
 
-      writeStore({
+      await writeStore({
         products: Array.isArray(nextStore.products) ? nextStore.products : currentStore.products || [],
         collections: Array.isArray(nextStore.collections) ? nextStore.collections : currentStore.collections || [],
         taxonomies: nextStore.taxonomies || currentStore.taxonomies || initialStore.taxonomies,
         orders: Array.isArray(nextStore.orders) ? nextStore.orders : currentStore.orders || [],
-      });
+      }, currentStore, scope);
       sendJson(res, 200, { ok: true, scope });
       return;
     }
@@ -321,24 +376,53 @@ const server = http.createServer(async (req, res) => {
     }
 
     if (url.pathname === "/api/orders" && req.method === "POST") {
-      const store = readStore();
-      const order = await readBody(req);
-      store.orders = [{ ...order, id: `BLS-${Date.now()}`, createdAt: new Date().toISOString() }, ...(store.orders || [])];
-      writeStore(store);
-      sendJson(res, 201, store.orders[0]);
+      const body = await readBody(req);
+      const order = {
+        id: body.orderId || `BLS-${Date.now()}`,
+        userId: body.userId || "",
+        customer: body.customer || "",
+        email: body.email || "",
+        payment: body.payment || "",
+        subtotal: Number(body.subtotal || body.total || 0),
+        discount: Number(body.discount || 0),
+        coupon: body.coupon || "",
+        total: Number(body.total || 0),
+        items: body.items || [],
+        createdAt: new Date().toISOString(),
+      };
+      try {
+        const created = await supabase("orders", {
+          method: "POST",
+          body: JSON.stringify(order),
+        });
+        sendJson(res, 201, created?.[0] || order);
+      } catch (error) {
+        const store = readLocalStore();
+        store.orders = [order, ...(store.orders || [])];
+        writeLocalStore(store);
+        sendJson(res, 201, order);
+      }
       return;
     }
 
     if (url.pathname === "/api/orders" && req.method === "GET") {
-      const store = readStore();
       const userId = String(url.searchParams.get("userId") || "").trim();
       const email = String(url.searchParams.get("email") || "").trim();
-      const orders = (store.orders || []).filter((order) => {
-        if (userId) return order.userId === userId;
-        if (email) return order.email === email;
-        return false;
-      });
-      sendJson(res, 200, { orders });
+      try {
+        const filter = userId
+          ? `userId=eq.${encodeURIComponent(userId)}`
+          : `email=eq.${encodeURIComponent(email)}`;
+        const orders = userId || email ? await supabase(`orders?${filter}&select=*&order=createdAt.desc`) : [];
+        sendJson(res, 200, { orders: orders || [] });
+      } catch (error) {
+        const store = readLocalStore();
+        const orders = (store.orders || []).filter((order) => {
+          if (userId) return order.userId === userId;
+          if (email) return order.email === email;
+          return false;
+        });
+        sendJson(res, 200, { orders });
+      }
       return;
     }
 

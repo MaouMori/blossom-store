@@ -319,6 +319,7 @@ function getData(key, seed) {
 }
 
 function setData(key, value) {
+  if (apiEnabled) return;
   const serialized = JSON.stringify(value);
   const previous = localStorage.getItem(key);
   try {
