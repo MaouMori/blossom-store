@@ -1,5 +1,5 @@
 /* ============================================
-   BLOSSOM STORE — index2.js (Home V2 Scripts)
+   BLOSSOM STORE — produto.js (Produto V2 Scripts)
    ============================================ */
 
 // Theme toggle
@@ -22,7 +22,7 @@
 
 // Header scroll effect
 (function () {
-  const header = document.querySelector(".home-v2 .site-header");
+  const header = document.querySelector(".produto-v2 .site-header");
   if (!header) return;
 
   function onScroll() {
@@ -37,16 +37,13 @@
   onScroll();
 })();
 
-// Fix cart overlay for index2.html
-// The script.js uses document.querySelector("[data-overlay]") which picks the first overlay (mobile-nav-overlay).
-// We need to ensure the cart uses the correct overlay.
+// Fix cart overlay for produto.html
 (function () {
   const cartOpen = document.querySelector("[data-cart-open]");
   const cartClose = document.querySelector("[data-cart-close]");
   const cartDrawer = document.querySelector("[data-cart-drawer]");
   const checkoutModal = document.querySelector("[data-checkout-modal]");
-  // The cart overlay is the one inside .home-v2, NOT the mobile-nav-overlay
-  const cartOverlay = document.querySelector(".home-v2 .overlay[data-overlay]");
+  const cartOverlay = document.querySelector(".produto-v2 .overlay[data-overlay]");
 
   if (!cartOpen || !cartDrawer || !cartOverlay) return;
 
@@ -68,7 +65,6 @@
   if (cartClose) cartClose.addEventListener("click", closeCart);
   cartOverlay.addEventListener("click", () => {
     closeCart();
-    // Also close checkout if open
     if (checkoutModal && !checkoutModal.hidden) {
       checkoutModal.classList.remove("open");
       checkoutModal.hidden = true;
@@ -77,14 +73,49 @@
   });
 })();
 
-// Lookbook carousel
+// Gallery thumbnail switcher
 (function () {
-  const track = document.querySelector("[data-lookbook-track]");
-  const prevBtn = document.querySelector("[data-lookbook-prev]");
-  const nextBtn = document.querySelector("[data-lookbook-next]");
+  const thumbs = document.querySelectorAll(".p2-thumb");
+  const mainImg = document.getElementById("p2-main-image");
+  if (!mainImg || thumbs.length === 0) return;
+
+  thumbs.forEach((thumb) => {
+    thumb.addEventListener("click", () => {
+      thumbs.forEach((t) => t.classList.remove("active"));
+      thumb.classList.add("active");
+
+      const imgSrc = thumb.getAttribute("data-img");
+      if (imgSrc) {
+        mainImg.src = imgSrc;
+      }
+    });
+  });
+})();
+
+// File type selector
+(function () {
+  const options = document.querySelectorAll(".p2-filetype-option");
+  if (options.length === 0) return;
+
+  options.forEach((option) => {
+    option.addEventListener("click", () => {
+      options.forEach((o) => o.classList.remove("active"));
+      option.classList.add("active");
+
+      const input = option.querySelector('input[type="radio"]');
+      if (input) input.checked = true;
+    });
+  });
+})();
+
+// Related products carousel
+(function () {
+  const track = document.querySelector("[data-carousel-track]");
+  const prevBtn = document.querySelector(".p2-carousel-prev");
+  const nextBtn = document.querySelector(".p2-carousel-next");
   if (!track) return;
 
-  const scrollAmount = 292; // card width + gap
+  const scrollAmount = 216; // card width + gap
 
   if (prevBtn) {
     prevBtn.addEventListener("click", () => {

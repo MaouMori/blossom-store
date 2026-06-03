@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+  <meta name="theme-color" content="#fff0f5">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <title>Loja — Blossom Store</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700;800&family=Playfair+Display:wght@500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="loja2.css">
+</head>
+<body class="loja-v2" data-theme="light">
+  <header class="site-header">
+    <a class="brand" href="index2.html">
+      <span class="brand-mark">✿</span>
+      <span>
+        <b>BLOSSOM</b>
+        <small>STORE</small>
+      </span>
+    </a>
+
+    <nav class="main-nav" aria-label="Navegação principal">
+      <a href="index2.html">HOME</a>
+      <a href="colecoes.html">COLEÇÕES</a>
+      <a class="active" href="loja2.html">LOJA</a>
+      <a href="sobre.html">SOBRE NÓS</a>
+      <a href="contato.html">CONTATO</a>
+    </nav>
+
+    <button class="mobile-menu-toggle" type="button" aria-label="Abrir menu" data-mobile-menu-toggle>☰</button>
+
+    <div class="mobile-nav-overlay" data-mobile-nav-overlay></div>
+    <nav class="mobile-nav" aria-label="Navegação mobile" data-mobile-nav>
+      <button class="mobile-nav-close" type="button" aria-label="Fechar menu" data-mobile-nav-close>×</button>
+      <a href="index2.html">HOME</a>
+      <a href="colecoes.html">COLEÇÕES</a>
+      <a class="active" href="loja2.html">LOJA</a>
+      <a href="sobre.html">SOBRE NÓS</a>
+      <a href="contato.html">CONTATO</a>
+    </nav>
+
+    <div class="header-actions">
+      <button class="theme-toggle" type="button" aria-label="Alternar tema" data-theme-toggle>
+        <span class="theme-icon-light">☀</span>
+        <span class="theme-icon-dark">☾</span>
+      </button>
+      <a href="login.html" class="header-icon" aria-label="Conta">♙</a>
+      <a href="#" class="header-icon discord" aria-label="Discord">☎</a>
+      <button class="cart" type="button" aria-label="Abrir carrinho" data-cart-open>▱<small data-cart-count>0</small></button>
+    </div>
+  </header>
+
+  <main>
+    <!-- HERO SECTION -->
+    <section class="l2-hero">
+      <div class="l2-hero-bg" style="background-image: url('img/loja-hero.jpg');">
+        <div class="l2-hero-overlay"></div>
+      </div>
+      
+      <div class="l2-hero-content">
+        <div class="l2-hero-left">
+          <span class="l2-kicker">✦ BLOSSOM STORE</span>
+          <h1>LOJ<em>A</em></h1>
+          <p>PEÇAS EXCLUSIVAS PARA QUEM<br>VIVE O ROLEPLAY.</p>
+          <a href="colecoes.html" class="l2-cta-btn">VER COLEÇÕES <span>→</span></a>
+        </div>
+        
+        <div class="l2-hero-right">
+          <span class="l2-vertical-text">FEITO POR PLAYERS. PARA PLAYERS.</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- FILTROS -->
+    <section class="l2-filters">
+      <div class="container l2-filters-inner">
+        <div class="l2-filters-left">
+          <button class="l2-filter-btn" data-filter-toggle>
+            <span>☰</span> FILTRAR
+          </button>
+          <div class="l2-filter-group">
+            <button class="l2-filter-chip">CATEGORIA <span>+</span></button>
+            <button class="l2-filter-chip">TIPO <span>+</span></button>
+            <button class="l2-filter-chip">COR <span>+</span></button>
+            <button class="l2-filter-chip">TAMANHO <span>+</span></button>
+            <button class="l2-filter-chip">PREÇO <span>+</span></button>
+          </div>
+        </div>
+        <div class="l2-filters-right">
+          <span>ORDENAR POR:</span>
+          <button class="l2-sort-btn">MAIS RECENTES <span>▼</span></button>
+        </div>
+      </div>
+    </section>
+
+    <!-- PRODUTOS GRID -->
+    <section class="l2-products">
+      <div class="container">
+        <div class="l2-products-grid">
+          <!-- Produto 1 -->
+          <div class="l2-product-card" data-src="img/prod-camiseta.jpg">
+            <div class="l2-product-img">
+              <span>[Imagem: Camiseta Blossom Logo]</span>
+            </div>
+            <div class="l2-product-info">
+              <h3>CAMISETA BLOSSOM LOGO</h3>
+              <div class="l2-product-bottom">
+                <span class="l2-price">R$ 110,90</span>
+                <button class="l2-arrow" aria-label="Ver produto">→</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Produto 2 -->
+          <div class="l2-product-card" data-src="img/prod-cropped.jpg">
+            <div class="l2-product-img">
+              <span>[Imagem: Cropped Blossom]</span>
+            </div>
+            <div class="l2-product-info">
+              <h3>CROPPED BLOSSOM</h3>
+              <div class="l2-product-bottom">
+                <span class="l2-price">R$ 129,90</span>
+                <button class="l2-arrow" aria-label="Ver produto">→</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Produto 3 -->
+          <div class="l2-product-card" data-src="img/prod-moletom-ov.jpg">
+            <div class="l2-product-img">
+              <span>[Imagem: Moletom Oversized]</span>
+            </div>
+            <div class="l2-product-info">
+              <h3>MOLETOM OVERSIZED ESSENTIALS</h3>
+              <div class="l2-product-bottom">
+                <span class="l2-price">R$ 299,90</span>
+                <button class="l2-arrow" aria-label="Ver produto">→</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Produto 4 -->
+          <div class="l2-product-card" data-src="img/prod-moletom-pink.jpg">
+            <div class="l2-product-img">
+              <span>[Imagem: Moletom Pink Season]</span>
+            </div>
+            <div class="l2-product-info">
+              <h3>MOLETOM PINK SEASON</h3>
+              <div class="l2-product-bottom">
+                <span class="l2-price">R$ 349,90</span>
+                <button class="l2-arrow" aria-label="Ver produto">→</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Produto 5 -->
+          <div class="l2-product-card" data-src="img/prod-calca.jpg">
+            <div class="l2-product-img">
+              <span>[Imagem: Calça Blossom Cargo]</span>
+            </div>
+            <div class="l2-product-info">
+              <h3>CALÇA BLOSSOM CARGO</h3>
+              <div class="l2-product-bottom">
+                <span class="l2-price">R$ 189,90</span>
+                <button class="l2-arrow" aria-label="Ver produto">→</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Produto 6 -->
+          <div class="l2-product-card" data-src="img/prod-bone.jpg">
+            <div class="l2-product-img">
+              <span>[Imagem: Boné Blossom]</span>
+            </div>
+            <div class="l2-product-info">
+              <h3>BONÉ BLOSSOM</h3>
+              <div class="l2-product-bottom">
+                <span class="l2-price">R$ 89,90</span>
+                <button class="l2-arrow" aria-label="Ver produto">→</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Produto 7 -->
+          <div class="l2-product-card" data-src="img/prod-garrafa.jpg">
+            <div class="l2-product-img">
+              <span>[Imagem: Garrafa Blossom]</span>
+            </div>
+            <div class="l2-product-info">
+              <h3>GARRAFA BLOSSOM</h3>
+              <div class="l2-product-bottom">
+                <span class="l2-price">R$ 79,90</span>
+                <button class="l2-arrow" aria-label="Ver produto">→</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- CTA SECTION -->
+    <section class="l2-cta">
+      <div class="container l2-cta-inner">
+        <div class="l2-cta-text">
+          <h2>NÃO ENCONTROU<br><em>O QUE PROCURAVA?</em></h2>
+          <p>Fale com a gente e criaremos algo único para você.</p>
+        </div>
+        <a href="contato.html" class="l2-cta-link">FALE CONOSCO <span>→</span></a>
+      </div>
+    </section>
+  </main>
+
+  <!-- FOOTER -->
+  <footer class="site-footer v2-footer">
+    <div class="container v2-footer-grid">
+      <div class="v2-footer-brand">
+        <a class="footer-brand" href="index2.html">
+          <span class="brand-mark">✿</span>
+          <span><b>BLOSSOM</b><small>STORE</small></span>
+        </a>
+        <p>Mais que roupas, é identidade.<br>Vista Blossom.</p>
+        <div class="v2-footer-socials">
+          <a href="#" aria-label="Instagram">📷</a>
+          <a href="#" aria-label="TikTok">🎵</a>
+          <a href="#" aria-label="Discord">☎</a>
+          <a href="#" aria-label="X">✕</a>
+        </div>
+      </div>
+      
+      <div class="v2-footer-col">
+        <h4>MENU</h4>
+        <a href="index2.html">Home</a>
+        <a href="colecoes.html">Coleções</a>
+        <a href="loja2.html">Loja</a>
+        <a href="sobre.html">Sobre nós</a>
+        <a href="contato.html">Contato</a>
+      </div>
+      
+      <div class="v2-footer-col">
+        <h4>AJUDA</h4>
+        <a href="#">Perguntas frequentes</a>
+        <a href="#">Trocas e devoluções</a>
+        <a href="#">Política de privacidade</a>
+        <a href="#">Termos de uso</a>
+      </div>
+      
+      <div class="v2-footer-col">
+        <h4>INFORMAÇÕES</h4>
+        <a href="mailto:contato@blossomstore.com">contato@blossomstore.com</a>
+        <a href="tel:+5511999999999">(11) 99999-9999</a>
+        <span>Seg - Sex: 09h às 18h</span>
+      </div>
+      
+      <div class="v2-footer-col">
+        <h4>FORMAS DE PAGAMENTO</h4>
+        <div class="v2-payment-methods">
+          <span class="v2-payment">VISA</span>
+          <span class="v2-payment">VISA</span>
+          <span class="v2-payment">MC</span>
+          <span class="v2-payment">AMEX</span>
+          <span class="v2-payment">PIX</span>
+        </div>
+      </div>
+    </div>
+    
+    <div class="v2-footer-bottom">
+      <p>© 2025 Blossom Store. Todos os direitos reservados.</p>
+    </div>
+  </footer>
+
+  <!-- CART DRAWER -->
+  <div class="overlay" data-overlay hidden></div>
+  <aside class="cart-drawer" data-cart-drawer aria-hidden="true" aria-label="Carrinho de compras">
+    <div class="drawer-head">
+      <div>
+        <span class="eyebrow">Seu pedido</span>
+        <h2>Carrinho</h2>
+      </div>
+      <button class="icon-button" type="button" aria-label="Fechar carrinho" data-cart-close>×</button>
+    </div>
+    <div class="cart-items" data-cart-items>
+      <p class="empty-cart">Seu carrinho está vazio.</p>
+    </div>
+    <div class="cart-summary">
+      <div><span>Subtotal</span><strong data-subtotal>R$0,00</strong></div>
+      <div><span>Entrega digital</span><strong>Grátis</strong></div>
+      <div class="summary-total"><span>Total</span><strong data-total>R$0,00</strong></div>
+      <button class="checkout-button" type="button" data-checkout-open disabled>Finalizar compra</button>
+    </div>
+  </aside>
+
+  <!-- CHECKOUT MODAL -->
+  <section class="checkout-modal" data-checkout-modal hidden aria-label="Finalizar compra">
+    <div class="checkout-panel">
+      <button class="icon-button checkout-close" type="button" aria-label="Fechar checkout" data-checkout-close>×</button>
+      <div class="checkout-grid">
+        <form class="checkout-form" data-checkout-form>
+          <span class="eyebrow">Pagamento</span>
+          <h2>Finalizar compra</h2>
+          <label>Nome no pedido<input type="text" name="customer" placeholder="Seu nome" required></label>
+          <label>E-mail para entrega<input type="email" name="email" placeholder="seu@email.com" required></label>
+          <fieldset>
+            <legend>Forma de pagamento</legend>
+            <label class="payment-option"><input type="radio" name="payment" value="pix" checked><span><b>PIX</b><small>Gera código e QR de demonstração.</small></span></label>
+            <label class="payment-option"><input type="radio" name="payment" value="card"><span><b>Cartão</b><small>Tela pronta para integrar gateway.</small></span></label>
+            <label class="payment-option"><input type="radio" name="payment" value="boleto"><span><b>Boleto</b><small>Gera referência de pedido.</small></span></label>
+          </fieldset>
+          <div class="payment-preview" data-payment-preview>
+            <div class="qr-placeholder">PIX</div>
+            <p>Ao confirmar, o sistema cria um pedido em modo demonstração. Para pagamento real, basta conectar Mercado Pago, Stripe ou Asaas.</p>
+          </div>
+          <button class="checkout-button" type="submit">Criar pedido</button>
+        </form>
+        <aside class="order-review">
+          <span class="eyebrow">Resumo</span>
+          <h3>Itens do pedido</h3>
+          <div data-checkout-items></div>
+          <div class="summary-total"><span>Total</span><strong data-checkout-total>R$0,00</strong></div>
+          <p class="order-note">Entrega digital automática após confirmação do pagamento real.</p>
+        </aside>
+      </div>
+    </div>
+  </section>
+
+  <script src="script.js"></script>
+  <script src="loja2.js"></script>
+</body>
+</html>

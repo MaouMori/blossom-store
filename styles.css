@@ -8224,14 +8224,6 @@ body.nav-scrolled .editorial-header .theme-pill {
   border-color: rgba(255, 248, 251, 0.44);
 }
 
-.home-editorial.editorial-light.nav-scrolled .editorial-header .editorial-nav a,
-.home-editorial.editorial-light.nav-scrolled .editorial-header .editorial-utilities > span,
-.home-editorial.editorial-light.nav-scrolled .editorial-header .user-icon,
-.home-editorial.editorial-light.nav-scrolled .editorial-header .collections-logo span {
-  color: var(--ed-text);
-  text-shadow: none;
-}
-
 .home-editorial.editorial-light .editorial-nav a,
 .home-editorial.editorial-light .editorial-utilities > span,
 .home-editorial.editorial-light .editorial-hero h1,
@@ -8248,6 +8240,19 @@ body.nav-scrolled .editorial-header .theme-pill {
 .home-editorial.editorial-light .see-all,
 .home-editorial.editorial-light .editorial-footer .footer-brand b,
 .home-editorial.editorial-light .editorial-footer .brand-mark {
+  color: var(--ed-pink);
+}
+
+.home-editorial.editorial-light.nav-scrolled .editorial-header .editorial-nav a,
+.home-editorial.editorial-light.nav-scrolled .editorial-header .editorial-utilities > span,
+.home-editorial.editorial-light.nav-scrolled .editorial-header .user-icon,
+.home-editorial.editorial-light.nav-scrolled .editorial-header .collections-logo span {
+  color: rgba(255, 247, 251, 0.94);
+  text-shadow: 0 2px 12px rgba(0, 0, 0, 0.58);
+}
+
+.home-editorial.editorial-light.nav-scrolled .editorial-header .editorial-nav a.active,
+.home-editorial.editorial-light.nav-scrolled .editorial-header .editorial-nav a:hover {
   color: var(--ed-pink);
 }
 
