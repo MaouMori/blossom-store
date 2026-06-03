@@ -8872,8 +8872,18 @@ body.nav-scrolled .editorial-header .theme-pill {
   text-shadow: none;
 }
 
+.about-editorial-page.editorial-light.nav-scrolled .editorial-header .editorial-nav a,
+.about-editorial-page.editorial-light.nav-scrolled .editorial-header .editorial-utilities > span,
+.about-editorial-page.editorial-light.nav-scrolled .editorial-header .user-icon,
+.about-editorial-page.editorial-light.nav-scrolled .editorial-header .collections-logo span {
+  color: #30131f;
+  text-shadow: none;
+}
+
 .about-editorial-page.editorial-light .editorial-header .editorial-nav a.active,
-.about-editorial-page.editorial-light .editorial-header .editorial-nav a:hover {
+.about-editorial-page.editorial-light .editorial-header .editorial-nav a:hover,
+.about-editorial-page.editorial-light.nav-scrolled .editorial-header .editorial-nav a.active,
+.about-editorial-page.editorial-light.nav-scrolled .editorial-header .editorial-nav a:hover {
   color: #e84f8d;
   text-shadow: none;
 }
