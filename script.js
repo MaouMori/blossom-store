@@ -40,12 +40,25 @@ function initMobileMenu() {
   const nav = document.querySelector("[data-mobile-nav]");
   const close = document.querySelector("[data-mobile-nav-close]");
   if (!toggle || !overlay || !nav) return;
-  function open() { overlay.classList.add("active"); nav.classList.add("active"); document.body.style.overflow = "hidden"; }
-  function closeMenu() { overlay.classList.remove("active"); nav.classList.remove("active"); document.body.style.overflow = ""; }
+  function open() {
+    overlay.classList.add("active");
+    nav.classList.add("active");
+    document.documentElement.classList.add("mobile-menu-open");
+    document.body.classList.add("mobile-menu-open");
+  }
+  function closeMenu() {
+    overlay.classList.remove("active");
+    nav.classList.remove("active");
+    document.documentElement.classList.remove("mobile-menu-open");
+    document.body.classList.remove("mobile-menu-open");
+    document.body.style.overflow = "";
+  }
   toggle.addEventListener("click", open);
   overlay.addEventListener("click", closeMenu);
   if (close) close.addEventListener("click", closeMenu);
   nav.querySelectorAll("a").forEach((link) => link.addEventListener("click", closeMenu));
+  window.addEventListener("resize", () => { if (window.innerWidth > 760) closeMenu(); });
+  document.addEventListener("keydown", (event) => { if (event.key === "Escape") closeMenu(); });
 }
 
 document.addEventListener("DOMContentLoaded", initStickyHeader);

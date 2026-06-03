@@ -10150,6 +10150,73 @@ body.nav-scrolled .editorial-header .theme-pill {
   }
 }
 
+/* Keep the mobile home page scrollable after the featured drop. */
+@media (max-width: 760px) {
+  html.mobile-menu-open,
+  body.mobile-menu-open {
+    overflow: hidden;
+  }
+
+  html:not(.mobile-menu-open),
+  body.home-editorial:not(.mobile-menu-open) {
+    height: auto !important;
+    min-height: 100% !important;
+    overflow-y: auto !important;
+    overscroll-behavior-y: auto;
+    touch-action: pan-y;
+  }
+
+  body.home-editorial {
+    display: block !important;
+    max-height: none !important;
+    overflow-x: hidden !important;
+  }
+
+  .home-editorial .editorial-main {
+    display: block !important;
+    height: auto !important;
+    min-height: 0 !important;
+    max-height: none !important;
+    overflow: visible !important;
+    overflow-y: visible !important;
+  }
+
+  .home-editorial .editorial-main::after {
+    content: "";
+    display: block;
+    clear: both;
+  }
+
+  .home-editorial .editorial-main > section,
+  .home-editorial .editorial-footer {
+    position: relative !important;
+    display: block !important;
+    clear: both;
+    height: auto !important;
+    min-height: 0 !important;
+    max-height: none !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    transform: none !important;
+    contain: none !important;
+  }
+
+  .home-editorial #cherrys,
+  .home-editorial #influenciadores,
+  .home-editorial #colecoes,
+  .home-editorial .movement-banner {
+    overflow: visible;
+  }
+
+  .home-editorial .future-drop {
+    overflow: visible !important;
+  }
+
+  .home-editorial .editorial-hero {
+    overflow: hidden;
+  }
+}
+
 @media (max-width: 420px) {
   .home-editorial .editorial-header,
   body.nav-scrolled.home-editorial .editorial-header {
