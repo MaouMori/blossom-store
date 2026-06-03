@@ -3,18 +3,22 @@ const fs = require("fs");
 const path = require("path");
 const crypto = require("crypto");
 const {
-  replaceTable,
   supabase,
-  taxonomiesArrayToObject,
-  taxonomiesObjectToArray,
 } = require("./api/_supabase");
+const apiHandlers = {
+  "/api/account": require("./api/account"),
+  "/api/auth": require("./api/auth"),
+  "/api/discord-auth": require("./api/discord-auth"),
+  "/api/orders": require("./api/orders"),
+  "/api/store": require("./api/store"),
+  "/api/users": require("./api/users"),
+};
 
 const root = __dirname;
 const dataDir = path.join(root, "data");
 const storePath = path.join(dataDir, "store.json");
 const usersPath = path.join(dataDir, "users.json");
 const port = process.env.PORT || 3000;
-const TAXONOMY_SCOPES = new Set(["taxonomies", "featuredCards", "futureDrop", "siteBanners", "bookSettings", "aboutSettings"]);
 
 function hashPassword(password) {
   return crypto.createHash("sha256").update(password).digest("hex");
@@ -221,6 +225,27 @@ function readBody(req) {
   });
 }
 
+async function runApiHandler(handler, req, res) {
+  if (["POST", "PUT", "PATCH"].includes(req.method)) {
+    req.body = await readBody(req);
+  }
+  res.status = (statusCode) => {
+    res.statusCode = statusCode;
+    return res;
+  };
+  res.json = (payload) => sendJson(res, res.statusCode || 200, payload);
+  res.send = (payload) => {
+    if (typeof payload === "object" && payload !== null && !Buffer.isBuffer(payload)) {
+      sendJson(res, res.statusCode || 200, payload);
+      return;
+    }
+    if (!res.getHeader("Content-Type")) res.setHeader("Content-Type", "text/plain; charset=utf-8");
+    res.statusCode = res.statusCode || 200;
+    res.end(payload);
+  };
+  await handler(req, res);
+}
+
 function serveStatic(req, res) {
   const url = new URL(req.url, `http://${req.headers.host}`);
   const requested = decodeURIComponent(url.pathname === "/" ? "/index.html" : url.pathname);
@@ -246,6 +271,11 @@ function serveStatic(req, res) {
 const server = http.createServer(async (req, res) => {
   try {
     const url = new URL(req.url, `http://${req.headers.host}`);
+    const apiHandler = apiHandlers[url.pathname];
+    if (apiHandler) {
+      await runApiHandler(apiHandler, req, res);
+      return;
+    }
 
     if (url.pathname === "/api/store" && req.method === "GET") {
       sendJson(res, 200, await readStore());
@@ -456,7 +486,6 @@ const server = http.createServer(async (req, res) => {
   }
 });
 
-ensureStore();
 server.listen(port, () => {
   console.log(`Blossom Store rodando em http://localhost:${port}`);
 });
